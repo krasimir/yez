@@ -1,4 +1,4 @@
 yez
 ===
 
-Chrome extension which acts as task runner
+Chrome extension that acts as task runner
