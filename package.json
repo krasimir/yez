@@ -1,0 +1,35 @@
+{
+  "name": "yez",
+  "version": "0.0.1",
+  "homepage": "https://github.com/krasimir/yez",
+  "description": "Chrome extension which acts as task runner",
+  "main": "./node/index.js",
+  "author": {
+    "name": "Krasimir Tsonev",
+    "email": "info@krasimirtsonev.com",
+    "url": "http://krasimirtsonev.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    
+  },
+  "keywords": [
+    "chrome",
+    "extension",
+    "task",
+    "runner"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krasimir/yez.git"
+  },
+  "bin": {
+    "yez": "./node/index.js"
+  },
+  "scripts": {
+    
+  }
+}
