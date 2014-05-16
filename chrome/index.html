@@ -13,13 +13,14 @@
                 <img src="img/icon48.png" class="logo" />
                 <div data-component="status">
                     <i class="fa fa-flash fa-flash-<% status %>"></i> Status: <% status %>
+                    <div class="desc">Connection to <code>http://<% host %>:<% port %></code> failed. <br />It seems that <code>yez</code> Node.js module is missing.<br />Try running <code>npm install -g yez</code>.<br />When the installation finishes type <code>yez</code> and hit <i>Enter</i>.</div>
                 </div>
             </header>   
         </div>
         <script src="js/vendors/socket.io.js"></script>
         <script src="js/vendors/absurd.organic.min.js"></script>
         <script src="js/vendors/absurd.min.js"></script>
-        <script> absurd = Absurd(); </script>
+        <script src="js/misc.js"></script>
         <script src="js/components/Status.js"></script>
         <script src="js/Yez.js"></script>
     </body>

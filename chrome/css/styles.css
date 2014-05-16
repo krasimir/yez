@@ -14,6 +14,10 @@ html {
 .right {
 	float: right;
 }
+code {
+	border: solid 1px #D8D8D8;
+	padding: 0 2px 0 2px;
+}
 .clear, .clearfix {
 	clear: both;
 }
