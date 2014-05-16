@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    
+    "socket.io": "0.9.16"
   },
   "devDependencies": {
     "expect.js": "0.3.1"
@@ -30,6 +30,7 @@
     "yez": "./node/index.js"
   },
   "scripts": {
-    "test": "mocha ./node/tests --reporter spec"
+    "test": "mocha ./node/tests --reporter spec",
+    "start": "node ./node/index.js"
   }
 }

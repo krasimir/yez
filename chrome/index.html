@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Yez</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/font-awesome-4.0.3/css/font-awesome.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+    	<div class="content">
+            <header>
+                <img src="img/icon48.png" class="logo" />
+                <div data-component="status">
+                    <i class="fa fa-flash fa-flash-<% status %>"></i> Status: <% status %>
+                </div>
+            </header>   
+        </div>
+        <script src="js/vendors/socket.io.js"></script>
+        <script src="js/vendors/absurd.organic.min.js"></script>
+        <script src="js/vendors/absurd.min.js"></script>
+        <script> absurd = Absurd(); </script>
+        <script src="js/components/Status.js"></script>
+        <script src="js/Yez.js"></script>
+    </body>
+</html>

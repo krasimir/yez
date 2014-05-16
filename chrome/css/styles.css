@@ -1,0 +1,33 @@
+body,
+html {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: 'Roboto', 'sans-serif';
+	font-size: 16px;
+	line-height: 26px;
+}
+.left {
+	float: left;
+}
+.right {
+	float: right;
+}
+.clear, .clearfix {
+	clear: both;
+}
+header {
+	background: #F3EEE4;
+	border-bottom: solid 1px #DFD2B7;
+}
+header .logo {
+	display: block;
+	float: left;
+	margin: 0 4px 0 10px;
+}
+header:after {
+	display: table;
+	content: " ";
+	clear: both;
+}
