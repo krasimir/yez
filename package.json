@@ -14,7 +14,7 @@
     
   },
   "devDependencies": {
-    
+    "expect.js": "0.3.1"
   },
   "keywords": [
     "chrome",
@@ -30,6 +30,6 @@
     "yez": "./node/index.js"
   },
   "scripts": {
-    
+    "test": "mocha ./node/tests --reporter spec"
   }
 }
