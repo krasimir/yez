@@ -2,19 +2,12 @@ var Nav = absurd.component('Nav', {
 	css: {
 		'[data-component="nav"]': {
 			fl: 'l',
-			pad: '10px 0 0 10px',
+			pad: '6px 0 0 10px',
 			d: 'b',
-			a: {
-				d: 'ib',
-				color: '#000',
-				bdb: 'solid 1px #999',
-				pad: '0 14px',
-				bdrsa: '6px',
-				bg: '#E2D8AF',
-				'&:hover': {
-					bg: '#EBDFC2'
-				}
-			}
+			a: [
+				button(),
+				{ bxz: 'bb', wid: '40px', hei: '35px', ov: 'h', ta: 'c' }
+			]
 		}
 	},
 	html: '[data-component="nav"]',

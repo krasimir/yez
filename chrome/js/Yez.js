@@ -3,7 +3,8 @@ absurd.component('Yez', {
 		'body, html': {
 			wid: '100%', hei: '100%',
 			mar: 0, pad: 0,
-			ff: "'Roboto', 'sans-serif'",
+			// ff: "'Roboto', 'sans-serif'",
+			ff: 'Arial',
 			fz: '16px', lh: '26px'
 		},
 		'.left': { fl: 'l' },
@@ -17,7 +18,7 @@ absurd.component('Yez', {
 		},
 		'header': {
 			bg: '#F3EEE4',
-			bdb: 'solid 1px #DFD2B7',
+			bdb: 'solid 2px #DFD2B7',
 			'.logo': {
 				d: 'b', fl: 'l',
 				mar: '0 4px 0 10px'
@@ -74,6 +75,12 @@ absurd.component('Yez', {
 		}.bind(this));
 
 		this.connect();
-		this.content.append(Task())
+
+		// debug
+		this.content.append(Task({
+			name: 'blah',
+			cwd: 'D:/work/',
+			commands: ['ls', 'git status']
+		}));
 	}
 })();

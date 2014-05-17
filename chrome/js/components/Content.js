@@ -1,9 +1,4 @@
 var Content = absurd.component('Content', {
-	css: {
-		'[data-component="content"]': {
-			pad: '10px'
-		}
-	},
 	html: '[data-component="content"]',
 	constructor: function() {
 		this.populate();
