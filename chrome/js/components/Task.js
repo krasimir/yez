@@ -259,7 +259,7 @@ var Task = absurd.component('Task', {
 		this.setMode('edit');
 	},
 	startTasks: function(e) {
-		e.preventDefault();
+		e && e.preventDefault();
 		if(this.started) return;
 		this.started = true;
 		this.commandsToProcess = this.data.commands.slice(0);

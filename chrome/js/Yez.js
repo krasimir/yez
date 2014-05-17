@@ -70,6 +70,8 @@ absurd.component('Yez', {
 	},
 	ready: function() {
 
+		var self = this;
+
 		if(window.localStorage) {
 			var ts = window.localStorage.getItem('YezTasks');
 			if(ts) {
@@ -93,25 +95,24 @@ absurd.component('Yez', {
 		this.home = Home();
 
 		this.nav.on('new', function() {
-			this.content.append(this.createTask())
-		}.bind(this));
+			self.content.append(self.createTask())
+		});
 
 		this.home.on('show-task', function(id) {
-			if(this.tasks[id]) {
-				this.content.append(this.tasks[id]);
+			if(self.tasks[id]) {
+				self.content.append(self.tasks[id]);
 			}
-		}.bind(this));
+		});
+		this.home.on('show-and-run-task', function(id) {
+			if(self.tasks[id]) {
+				self.content.append(self.tasks[id]);
+				self.tasks[id].startTasks();
+			}
+		});
 
 		this.connect();
-
 		this.content.append(this.home.setTasks(this.tasks));
 
-		// debug
-		// this.content.append(this.createTask({
-		// 	name: 'blah',
-		// 	cwd: 'D:/work/',
-		// 	commands: ['ls', 'git status', 'node ./tests/commands/continues-fail.js']
-		// }));
 	},
 	createTask: function(data) {
 		var t = Task(data);
