@@ -193,6 +193,7 @@ var Task = absurd.component('Task', {
 				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
 				{ 'a[href="#" class="operation" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
 				{ 'a[href="#" class="operation stop" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
+				{ 'a[href="#" class="operation stop" data-absurd-event="click:deleteTask"]': '<i class="fa fa-stop"></i> Delete'},
 				{ '.log': '' }
 			]
 		}
@@ -213,7 +214,11 @@ var Task = absurd.component('Task', {
 		this.mode = m;
 		this.populate();
 		this.clearLog();
-		var info = 'a';
+		var info = '';
+		info += 'Current working directory: ' + this.data.cwd + '\n';
+		for(var i=0; i<this.data.commands.length; i++) {
+			info += (i+1) + '. ' + this.data.commands[i] + '\n';
+		}
 		this.log('<p class="log-response">' + info + '</p>');
 	},
 	gotoHome: function(e) {
@@ -298,6 +303,11 @@ var Task = absurd.component('Task', {
 	},
 	stopTasks: function(e) {
 		e.preventDefault();
+	},
+	deleteTask: function(e) {
+		if(confirm('Are you sure?')) {
+			this.dispatch('delete-task');
+		}
 	},
 	log: function(msg, dom) {
 		var html = ansi_up.ansi_to_html(msg);

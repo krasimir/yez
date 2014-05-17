@@ -128,9 +128,17 @@ absurd.component('Yez', {
 			this.saveToStorage();
 		}.bind(this));
 		t.on('home', function() {
-			this.content.append(this.home.setTasks(this.tasks));
+			this.showHome();
+		}.bind(this));
+		t.on('delete-task', function() {
+			delete this.tasks[t.id];
+			this.showHome().saveToStorage();
 		}.bind(this));
 		return t;
+	},
+	showHome: function() {
+		this.content.append(this.home.setTasks(this.tasks));
+		return this;
 	},
 	saveToStorage: function() {
 		var tasks = [];
