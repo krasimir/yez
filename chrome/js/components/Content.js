@@ -1,19 +1,20 @@
 var Content = absurd.component('Content', {
-	css: { '[data-component="content"]': {} },
+	css: { '[data-component="content"]': { d: 'n' } },
 	html: '[data-component="content"]',
 	constructor: function() {
 		this.populate();
 	},
 	append: function(component) {
-		this.populate();
 		if(!component.el) {
 			component.populate();
 		}
 		this.el.innerHTML = '';
 		this.el.appendChild(component.el);
+		if(component.appended) {
+			component.appended();
+		}
 	},
-	visible: function(s) {
-		this.css['[data-component="content"]'].d = s ? 'b' : 'n';
-		this.populate();
+	visible: function(v) {
+		this.el.style.display = v ? 'block' : 'none';
 	}
 })

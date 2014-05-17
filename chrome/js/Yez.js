@@ -70,17 +70,41 @@ absurd.component('Yez', {
 	},
 	ready: function() {
 
+		if(window.localStorage) {
+			var ts = window.localStorage.getItem('YezTasks');
+			if(ts) {
+				try {
+					ts = JSON.parse(ts);
+					for(var i=0; i<ts.length; i++) {
+						var t = this.createTask(ts[i]);
+						this.tasks[t.id] = t;
+					}
+				} catch(err) {
+
+				}
+			}
+		}
+
 		this.populate();
 
 		this.status = Status(this.host, this.port);
 		this.nav = Nav();
 		this.content = Content();
+		this.home = Home();
 
 		this.nav.on('new', function() {
-			this.content.append(Task())
+			this.content.append(this.createTask())
+		}.bind(this));
+
+		this.home.on('show-task', function(id) {
+			if(this.tasks[id]) {
+				this.content.append(this.tasks[id]);
+			}
 		}.bind(this));
 
 		this.connect();
+
+		this.content.append(this.home.setTasks(this.tasks));
 
 		// debug
 		// this.content.append(this.createTask({
@@ -99,7 +123,22 @@ absurd.component('Yez', {
 				t.response({ action: 'error', msg: 'No back-end!' });
 			}
 		}.bind(this));
-		this.tasks[t.id] = t;
+		t.on('save', function() {
+			this.tasks[t.id] = t;
+			this.saveToStorage();
+		}.bind(this));
+		t.on('home', function() {
+			this.content.append(this.home.setTasks(this.tasks));
+		}.bind(this));
 		return t;
+	},
+	saveToStorage: function() {
+		var tasks = [];
+		for(var id in this.tasks) {
+			tasks.push(this.tasks[id].data);
+		}
+		if(window.localStorage) {
+			window.localStorage.setItem('YezTasks', JSON.stringify(tasks));
+		}
 	}
 })();

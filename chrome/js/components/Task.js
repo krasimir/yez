@@ -1,6 +1,6 @@
 var Task = absurd.component('Task', {
 	css: {
-		'.task': {
+		'.task-<% id %>': {
 			'.breadcrumbs': {
 				bxz: 'bb',
 				pad: '6px 14px',
@@ -21,7 +21,7 @@ var Task = absurd.component('Task', {
 			'.edit': {
 				bxz: 'bb',
 				pad: '10px',
-				d: 'b',
+				display: '<% mode == "edit" ? "block" : "none" %>',
 				'.element': {
 					pos: 'r',
 					wid: '100%',
@@ -96,6 +96,7 @@ var Task = absurd.component('Task', {
 				}
 			},
 			'.dashboard': {
+				display: '<% mode == "dashboard" ? "block" : "none" %>',
 				bxz: 'bb',
 				pad: '10px',
 				h1: {
@@ -148,9 +149,9 @@ var Task = absurd.component('Task', {
 		}
 	},
 	html: {
-		'.task': {
+		'.task-<% id %>': {
 			'.breadcrumbs': [
-				{ 'a[href="#"]': 'Home'},
+				{ 'a[href="#" data-absurd-event="click:gotoHome"]': 'Home'},
 				' / <% data.name %> / <% mode %>'
 			],
 			'.edit': [
@@ -184,8 +185,7 @@ var Task = absurd.component('Task', {
 				'<% } %>',
 				{
 					'.actions': [
-						{ 'a[href="#" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' },
-						{ 'a[href="#" class="cancel"]': '<i class="fa fa-times-circle-o"></i> Cancel' },
+						{ 'a[href="#" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' }
 					]
 				}
 			],
@@ -202,22 +202,23 @@ var Task = absurd.component('Task', {
 		cwd: '',
 		commands: ['']
 	},
-	constructor: function(dom, data) {
+	id: '',
+	mode: 'dashboard',
+	constructor: function(data) {
 		this.data = data || this.data;
 		this.id = getId();
 		this.setMode(data ? 'dashboard' : 'edit');
-		this.logElement = dom('.dashboard .log').el;
 	},
 	setMode: function(m) {
 		this.mode = m;
-		if(this.mode === 'edit') {
-			this.css['.task']['.edit'].d = 'b';
-			this.css['.task']['.dashboard'].d = 'n';
-		} else if(this.mode === 'dashboard') {
-			this.css['.task']['.edit'].d = 'n';
-			this.css['.task']['.dashboard'].d = 'b';
-		}
-		return this.populate();
+		this.populate();
+		this.clearLog();
+		var info = 'a';
+		this.log('<p class="log-response">' + info + '</p>');
+	},
+	gotoHome: function(e) {
+		e.preventDefault();
+		this.dispatch('home');
 	},
 	// edit mode
 	addCommand: function(e, index) {
@@ -227,7 +228,7 @@ var Task = absurd.component('Task', {
 	},
 	removeCommand: function(e, index) {
 		index = parseInt(index);
-		if(index === 0) return;
+		if(this.data.commands.length === 1) return;
 		this.data.commands.splice(index, 1);
 		this.populate();
 	},
@@ -245,6 +246,7 @@ var Task = absurd.component('Task', {
 	saveCommand: function(e) {
 		e.preventDefault();
 		this.setMode('dashboard');
+		this.dispatch('save');
 	},
 	// dashboard mode
 	goToEditMode: function(e) {
@@ -256,6 +258,7 @@ var Task = absurd.component('Task', {
 		if(this.started) return;
 		this.started = true;
 		this.commandsToProcess = this.data.commands.slice(0);
+		this.clearLog();
 		this.processTask();
 	},
 	processTask: function() {
@@ -283,7 +286,9 @@ var Task = absurd.component('Task', {
 			case 'end':
 				if(data.err != false) {
 					for(var i=0; i<data.err.length; i++) {
-						this.log('<p class="log-error">' + data.err[i] + '</p>');
+						var err = data.err[i];
+						if(typeof err == 'object') err = JSON.stringify(err);
+						this.log('<p class="log-error">' + err + '</p>');
 					}
 				}
 				this.log('<p class="log-end">end (code: ' + data.code + ')</p>');
@@ -294,13 +299,18 @@ var Task = absurd.component('Task', {
 	stopTasks: function(e) {
 		e.preventDefault();
 	},
-	log: function(msg) {
+	log: function(msg, dom) {
 		var html = ansi_up.ansi_to_html(msg);
 		html = html.replace(/\n/g, '<br />');
-		this.logElement.innerHTML = this.logElement.innerHTML + html;
-		this.logElement.scrollTop = this.logElement.scrollHeight;
+		if(!this.logElement) { this.logElement = dom('.dashboard .log').el; }
+		if(this.logElement) {
+			this.logElement.innerHTML = this.logElement.innerHTML + html;
+			this.logElement.scrollTop = this.logElement.scrollHeight;	
+		}
 	},
 	clearLog: function() {
-		this.logElement.innerHTML = '';
+		if(this.logElement) {
+			this.logElement.innerHTML = '';
+		}
 	}
 });

@@ -8,7 +8,6 @@ app.listen(port);
 
 io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
-    console.log('connection');
     // socket.emit('news', { hello: 'world' });
     socket.on('data', function (data) {
         if(!data) return;
@@ -17,7 +16,7 @@ io.sockets.on('connection', function (socket) {
             case 'run-command': {
                 var runner = TaskRunner();
                 runner.run(data.command, __dirname)
-                .data(function(d) { 
+                .data(function(d) {
                     socket.emit('response', {
                         action: 'data',
                         id: id,

@@ -3,7 +3,7 @@ var Nav = absurd.component('Nav', {
 		'[data-component="nav"]': {
 			fl: 'l',
 			pad: '6px 0 0 10px',
-			d: 'b',
+			d: 'n',
 			a: [
 				button(),
 				{ bxz: 'bb', wid: '40px', hei: '35px', ov: 'h', ta: 'c' }
