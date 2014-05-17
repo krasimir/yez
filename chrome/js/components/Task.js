@@ -104,7 +104,46 @@ var Task = absurd.component('Task', {
 					fz: '30px'
 				},
 				'.operation': button(),
-				'.stop': buttonTransparent()
+				'.log': {
+					bxz: 'bb',
+					pos: 'a',
+					pad: '10px',
+					top: '144px',
+					left: '10px',
+					bg: '#FAFAFA',
+					wid: 'calc(100% - 18px)',
+					hei: 'calc(100% - 152px)',
+					fz: '12px',
+					lh: '20px',
+					bdrsa: '4px',
+					ovx: 'h',
+					ovy: 's',
+					p: {
+						pad: '0 4px',
+						mar: '0 0 4px 0',
+						bdrsa: '2px'
+					},
+					'.log-command': {
+						bg: '#FFF',
+						bdb: 'solid 1px #E1E1E1',
+						ta: 'r'
+					},
+					'.log-error': {
+						bg: '#F39C9C',
+						bdb: 'solid 1px #E1E1E1'
+					},
+					'.log-end': {
+						bg: '#C4E3C5',
+						bdb: 'solid 1px #E1E1E1'
+					},
+					'.log-response': {
+						
+					},
+					'.log-task-end': {
+						bg: '#87E789',
+						bdb: 'solid 1px #E1E1E1'
+					}
+				}
 			}
 		}
 	},
@@ -153,7 +192,8 @@ var Task = absurd.component('Task', {
 			'.dashboard': [
 				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
 				{ 'a[href="#" class="operation" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
-				{ 'a[href="#" class="operation stop" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'}
+				{ 'a[href="#" class="operation stop" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
+				{ '.log': '' }
 			]
 		}
 	},
@@ -162,9 +202,11 @@ var Task = absurd.component('Task', {
 		cwd: '',
 		commands: ['']
 	},
-	constructor: function(data) {
+	constructor: function(dom, data) {
 		this.data = data || this.data;
+		this.id = getId();
 		this.setMode(data ? 'dashboard' : 'edit');
+		this.logElement = dom('.dashboard .log').el;
 	},
 	setMode: function(m) {
 		this.mode = m;
@@ -211,9 +253,54 @@ var Task = absurd.component('Task', {
 	},
 	startTasks: function(e) {
 		e.preventDefault();
+		if(this.started) return;
+		this.started = true;
+		this.commandsToProcess = this.data.commands.slice(0);
+		this.processTask();
+	},
+	processTask: function() {
+		if(this.commandsToProcess.length == 0) {
+			this.log('<p class="log-task-end">' + this.data.commands.length + ' command' + (this.data.commands.length > 1 ? 's' : '') + ' finished</p>');
+			this.started = false;
+			return;
+		}
+		var command = this.commandsToProcess.shift();
+		this.log('<p class="log-command">' + command + ' <i class="fa fa-angle-left"></i></p>');
+		this.dispatch('data', {
+			id: this.id,
+			action: 'run-command',
+			command: command
+		});
+	},
+	response: function(data) {
+		switch(data.action) {
+			case 'err': 
+				this.log('<p class="log-error">' + data.msg + '</p>');
+			break;
+			case 'data':
+				this.log('<p class="log-response"><i class="fa fa-angle-right"></i> ' + data.data + '</p>');
+			break;
+			case 'end':
+				if(data.err != false) {
+					for(var i=0; i<data.err.length; i++) {
+						this.log('<p class="log-error">' + data.err[i] + '</p>');
+					}
+				}
+				this.log('<p class="log-end">end (code: ' + data.code + ')</p>');
+				this.processTask(data);
+			break;
+		}
 	},
 	stopTasks: function(e) {
 		e.preventDefault();
+	},
+	log: function(msg) {
+		var html = ansi_up.ansi_to_html(msg);
+		html = html.replace(/\n/g, '<br />');
+		this.logElement.innerHTML = this.logElement.innerHTML + html;
+		this.logElement.scrollTop = this.logElement.scrollHeight;
+	},
+	clearLog: function() {
+		this.logElement.innerHTML = '';
 	}
-
-})
+});

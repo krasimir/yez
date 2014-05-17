@@ -1,6 +1,6 @@
 module.exports = function(c) {
 	var command = '', args = [], a = [];
-	args = c.split(' ');
+	args = c ? c.split(' ') : [];
 	command = args.shift();
 	for(var i=0; i<args.length; i++) {
 		if(args[i] != '') a.push(args[i]);

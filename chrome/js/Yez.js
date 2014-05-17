@@ -37,6 +37,7 @@ absurd.component('Yez', {
 	host: 'localhost',
 	port: 9172,
 	connected: false,
+	tasks: {},
 	connect: function() {
 		if(this.connected) { return; }
 		var self = this;
@@ -55,6 +56,11 @@ absurd.component('Yez', {
 			self.nav.visible(false);
 			self.content.visible(false);
 			self.connect();
+		});
+		this.socket.on('response', function(data) {
+			if(self.tasks[data.id]) {
+				self.tasks[data.id].response(data);
+			}
 		});
 		setTimeout(function() {
 			if(!self.connected) {
@@ -77,10 +83,23 @@ absurd.component('Yez', {
 		this.connect();
 
 		// debug
-		this.content.append(Task({
-			name: 'blah',
-			cwd: 'D:/work/',
-			commands: ['ls', 'git status']
-		}));
+		// this.content.append(this.createTask({
+		// 	name: 'blah',
+		// 	cwd: 'D:/work/',
+		// 	commands: ['ls', 'git status', 'node ./tests/commands/continues-fail.js']
+		// }));
+	},
+	createTask: function(data) {
+		var t = Task(data);
+		t.on('data', function(data) {
+			delete data.target;
+			if(this.socket && this.connected) {
+				this.socket.emit('data', data);
+			} else {
+				t.response({ action: 'error', msg: 'No back-end!' });
+			}
+		}.bind(this));
+		this.tasks[t.id] = t;
+		return t;
 	}
 })();

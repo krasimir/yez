@@ -21,5 +21,9 @@ var buttonTransparent = function() {
 		}
 	}
 }
-
+var ids = 0;
+var getId = function() {
+	ids +=1;
+	return 't' + ids;
+}
 absurd = Absurd();
