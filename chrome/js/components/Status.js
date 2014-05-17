@@ -9,7 +9,7 @@ var Status = absurd.component('Status', {
 			'.fa-flash': {
 				color: '#CC151A'
 			},
-			'.desc': {
+			'.info': {
 				pos: 'a',
 				fz: '12px',
 				right: '14px',
@@ -17,7 +17,10 @@ var Status = absurd.component('Status', {
 				wid: '300px',
 				lh: '20px',
 				ta: 'r',
-				d: 'b'
+				d: 'b',
+				bg: '#FFF',
+				pad: '10px',
+				bxsh: '0px 0px 1px #888888'
 			}
 		}
 	},
@@ -30,7 +33,7 @@ var Status = absurd.component('Status', {
 	},
 	setStatus: function(s) {
 		this.status = s ? 'connected' : 'disconnected';
-		this.css['[data-component="status"]']['.desc'].d = s ? 'n' : 'b';
+		this.css['[data-component="status"]']['.info'].d = s ? 'n' : 'b';
 		this.css['[data-component="status"]']['.fa-flash'].color = s ? '#26A430' : '#CC151A';
 		this.populate();
 	}

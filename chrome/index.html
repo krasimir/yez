@@ -3,7 +3,6 @@
     <head>
         <title>Yez</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" href="css/styles.css">
         <link rel="stylesheet" href="css/font-awesome-4.0.3/css/font-awesome.min.css">
         <link href='http://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
     </head>
@@ -11,17 +10,26 @@
     	<div class="content">
             <header>
                 <img src="img/icon48.png" class="logo" />
+                <nav data-component="nav">
+                    <a href="#" data-absurd-event="click:newtab" class="new">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </nav>
                 <div data-component="status">
                     <i class="fa fa-flash fa-flash-<% status %>"></i> Status: <% status %>
-                    <div class="desc">Connection to <code>http://<% host %>:<% port %></code> failed. <br />It seems that <code>yez</code> Node.js module is missing.<br />Try running <code>npm install -g yez</code>.<br />When the installation finishes type <code>yez</code> and hit <i>Enter</i>.</div>
+                    <div class="info">Connection to <code>http://<% host %>:<% port %></code> failed. <br />It seems that <code>yez</code> Node.js module is missing.<br />Try running <code>npm install -g yez</code>.<br />When the installation finishes type <code>yez</code> and hit <i>Enter</i>.</div>
                 </div>
-            </header>   
+            </header>
+            <section data-component="content"></section>
         </div>
         <script src="js/vendors/socket.io.js"></script>
         <script src="js/vendors/absurd.organic.min.js"></script>
         <script src="js/vendors/absurd.min.js"></script>
         <script src="js/misc.js"></script>
         <script src="js/components/Status.js"></script>
+        <script src="js/components/Nav.js"></script>
+        <script src="js/components/Content.js"></script>
+        <script src="js/components/Task.js"></script>
         <script src="js/Yez.js"></script>
     </body>
 </html>
