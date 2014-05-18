@@ -64,7 +64,7 @@ var Task = absurd.component('Task', {
 						d: 'tb',
 						clear: 'both'
 					},
-					'.add': {
+					'.sub-left': {
 						color: '#000',
 						d: 'b',
 						pos: 'a',
@@ -75,7 +75,7 @@ var Task = absurd.component('Task', {
 						bdrsa: '4px',
 						'&:hover': { bg: '#D5CCBB' }
 					},
-					'.remove': {
+					'.sub-right': {
 						color: '#000',
 						d: 'b',
 						pos: 'a',
@@ -168,7 +168,8 @@ var Task = absurd.component('Task', {
 						label: 'Working directory',
 						'.field': {
 							'input[type="text" name="cwd" value="<% data.cwd %>" data-absurd-event="change:changeCWD"]': ''
-						}
+						},
+						'a.sub-right[href="#" data-absurd-event="click:chooseCWD:<% i %>"]': '<i class="fa fa-folder-open"></i>'
 					}
 				},
 				'<% for(var i=0; i<data.commands.length; i++) { var c = data.commands[i]; %>',
@@ -178,8 +179,8 @@ var Task = absurd.component('Task', {
 						'.field': {
 							'input[type="text" value="<% c %>" data-absurd-event="keyup:changeCommand:<% i %>"]': ''
 						},
-						'a.add[href="#" data-absurd-event="click:addCommand:<% i %>"]': '<i class="fa fa-plus-circle"></i>',
-						'a.remove[href="#" data-absurd-event="click:removeCommand:<% i %>"]': '<i class="fa fa-minus-circle"></i>'
+						'a.sub-left[href="#" data-absurd-event="click:addCommand:<% i %>"]': '<i class="fa fa-plus-circle"></i>',
+						'a.sub-right[href="#" data-absurd-event="click:removeCommand:<% i %>"]': '<i class="fa fa-minus-circle"></i>'
 					}
 				},
 				'<% } %>',
@@ -190,10 +191,10 @@ var Task = absurd.component('Task', {
 				}
 			],
 			'.dashboard': [
-				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
 				{ 'a[href="#" class="operation" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
+				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
 				{ 'a[href="#" class="operation stop" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
-				{ 'a[href="#" class="operation stop" data-absurd-event="click:deleteTask"]': '<i class="fa fa-stop"></i> Delete'},
+				{ 'a[href="#" class="operation stop" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'},
 				{ '.log': '' }
 			]
 		}
@@ -254,9 +255,10 @@ var Task = absurd.component('Task', {
 		this.dispatch('save');
 	},
 	// dashboard mode
-	goToEditMode: function(e) {
-		e.preventDefault();
+	goToEditMode: function(e, dom) {
+		e && e.preventDefault();
 		this.setMode('edit');
+		dom('input[name="name"]').el.focus();
 	},
 	startTasks: function(e) {
 		e && e.preventDefault();
@@ -277,7 +279,8 @@ var Task = absurd.component('Task', {
 		this.dispatch('data', {
 			id: this.id,
 			action: 'run-command',
-			command: command
+			command: command,
+			cwd: this.data.cwd
 		});
 	},
 	response: function(data) {
@@ -322,5 +325,15 @@ var Task = absurd.component('Task', {
 		if(this.logElement) {
 			this.logElement.innerHTML = '';
 		}
+	},
+	// choosing cwd
+	chooseCWD: function(e) {
+		e.preventDefault();
+		CWD(this.data.cwd, function(cwd) {
+			if(cwd) {
+				this.data.cwd = cwd;
+				this.populate();
+			}
+		}.bind(this));
 	}
 });

@@ -1,10 +1,9 @@
-absurd.component('Yez', {
+var Yez = absurd.component('Yez', {
 	css: {
 		'body, html': {
 			wid: '100%', hei: '100%',
 			mar: 0, pad: 0,
-			// ff: "'Roboto', 'sans-serif'",
-			ff: 'Arial',
+			ff: "'Roboto', 'sans-serif'",
 			fz: '16px', lh: '26px'
 		},
 		'.left': { fl: 'l' },
@@ -38,13 +37,15 @@ absurd.component('Yez', {
 	port: 9172,
 	connected: false,
 	tasks: {},
+	beacons: {},
+	defaultCWD: '',
 	connect: function() {
 		if(this.connected) { return; }
 		var self = this;
 		this.socket = io.connect('http://' + this.host + ':' + this.port, {
 			'force new connection': true
 		});
-		this.socket.on('connect', function () {
+		this.socket.on('connect', function (data) {
 			self.connected = true;
 			self.status.setStatus(true);
 			self.nav.visible(true);
@@ -62,6 +63,14 @@ absurd.component('Yez', {
 				self.tasks[data.id].response(data);
 			}
 		});
+		this.socket.on('beacon-response', function(data) {
+			if(self.beacons[data.id]) {
+				self.beacons[data.id](data);
+			}
+		});
+		this.socket.on('cwd', function(data) {
+			self.defaultCWD = normalizePath(data.cwd);
+		});
 		setTimeout(function() {
 			if(!self.connected) {
 				self.connect();
@@ -70,7 +79,7 @@ absurd.component('Yez', {
 	},
 	ready: function() {
 
-		var self = this;
+		var self = this, showTask;
 
 		if(window.localStorage) {
 			var ts = window.localStorage.getItem('YezTasks');
@@ -95,7 +104,9 @@ absurd.component('Yez', {
 		this.home = Home();
 
 		this.nav.on('new', function() {
-			self.content.append(self.createTask())
+			var newTask = self.createTask();
+			self.content.append(newTask);
+			newTask.goToEditMode();
 		});
 
 		this.home.on('show-task', function(id) {
@@ -103,19 +114,27 @@ absurd.component('Yez', {
 				self.content.append(self.tasks[id]);
 			}
 		});
-		this.home.on('show-and-run-task', function(id) {
+		this.home.on('show-and-run-task', showTask = function(id) {
 			if(self.tasks[id]) {
-				self.content.append(self.tasks[id]);
-				self.tasks[id].startTasks();
+				var t = self.tasks[id];
+				self.content.append(t);
+				t.startTasks();
+				return t;
 			}
 		});
 
 		this.connect();
 		this.content.append(this.home.setTasks(this.tasks));
 
+		// showTask('t1').goToEditMode();
+
 	},
 	createTask: function(data) {
-		var t = Task(data);
+		var t = Task(data || {
+			name: 'Task',
+			cwd: this.defaultCWD,
+			commands: ['']
+		});
 		t.on('data', function(data) {
 			delete data.target;
 			if(this.socket && this.connected) {
@@ -148,6 +167,16 @@ absurd.component('Yez', {
 		}
 		if(window.localStorage) {
 			window.localStorage.setItem('YezTasks', JSON.stringify(tasks));
+		}
+	},
+	send: function(data, cb) {
+		data.id = getId();
+		this.beacons[data.id] = cb;
+		data.target && (delete data.target);
+		if(this.socket && this.connected) {
+			this.socket.emit('data', data);
+		} else {
+			cb({ action: 'error', msg: 'No back-end!' });
 		}
 	}
 })();
