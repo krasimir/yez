@@ -20,7 +20,8 @@ var Yez = absurd.component('Yez', {
 			bdb: 'solid 2px #DFD2B7',
 			'.logo': {
 				d: 'b', fl: 'l',
-				mar: '0 4px 0 10px'
+				mar: '0 4px 0 10px',
+				opacity: 0.5
 			},
 			'&:after': {
 				d: 'tb',
@@ -87,7 +88,7 @@ var Yez = absurd.component('Yez', {
 				try {
 					ts = JSON.parse(ts);
 					for(var i=0; i<ts.length; i++) {
-						var t = this.createTask(ts[i]);
+						var t = this.initializeTasl(ts[i]);
 						this.tasks[t.id] = t;
 					}
 				} catch(err) {
@@ -104,7 +105,7 @@ var Yez = absurd.component('Yez', {
 		this.home = Home();
 
 		this.nav.on('new', function() {
-			var newTask = self.createTask();
+			var newTask = self.initializeTasl();
 			self.content.append(newTask);
 			newTask.goToEditMode();
 		});
@@ -129,7 +130,8 @@ var Yez = absurd.component('Yez', {
 		// showTask('t1').goToEditMode();
 
 	},
-	createTask: function(data) {
+	initializeTasl: function(data) {
+		var self = this;
 		var t = Task(data || {
 			name: 'Task',
 			cwd: this.defaultCWD,
@@ -137,23 +139,25 @@ var Yez = absurd.component('Yez', {
 		});
 		t.on('data', function(data) {
 			delete data.target;
-			if(this.socket && this.connected) {
-				this.socket.emit('data', data);
+			if(self.socket && self.connected) {
+				self.socket.emit('data', data);
 			} else {
 				t.response({ action: 'error', msg: 'No back-end!' });
 			}
-		}.bind(this));
-		t.on('save', function() {
-			this.tasks[t.id] = t;
-			this.saveToStorage();
-		}.bind(this));
-		t.on('home', function() {
-			this.showHome();
-		}.bind(this));
-		t.on('delete-task', function() {
-			delete this.tasks[t.id];
-			this.showHome().saveToStorage();
-		}.bind(this));
+		}).on('save', function() {
+			self.tasks[t.id] = t;
+			self.saveToStorage();
+		}).on('home', function() {
+			self.showHome();
+		}).on('delete-task', function() {
+			delete self.tasks[t.id];
+			self.showHome().saveToStorage();
+		}).on('stop', function(data) {
+			delete data.target;
+			if(self.socket && self.connected) {
+				self.socket.emit('data', data);
+			}
+		});
 		return t;
 	},
 	showHome: function() {

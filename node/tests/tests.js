@@ -102,4 +102,20 @@ describe("/ Running commands /", function(done) {
 			done();
 		});
 	});
+	it("should run a commands and stop it", function(done) {
+		var runner = TaskRunner(), data = [];
+		runner.run('node server.js', __dirname + '/commands')
+		.data(function(d) { data.push(d); })
+		.end(function(err, d, code) {
+			expect(err).to.equal(false);
+			expect(data[0]).to.equal('Server running at http://127.0.0.1:1338/\n');
+			done();
+		});
+		setTimeout(function() {
+			runner.stop(function(err, res) {
+				expect(err).to.equal(null);
+				expect(res).to.equal('Process stopped.');
+			});	
+		}, 100);		
+	});
 })

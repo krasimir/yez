@@ -4,7 +4,8 @@ var app = require('http').createServer(function(){}),
     port = 9172,
     TaskRunner = require('./TaskRunner'),
     path = require('path'),
-    defaultCWD = path.normalize(process.cwd());
+    defaultCWD = path.normalize(process.cwd()),
+    runners = {};
 
 app.listen(port);
 
@@ -12,7 +13,7 @@ io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
     socket.emit('cwd', { cwd: defaultCWD });
     socket.on('data', function (data) {
-        if(!data) return;
+        if(!data || !data.id) return;
         var id = data.id;
         switch(data.action) {
             case 'run-command':
@@ -34,6 +35,23 @@ io.sockets.on('connection', function (socket) {
                         code: code
                     });  
                 });
+                if(!runners[id]) runners[id] = [];
+                runners[id].push(runner);
+            break;
+            case 'stop-command':
+                if(runners[id]) {
+                    runners[id].forEach(function(r) {
+                        r.stop();
+                    });
+                    delete runners[id];
+                    socket.emit('response', {
+                        action: 'data',
+                        id: id,
+                        err: null,
+                        data: 'Process stopped.',
+                        code: null
+                    });
+                }
             break;
             case 'list':
                 var error = function(err) {

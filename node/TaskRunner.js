@@ -1,7 +1,8 @@
 module.exports = function() {
 	var api = {},
 		cp = require('child_process'),
-		parser = require('./helpers/CommandParser');
+		parser = require('./helpers/CommandParser'),
+		processing = null;
 
 	api.run = function(c, path) {
 
@@ -9,7 +10,7 @@ module.exports = function() {
 			options = { cwd: path || process.cwd() },
 			out = [], outcb = null,
 			err = [], errcb = null,
-			processing = null, endcb = null,
+			endcb = null,
 			finished = false;
 
 		try {
@@ -43,6 +44,14 @@ module.exports = function() {
 			end: function(cb) { endcb = cb; return this; }
 		}
 
+	}
+	api.stop = function(cb) {
+		if(processing) {
+			processing.kill();
+			cb && cb(null, 'Process stopped.');
+		} else {
+			cb && cb('The command is not running.');
+		}
 	}
 	return api;
 }

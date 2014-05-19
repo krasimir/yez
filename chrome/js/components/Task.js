@@ -1,151 +1,160 @@
+var TaskCSSBreadcrumbs = function() {
+	return {
+		bxz: 'bb',
+		pad: '6px 14px',
+		bg: '#F9F7F2',
+		bdb: 'solid 1px #E7E7E7',
+		bdt: 'solid 1px #fff',
+		color: '#999',
+		fz: '14px',
+		a: {
+			color: '#999',
+			fz: '14px',
+			ted: 'underline',
+			'&:hover': {
+				color: '#000'
+			}
+		}
+	};
+}
+var TaskCSSEdit = function() {
+	return {
+		bxz: 'bb',
+		pad: '10px',
+		display: '<% mode == "edit" ? "block" : "none" %>',
+		'.element': {
+			pos: 'r',
+			wid: '100%',
+			bxz: 'bb',
+			mar: '6px 0 6px 0',
+			label: {
+				wid: '30%',
+				pad: '0 20px 0 0',
+				bxz: 'bb',
+				bg: '#EDE9E0',
+				fl: 'l',
+				pad: '10px',
+				bdtlrs: '10px',
+				bdblrs: '10px',
+				ta: 'r',
+				bdr: 'solid 2px #DECAB6',
+				bdb: 'solid 1px #999',
+				hei: '47px',
+				ov: 'h'
+			},
+			'.field': {
+				wid: '70%',
+				fl: 'l',
+				bxz: 'bb',
+				bg: '#F8F5EF',
+				bdtrrs: '10px',
+				bdbrrs: '10px',
+				bdb: 'solid 1px #999',
+				input: {
+					hei: '46px',
+					bd: 'n',
+					bg: 'n',
+					bxz: 'bb',
+					wid: '100%',
+					pad: '10px'
+				}
+			},
+			'&:after': {
+				content: '" "',
+				d: 'tb',
+				clear: 'both'
+			},
+			'.sub-left': {
+				color: '#000',
+				d: 'b',
+				pos: 'a',
+				top: '10px',
+				left: '10px',
+				pad: '0 10px',
+				bg: '#F5F3EF',
+				bdrsa: '4px',
+				'&:hover': { bg: '#D5CCBB' }
+			},
+			'.sub-right': {
+				color: '#000',
+				d: 'b',
+				pos: 'a',
+				top: '10px',
+				right: '10px',
+				pad: '0 10px',
+				bg: '#FBFAF7',
+				bdrsa: '4px',
+				'&:hover': { bg: '#E6DBC4' }
+			}
+		},
+		'.actions': {
+			clear: 'both',
+			mar: '0 0 0 30%',
+			pad: '6px 0 0 0',
+			a: button(),
+			'.cancel': buttonTransparent()
+		}
+	};
+}
+var TaskCSSDashboard = function() {
+	return {
+		display: '<% mode == "dashboard" ? "block" : "none" %>',
+		bxz: 'bb',
+		pad: '10px',
+		h1: {
+			mar: '20px 0 20px 0',
+			pad: 0,
+			fz: '30px'
+		},
+		'.operation': button(),
+		'.log': {
+			bxz: 'bb',
+			pos: 'a',
+			pad: '10px',
+			top: '144px',
+			left: '10px',
+			bg: '#FAFAFA',
+			wid: 'calc(100% - 18px)',
+			hei: 'calc(100% - 152px)',
+			fz: '12px',
+			lh: '20px',
+			bdrsa: '4px',
+			ovx: 'h',
+			ovy: 's',
+			p: {
+				pad: '0 4px',
+				mar: '0 0 4px 0',
+				bdrsa: '2px'
+			},
+			'.log-command': {
+				bg: '#FFF',
+				bdb: 'solid 1px #E1E1E1',
+				ta: 'r'
+			},
+			'.log-error': {
+				bg: '#F39C9C',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-end': {
+				bg: '#C4E3C5',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-response': {
+				
+			},
+			'.log-task-end': {
+				bg: '#87E789',
+				bdb: 'solid 1px #E1E1E1'
+			}
+		}
+	}
+}
 var Task = absurd.component('Task', {
 	css: {
 		'.task-<% id %>': {
-			'.breadcrumbs': {
-				bxz: 'bb',
-				pad: '6px 14px',
-				bg: '#F9F7F2',
-				bdb: 'solid 1px #E7E7E7',
-				bdt: 'solid 1px #fff',
-				color: '#999',
-				fz: '14px',
-				a: {
-					color: '#999',
-					fz: '14px',
-					ted: 'underline',
-					'&:hover': {
-						color: '#000'
-					}
-				}
-			},
-			'.edit': {
-				bxz: 'bb',
-				pad: '10px',
-				display: '<% mode == "edit" ? "block" : "none" %>',
-				'.element': {
-					pos: 'r',
-					wid: '100%',
-					bxz: 'bb',
-					mar: '6px 0 6px 0',
-					label: {
-						wid: '30%',
-						pad: '0 20px 0 0',
-						bxz: 'bb',
-						bg: '#EDE9E0',
-						fl: 'l',
-						pad: '10px',
-						bdtlrs: '10px',
-						bdblrs: '10px',
-						ta: 'r',
-						bdr: 'solid 2px #DECAB6',
-						bdb: 'solid 1px #999',
-						hei: '47px',
-						ov: 'h'
-					},
-					'.field': {
-						wid: '70%',
-						fl: 'l',
-						bxz: 'bb',
-						bg: '#F8F5EF',
-						bdtrrs: '10px',
-						bdbrrs: '10px',
-						bdb: 'solid 1px #999',
-						input: {
-							hei: '46px',
-							bd: 'n',
-							bg: 'n',
-							bxz: 'bb',
-							wid: '100%',
-							pad: '10px'
-						}
-					},
-					'&:after': {
-						content: '" "',
-						d: 'tb',
-						clear: 'both'
-					},
-					'.sub-left': {
-						color: '#000',
-						d: 'b',
-						pos: 'a',
-						top: '10px',
-						left: '10px',
-						pad: '0 10px',
-						bg: '#F5F3EF',
-						bdrsa: '4px',
-						'&:hover': { bg: '#D5CCBB' }
-					},
-					'.sub-right': {
-						color: '#000',
-						d: 'b',
-						pos: 'a',
-						top: '10px',
-						right: '10px',
-						pad: '0 10px',
-						bg: '#FBFAF7',
-						bdrsa: '4px',
-						'&:hover': { bg: '#E6DBC4' }
-					}
-				},
-				'.actions': {
-					clear: 'both',
-					mar: '0 0 0 30%',
-					pad: '6px 0 0 0',
-					a: button(),
-					'.cancel': buttonTransparent()
-				}
-			},
-			'.dashboard': {
-				display: '<% mode == "dashboard" ? "block" : "none" %>',
-				bxz: 'bb',
-				pad: '10px',
-				h1: {
-					mar: '20px 0 20px 0',
-					pad: 0,
-					fz: '30px'
-				},
-				'.operation': button(),
-				'.log': {
-					bxz: 'bb',
-					pos: 'a',
-					pad: '10px',
-					top: '144px',
-					left: '10px',
-					bg: '#FAFAFA',
-					wid: 'calc(100% - 18px)',
-					hei: 'calc(100% - 152px)',
-					fz: '12px',
-					lh: '20px',
-					bdrsa: '4px',
-					ovx: 'h',
-					ovy: 's',
-					p: {
-						pad: '0 4px',
-						mar: '0 0 4px 0',
-						bdrsa: '2px'
-					},
-					'.log-command': {
-						bg: '#FFF',
-						bdb: 'solid 1px #E1E1E1',
-						ta: 'r'
-					},
-					'.log-error': {
-						bg: '#F39C9C',
-						bdb: 'solid 1px #E1E1E1'
-					},
-					'.log-end': {
-						bg: '#C4E3C5',
-						bdb: 'solid 1px #E1E1E1'
-					},
-					'.log-response': {
-						
-					},
-					'.log-task-end': {
-						bg: '#87E789',
-						bdb: 'solid 1px #E1E1E1'
-					}
-				}
-			}
+			'.breadcrumbs': TaskCSSBreadcrumbs(),
+			'.edit': TaskCSSEdit(),
+			'.dashboard': TaskCSSDashboard() 
 		}
 	},
 	html: {
@@ -306,6 +315,10 @@ var Task = absurd.component('Task', {
 	},
 	stopTasks: function(e) {
 		e.preventDefault();
+		this.dispatch('stop', {
+			id: this.id,
+			action: 'stop-command'
+		});
 	},
 	deleteTask: function(e) {
 		if(confirm('Are you sure?')) {
