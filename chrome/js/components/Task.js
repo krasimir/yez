@@ -5,7 +5,7 @@ var TaskCSSBreadcrumbs = function() {
 		bg: '#F9F7F2',
 		bdb: 'solid 1px #E7E7E7',
 		bdt: 'solid 1px #fff',
-		color: '#999',
+		color: '#575757',
 		fz: '14px',
 		a: {
 			color: '#999',
@@ -127,7 +127,7 @@ var TaskCSSDashboard = function() {
 				bdrsa: '2px'
 			},
 			'.log-command': {
-				bg: '#FFF',
+				bg: '#C0DFE7',
 				bdb: 'solid 1px #E1E1E1',
 				ta: 'r'
 			},
@@ -136,32 +136,51 @@ var TaskCSSDashboard = function() {
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-end': {
-				bg: '#C4E3C5',
+				bg: '#E4CEC2',
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-response': {
-				
+				lh: '16px'
 			},
 			'.log-task-end': {
 				bg: '#87E789',
 				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-info': {
+				bg: '#C6E7E8',
+				color: '#2E7072',
+				bdb: 'solid 1px #66BFC1',
+				bdrsa: '4px'
+			}
+		},
+		'.hidden': { d: 'n' },
+		'.clear-log': {
+			color: '#999',
+			fz: '12px',
+			pos: 'a',
+			top: '104px',
+			right: '12px',
+			ted: 'n',
+			'&:hover': {
+				color: '#000'
 			}
 		}
 	}
 }
 var Task = absurd.component('Task', {
 	css: {
-		'.task-<% id %>': {
+		'.task-<% getId() %>': {
 			'.breadcrumbs': TaskCSSBreadcrumbs(),
 			'.edit': TaskCSSEdit(),
 			'.dashboard': TaskCSSDashboard() 
 		}
 	},
 	html: {
-		'.task-<% id %>': {
+		'div[class="task-<% getId() %>"]': {
 			'.breadcrumbs': [
-				{ 'a[href="#" data-absurd-event="click:gotoHome"]': 'Home'},
-				' / <% data.name %> / <% mode %>'
+				'<i class="fa fa-angle-right"></i>',
+				{ 'a[href="#" data-absurd-event="click:gotoHome"]': '&nbsp;Home'},
+				' / <% data.name %>'
 			],
 			'.edit': [
 				{
@@ -200,36 +219,34 @@ var Task = absurd.component('Task', {
 				}
 			],
 			'.dashboard': [
-				{ 'a[href="#" class="operation" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
+				{ 'a[href="#" class="operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
+				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
 				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
-				{ 'a[href="#" class="operation stop" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
-				{ 'a[href="#" class="operation stop" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'},
-				{ '.log': '' }
+				{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'},
+				{ 'a[href="#" class="clear-log" data-absurd-event="click:clearLog"]': '<i class="fa fa-eraser"></i> Clear'},
+				{ '.log': '<% logContent %>' }
 			]
 		}
 	},
+	mode: 'dashboard',
+	started: false,
+	logContent: '',
 	data: {
+		id: '',
 		name: 'Task',
 		cwd: '',
 		commands: ['']
 	},
-	id: '',
-	mode: 'dashboard',
 	constructor: function(data) {
-		this.data = data || this.data;
-		this.id = getId();
+		this.data = data;
 		this.setMode(data ? 'dashboard' : 'edit');
+	},
+	getId: function() {
+		return this.data.id;
 	},
 	setMode: function(m) {
 		this.mode = m;
 		this.populate();
-		this.clearLog();
-		var info = '';
-		info += 'Current working directory: ' + this.data.cwd + '\n';
-		for(var i=0; i<this.data.commands.length; i++) {
-			info += (i+1) + '. ' + this.data.commands[i] + '\n';
-		}
-		this.log('<p class="log-response">' + info + '</p>');
 	},
 	gotoHome: function(e) {
 		e.preventDefault();
@@ -274,19 +291,22 @@ var Task = absurd.component('Task', {
 		if(this.started) return;
 		this.started = true;
 		this.commandsToProcess = this.data.commands.slice(0);
-		this.clearLog();
+		this.populate();
 		this.processTask();
+		this.dispatch('save');
 	},
 	processTask: function() {
-		if(this.commandsToProcess.length == 0) {
-			this.log('<p class="log-task-end">' + this.data.commands.length + ' command' + (this.data.commands.length > 1 ? 's' : '') + ' finished</p>');
+		if(!this.commandsToProcess || this.commandsToProcess.length == 0) {
 			this.started = false;
+			this.populate();
+			this.log('<p class="log-task-end">' + this.data.commands.length + ' command' + (this.data.commands.length > 1 ? 's' : '') + ' finished</p>');
+			this.dispatch('save');
 			return;
 		}
 		var command = this.commandsToProcess.shift();
 		this.log('<p class="log-command">' + command + ' <i class="fa fa-angle-left"></i></p>');
 		this.dispatch('data', {
-			id: this.id,
+			id: this.data.id,
 			action: 'run-command',
 			command: command,
 			cwd: this.data.cwd
@@ -298,7 +318,7 @@ var Task = absurd.component('Task', {
 				this.log('<p class="log-error">' + data.msg + '</p>');
 			break;
 			case 'data':
-				this.log('<p class="log-response"><i class="fa fa-angle-right"></i> ' + data.data + '</p>');
+				this.log('<p class="log-response">' + data.data + '</p>');
 			break;
 			case 'end':
 				if(data.err != false) {
@@ -316,7 +336,7 @@ var Task = absurd.component('Task', {
 	stopTasks: function(e) {
 		e.preventDefault();
 		this.dispatch('stop', {
-			id: this.id,
+			id: this.data.id,
 			action: 'stop-command'
 		});
 	},
@@ -333,11 +353,11 @@ var Task = absurd.component('Task', {
 			this.logElement.innerHTML = this.logElement.innerHTML + html;
 			this.logElement.scrollTop = this.logElement.scrollHeight;	
 		}
+		this.logContent = this.logElement.innerHTML;
 	},
 	clearLog: function() {
-		if(this.logElement) {
-			this.logElement.innerHTML = '';
-		}
+		this.logContent = '';
+		this.populate();
 	},
 	// choosing cwd
 	chooseCWD: function(e) {

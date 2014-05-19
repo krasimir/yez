@@ -9,9 +9,30 @@ var app = require('http').createServer(function(){}),
 
 app.listen(port);
 
+var getCurrentRunnersIds = function() {
+    var res = [];
+    if(runners) {        
+        for(var id in runners) {
+            res.push({id: id});
+        }
+    }
+    return res;
+}
+var cleaningRunners = function() {
+    var res = {};
+    if(runners) {        
+        for(var id in runners) {
+            if(runners[id].ended === false) {
+                res[id] = runners[id];
+            }
+        }
+        runners = res;   
+    }
+}
+
 io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
-    socket.emit('cwd', { cwd: defaultCWD });
+    socket.emit('initial', { cwd: defaultCWD, running: getCurrentRunnersIds() });
     socket.on('data', function (data) {
         if(!data || !data.id) return;
         var id = data.id;
@@ -20,20 +41,22 @@ io.sockets.on('connection', function (socket) {
                 var runner = TaskRunner();
                 runner.run(data.command, data.cwd || defaultCWD)
                 .data(function(d) {
-                    socket.emit('response', {
+                    io.sockets.emit('response', {
                         action: 'data',
                         id: id,
                         data: d
                     });
                 })
                 .end(function(err, d, code) {
-                    socket.emit('response', {
+                    io.sockets.emit('response', {
                         action: 'end',
                         id: id,
                         err: err,
                         data: d,
                         code: code
-                    });  
+                    }); 
+                    runner.ended = true;
+                    cleaningRunners();
                 });
                 if(!runners[id]) runners[id] = [];
                 runners[id].push(runner);
@@ -44,18 +67,12 @@ io.sockets.on('connection', function (socket) {
                         r.stop();
                     });
                     delete runners[id];
-                    socket.emit('response', {
-                        action: 'data',
-                        id: id,
-                        err: null,
-                        data: 'Process stopped.',
-                        code: null
-                    });
+                    cleaningRunners();                    
                 }
             break;
             case 'list':
                 var error = function(err) {
-                    socket.emit('beacon-response', {
+                    io.sockets.emit('beacon-response', {
                         id: id,
                         err: err
                     });
@@ -72,7 +89,7 @@ io.sockets.on('connection', function (socket) {
                                 var result = [];
                                 (function checkForDir() {
                                     if(files.length == 0) {
-                                        socket.emit('beacon-response', {
+                                        io.sockets.emit('beacon-response', {
                                             id: id,
                                             files: result
                                         });

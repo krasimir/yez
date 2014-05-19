@@ -69,8 +69,34 @@ var Yez = absurd.component('Yez', {
 				self.beacons[data.id](data);
 			}
 		});
-		this.socket.on('cwd', function(data) {
+		this.socket.on('initial', function(data) {
 			self.defaultCWD = normalizePath(data.cwd);
+			// marking tasks as started
+			if(data.running && data.running.length > 0) {
+				for(var i=0; i<data.running.length; i++) {
+					if(self.tasks[data.running[i].id]) {
+						var t = self.tasks[data.running[i].id];
+						t.started = true;
+						t.populate();
+					}
+				}
+				self.home.setTasks(self.tasks);
+			}
+			// remove the started state
+			for(id in self.tasks) {
+				var t = self.tasks[id];
+				if(t.started) {
+					var isItReally = false;
+					for(var i=0; i<data.running.length; i++) {
+						if(t.data.id === data.running[i].id) {
+							isItReally = true;
+						}
+					}
+					if(!isItReally) {
+						console.log('no it is not');
+					}
+				}
+			}
 		});
 		setTimeout(function() {
 			if(!self.connected) {
@@ -88,8 +114,8 @@ var Yez = absurd.component('Yez', {
 				try {
 					ts = JSON.parse(ts);
 					for(var i=0; i<ts.length; i++) {
-						var t = this.initializeTasl(ts[i]);
-						this.tasks[t.id] = t;
+						var t = this.initializeTask(ts[i]);
+						this.tasks[t.data.id] = t;
 					}
 				} catch(err) {
 
@@ -104,24 +130,26 @@ var Yez = absurd.component('Yez', {
 		this.content = Content();
 		this.home = Home();
 
-		this.nav.on('new', function() {
-			var newTask = self.initializeTasl();
-			self.content.append(newTask);
-			newTask.goToEditMode();
+		this.nav.on('open-task', function(data) {
+			showTask(data.id);
 		});
 
-		this.home.on('show-task', function(id) {
+		this.home.on('show-task', showTask = function(id) {
 			if(self.tasks[id]) {
-				self.content.append(self.tasks[id]);
+				var t = self.tasks[id];
+				self.content.append(t);
 			}
-		});
-		this.home.on('show-and-run-task', showTask = function(id) {
+		}).on('show-and-run-task', function(id) {
 			if(self.tasks[id]) {
 				var t = self.tasks[id];
 				self.content.append(t);
 				t.startTasks();
 				return t;
 			}
+		}).on('new-task', function() {
+			var newTask = self.initializeTask();
+			self.content.append(newTask);
+			newTask.goToEditMode();
 		});
 
 		this.connect();
@@ -130,12 +158,13 @@ var Yez = absurd.component('Yez', {
 		// showTask('t1').goToEditMode();
 
 	},
-	initializeTasl: function(data) {
+	initializeTask: function(data) {
 		var self = this;
 		var t = Task(data || {
 			name: 'Task',
 			cwd: this.defaultCWD,
-			commands: ['']
+			commands: [''],
+			id: getId()
 		});
 		t.on('data', function(data) {
 			delete data.target;
@@ -145,13 +174,13 @@ var Yez = absurd.component('Yez', {
 				t.response({ action: 'error', msg: 'No back-end!' });
 			}
 		}).on('save', function() {
-			self.tasks[t.id] = t;
+			self.tasks[t.data.id] = t;
 			self.saveToStorage();
 		}).on('home', function() {
 			self.showHome();
 		}).on('delete-task', function() {
-			delete self.tasks[t.id];
-			self.showHome().saveToStorage();
+			delete self.tasks[t.data.id];
+			self.saveToStorage().showHome();
 		}).on('stop', function(data) {
 			delete data.target;
 			if(self.socket && self.connected) {
@@ -172,6 +201,7 @@ var Yez = absurd.component('Yez', {
 		if(window.localStorage) {
 			window.localStorage.setItem('YezTasks', JSON.stringify(tasks));
 		}
+		return this;
 	},
 	send: function(data, cb) {
 		data.id = getId();
