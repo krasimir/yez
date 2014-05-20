@@ -252,7 +252,7 @@ var Task = absurd.component('Task', {
 		e.preventDefault();
 		this.dispatch('home');
 	},
-	// edit mode
+	// *********************************************** edit mode
 	addCommand: function(e, index) {
 		index = parseInt(index);
 		this.data.commands.splice(index+1, 0, '');
@@ -280,7 +280,7 @@ var Task = absurd.component('Task', {
 		this.setMode('dashboard');
 		this.dispatch('save');
 	},
-	// dashboard mode
+	// *********************************************** dashboard mode
 	goToEditMode: function(e, dom) {
 		e && e.preventDefault();
 		this.setMode('edit');
@@ -314,7 +314,7 @@ var Task = absurd.component('Task', {
 	},
 	response: function(data) {
 		switch(data.action) {
-			case 'err': 
+			case 'err':
 				this.log('<p class="log-error">' + data.msg + '</p>');
 			break;
 			case 'data':
@@ -323,9 +323,10 @@ var Task = absurd.component('Task', {
 			case 'end':
 				if(data.err != false) {
 					for(var i=0; i<data.err.length; i++) {
-						var err = data.err[i];
+						var err = data.err[i], errDesc;
+						errDesc = err.code == 'ENOENT' ? 'Wrong file, directory or command name.<br />Error: ' : '';						
 						if(typeof err == 'object') err = JSON.stringify(err);
-						this.log('<p class="log-error">' + err + '</p>');
+						this.log('<p class="log-error">' + errDesc + err + '</p>');
 					}
 				}
 				this.log('<p class="log-end">end (code: ' + data.code + ')</p>');
@@ -334,7 +335,7 @@ var Task = absurd.component('Task', {
 		}
 	},
 	stopTasks: function(e) {
-		e.preventDefault();
+		e && e.preventDefault();
 		this.dispatch('stop', {
 			id: this.data.id,
 			action: 'stop-command'

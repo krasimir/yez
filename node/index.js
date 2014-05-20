@@ -10,6 +10,7 @@ var app = require('http').createServer(function(){}),
 app.listen(port);
 
 var getCurrentRunnersIds = function() {
+    cleaningRunners();
     var res = [];
     if(runners) {        
         for(var id in runners) {
@@ -22,11 +23,17 @@ var cleaningRunners = function() {
     var res = {};
     if(runners) {        
         for(var id in runners) {
-            if(runners[id].ended === false) {
+            var stillRunning = false;
+            for(var i=0; i<runners[id].length; i++) {
+                 if(runners[id][i].ended === false) {
+                    stillRunning = true;
+                 }
+            }
+            if(stillRunning) {
                 res[id] = runners[id];
             }
         }
-        runners = res;   
+        runners = res;
     }
 }
 
@@ -54,8 +61,7 @@ io.sockets.on('connection', function (socket) {
                         err: err,
                         data: d,
                         code: code
-                    }); 
-                    runner.ended = true;
+                    });
                     cleaningRunners();
                 });
                 if(!runners[id]) runners[id] = [];

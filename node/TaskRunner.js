@@ -4,6 +4,7 @@ module.exports = function() {
 		parser = require('./helpers/CommandParser'),
 		processing = null;
 
+	api.ended = false;
 	api.run = function(c, path) {
 
 		var c = parser(c),
@@ -45,19 +46,20 @@ module.exports = function() {
 						c.command += pathExtWin.shift();
 						go(c);
 					} else {
+						api.ended = true;
 						endcb && endcb(err.length > 0 ? err : false, out, code);
 					}
 				});
 			})(c);
 		} catch(err) {
+			api.ended = true;
 			endcb && endcb(err, out, code);
 		}
 
 		return {
 			data: function(cb) { outcb = cb; return this; },
 			err: function(cb) { errcb = cb; return this; },
-			end: function(cb) { endcb = cb; return this; },
-			ended: false
+			end: function(cb) { endcb = cb; return this; }
 		}
 
 	}

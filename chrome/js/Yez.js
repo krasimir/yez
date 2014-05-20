@@ -59,16 +59,6 @@ var Yez = absurd.component('Yez', {
 			self.content.visible(false);
 			self.connect();
 		});
-		this.socket.on('response', function(data) {
-			if(self.tasks[data.id]) {
-				self.tasks[data.id].response(data);
-			}
-		});
-		this.socket.on('beacon-response', function(data) {
-			if(self.beacons[data.id]) {
-				self.beacons[data.id](data);
-			}
-		});
 		this.socket.on('initial', function(data) {
 			self.defaultCWD = normalizePath(data.cwd);
 			// marking tasks as started
@@ -98,11 +88,22 @@ var Yez = absurd.component('Yez', {
 				}
 			}
 		});
+		this.socket.on('response', function(data) {
+			if(self.tasks[data.id]) {
+				self.tasks[data.id].response(data);
+			}
+		});
+		this.socket.on('beacon-response', function(data) {
+			if(self.beacons[data.id]) {
+				self.beacons[data.id](data);
+			}
+		});
 		setTimeout(function() {
 			if(!self.connected) {
 				self.connect();
 			}
 		}, 5000);
+		return this;
 	},
 	ready: function() {
 
@@ -144,18 +145,20 @@ var Yez = absurd.component('Yez', {
 				var t = self.tasks[id];
 				self.content.append(t);
 				t.startTasks();
-				return t;
 			}
 		}).on('new-task', function() {
 			var newTask = self.initializeTask();
 			self.content.append(newTask);
 			newTask.goToEditMode();
+		}).on('stop-task', function(id) {
+			if(self.tasks[id]) {
+				var t = self.tasks[id];
+				self.content.append(t);
+				t.stopTasks();
+			}
 		});
 
-		this.connect();
-		this.content.append(this.home.setTasks(this.tasks));
-
-		// showTask('t1').goToEditMode();
+		this.connect().showHome();
 
 	},
 	initializeTask: function(data) {
