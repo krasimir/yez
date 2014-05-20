@@ -1,7 +1,5 @@
 # Yez!
 
-===
-
 Chrome extension that acts as task runner
 
 ## Installation
@@ -26,11 +24,12 @@ npm test
 
 ![Yez!](http://work.krasimirtsonev.com/git/yez/yez-screenshot-1.jpg)
 
+List of all added tasks.
 
 ![Yez!](http://work.krasimirtsonev.com/git/yez/yez-screenshot-2.jpg)
 
-
 ![Yez!](http://work.krasimirtsonev.com/git/yez/yez-screenshot-3.jpg)
 
-
 ![Yez!](http://work.krasimirtsonev.com/git/yez/yez-screenshot-4.jpg)
+
+![Yez!](http://work.krasimirtsonev.com/git/yez/yez-screenshot-5.jpg)
