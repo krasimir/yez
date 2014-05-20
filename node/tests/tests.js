@@ -42,7 +42,7 @@ describe("/ Running commands /", function(done) {
 		runner.run('node -v')
 		.data(function(d) { data.push(d); })
 		.end(function(err, d, code) {
-			expect(data[0]).to.equal('v0.10.26\r\n');
+			expect(data[0].indexOf('v0.10') === 0).to.equal(true);
 			expect(code).to.equal(0);
 			expect(err).to.equal(false);
 			done();
@@ -87,7 +87,7 @@ describe("/ Running commands /", function(done) {
 		.end(function(err, d, code) {
 			expect(data[0]).to.equal('hello 9\n');
 			expect(data.length).to.equal(6);
-			expect(err[0].indexOf('Ops!') > 0).to.equal(true);
+			expect(err.join(',').indexOf('Ops!') > 0).to.equal(true);
 			done();
 		});
 	});
