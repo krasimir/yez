@@ -80,6 +80,7 @@ var onMessageListener = function(command, sender, sendResponse) {
                 TabCompleteNotifier.add(tab.id, function() {
                     sendResponse(sendResponse(clickResponse ? JSON.stringify(clickResponse) : null));
                 });
+                command.data = command.data.replace(/&quot;/g, '"');
                 chrome.tabs.executeScript(tab.id, {code: command.data}, function(response) {
                     clickResponse = response;
                 });
