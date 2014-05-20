@@ -15,6 +15,9 @@ var Yez = absurd.component('Yez', {
 		'.clear, .clearfix': {
 			clear: 'both'
 		},
+		'.content': {
+			d: 'b'
+		},
 		'header': {
 			bg: '#F3EEE4',
 			bdb: 'solid 2px #DFD2B7',
@@ -40,6 +43,7 @@ var Yez = absurd.component('Yez', {
 	tasks: {},
 	beacons: {},
 	defaultCWD: '',
+	retry: 1,
 	connect: function() {
 		if(this.connected) { return; }
 		var self = this;
@@ -47,6 +51,7 @@ var Yez = absurd.component('Yez', {
 			'force new connection': true
 		});
 		this.socket.on('connect', function (data) {
+			self.retry = 1;
 			self.connected = true;
 			self.status.setStatus(true);
 			self.nav.visible(true);
@@ -54,7 +59,7 @@ var Yez = absurd.component('Yez', {
 		});
 		this.socket.on('disconnect', function() {
 			self.connected = false;
-			self.status.setStatus(false);
+			self.status.setStatus(false, self.retry);
 			self.nav.visible(false);
 			self.content.visible(false);
 			self.connect();
@@ -100,6 +105,8 @@ var Yez = absurd.component('Yez', {
 		});
 		setTimeout(function() {
 			if(!self.connected) {
+				self.retry += 1;
+				self.status.setStatus(false, self.retry);
 				self.connect();
 			}
 		}, 5000);

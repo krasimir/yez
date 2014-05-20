@@ -25,14 +25,14 @@ var Status = absurd.component('Status', {
 		}
 	},
 	html: '[data-component="status"]',
-	status: 'disconnected',
+	status: 'disconnected (1 retry)',
 	constructor: function(host, port) {
 		this.host = host;
 		this.port = port;
 		this.populate();
 	},
-	setStatus: function(s) {
-		this.status = s ? 'connected' : 'disconnected';
+	setStatus: function(s, retry) {
+		this.status = s ? 'connected' : 'disconnected (' + retry + ' ' + (retry > 1 ? ' retries' : ' retry') + ')';
 		this.css['[data-component="status"]']['.info'].d = s ? 'n' : 'b';
 		this.css['[data-component="status"]']['.fa-flash'].color = s ? '#26A430' : '#CC151A';
 		this.populate();
