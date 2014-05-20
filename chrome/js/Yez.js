@@ -177,7 +177,7 @@ var Yez = absurd.component('Yez', {
 				t.response({ action: 'error', msg: 'No back-end!' });
 			}
 		}).on('save', function() {
-			self.tasks[t.data.id] = t;
+			self.tasks[t.getId()] = t;
 			self.saveToStorage();
 		}).on('home', function() {
 			self.showHome();
@@ -207,7 +207,7 @@ var Yez = absurd.component('Yez', {
 		return this;
 	},
 	send: function(data, cb) {
-		data.id = getId();
+		data.id = data.id || getId();
 		this.beacons[data.id] = cb;
 		data.target && (delete data.target);
 		if(this.socket && this.connected) {

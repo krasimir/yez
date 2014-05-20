@@ -108,7 +108,7 @@ describe("/ Running commands /", function(done) {
 		.data(function(d) { data.push(d); })
 		.end(function(err, d, code) {
 			expect(err).to.equal(false);
-			expect(data[0]).to.equal('Server running at http://127.0.0.1:1338/\n');
+			expect(data[0]).to.equal('Server running at http://127.0.0.1:1339/\n');
 			done();
 		});
 		setTimeout(function() {
@@ -117,5 +117,21 @@ describe("/ Running commands /", function(done) {
 				expect(res).to.equal('Process stopped.');
 			});	
 		}, 100);		
+	});
+	it("should run a commands with stdin", function(done) {
+		var runner = TaskRunner(), data = [];
+		runner.run('node stdin-program.js', __dirname + '/commands')
+		.data(function(d) { 
+			data.push(d);
+			if(d == 'Please type your name:') {
+				runner.write('Yezzzy');
+			}			
+		})
+		.end(function(err, d, code) {
+			expect(err).to.equal(false);
+			expect(data[0]).to.equal('Please type your name:');
+			expect(data[1]).to.equal('Hello Yezzzy. It\'s nice to mee you.\n');
+			done();
+		});
 	});
 })

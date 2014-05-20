@@ -56,6 +56,13 @@ io.sockets.on('connection', function (socket) {
                         data: d
                     });
                 })
+                .err(function(data) {
+                    io.sockets.emit('response', {
+                        action: 'err',
+                        id: id,
+                        msg: data
+                    });
+                })
                 .end(function(err, d, code) {
                     io.sockets.emit('response', {
                         action: 'end',
@@ -76,6 +83,19 @@ io.sockets.on('connection', function (socket) {
                     });
                     delete runners[id];
                     cleaningRunners();                    
+                }
+            break;
+            case 'stdin-input': 
+                if(runners[id]) {
+                    var res = 0;
+                    runners[id].forEach(function(r) {
+                        r.write(data.input);
+                        res += 1;
+                    });
+                    io.sockets.emit('beacon-response', {
+                        id: id,
+                        msg: '"' + data.input + '" sent to ' + res + ' processes.'
+                    });
                 }
             break;
             case 'list':

@@ -2,7 +2,8 @@ module.exports = function() {
 	var api = {},
 		cp = require('child_process'),
 		parser = require('./helpers/CommandParser'),
-		processing = null;
+		processing = null,
+		os = require('os');
 
 	api.ended = false;
 	api.run = function(c, path) {
@@ -35,6 +36,7 @@ module.exports = function() {
 					errcb && errcb(data);
 				});
 				processing.on('error', function (e) {
+					// console.log('error: ', e);
 					if(e && e.code && e.code == 'ENOENT' && pathExtWin.length > 0) {
 						preventEnding = true;
 					} else {
@@ -42,6 +44,7 @@ module.exports = function() {
 					}
 				});
 				processing.on('close', function (code) {
+					// console.log('close code: ' + code);
 					if(preventEnding) {
 						c.command += pathExtWin.shift();
 						go(c);
@@ -68,6 +71,11 @@ module.exports = function() {
 			processing.kill();
 		} else {
 			cb && cb('The command is not running.');
+		}
+	}
+	api.write = function(value) {
+		if(processing) {
+			processing.stdin.write(value + '\n');
 		}
 	}
 	return api;

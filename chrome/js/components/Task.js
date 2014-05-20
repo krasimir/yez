@@ -106,16 +106,15 @@ var TaskCSSDashboard = function() {
 			pad: 0,
 			fz: '30px'
 		},
-		'.operation': button(),
 		'.log': {
 			bxz: 'bb',
 			pos: 'a',
-			pad: '10px',
 			top: '144px',
 			left: '10px',
+			pad: '10px',
 			bg: '#FAFAFA',
 			wid: 'calc(100% - 18px)',
-			hei: 'calc(100% - 152px)',
+			hei: 'calc(100% - 187px)',
 			fz: '12px',
 			lh: '20px',
 			bdrsa: '4px',
@@ -151,9 +150,31 @@ var TaskCSSDashboard = function() {
 				color: '#2E7072',
 				bdb: 'solid 1px #66BFC1',
 				bdrsa: '4px'
+			},
+			'.log-stdin': {
+				bg: '#C6E7E8',
+				color: '#2E7072',
+				bdb: 'solid 1px #66BFC1',
+				bdrsa: '4px'
 			}
 		},
-		'.hidden': { d: 'n' },
+		'.stdin-field': {
+			bxz: 'bb',
+			pos: 'a',
+			bottom: '7px',
+			right: '8px',
+			pad: '4px 4px 4px 75px',
+			bdrsa: '4px',
+			wid: 'calc(100% - 17px)',
+			bd: 'solid 1px #C5C5C5',
+			ff: "'Roboto', 'sans-serif'"
+		},
+		'.stdin-field-tooltip': {
+			pos: 'a',
+			bottom: '10px',
+			left: '18px',
+			color: '#999'
+		},
 		'.clear-log': {
 			color: '#999',
 			fz: '12px',
@@ -167,12 +188,20 @@ var TaskCSSDashboard = function() {
 		}
 	}
 }
+var TaskCSSSubNav = function() {
+	return {
+		pad: '10px 0 0 10px',
+		'.operation': button(),
+		'.hidden': { d: 'n' }
+	}
+}
 var Task = absurd.component('Task', {
 	css: {
 		'.task-<% getId() %>': {
 			'.breadcrumbs': TaskCSSBreadcrumbs(),
 			'.edit': TaskCSSEdit(),
-			'.dashboard': TaskCSSDashboard() 
+			'.dashboard': TaskCSSDashboard(),
+			'.sub-nav': TaskCSSSubNav()
 		}
 	},
 	html: {
@@ -181,6 +210,12 @@ var Task = absurd.component('Task', {
 				'<i class="fa fa-angle-right"></i>',
 				{ 'a[href="#" data-absurd-event="click:gotoHome"]': '&nbsp;Home'},
 				' / <% data.name %>'
+			],
+			'.sub-nav': [
+				{ 'a[href="#" class="operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
+				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
+				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
+				{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
 			],
 			'.edit': [
 				{
@@ -219,12 +254,10 @@ var Task = absurd.component('Task', {
 				}
 			],
 			'.dashboard': [
-				{ 'a[href="#" class="operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
-				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
-				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
-				{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'},
 				{ 'a[href="#" class="clear-log" data-absurd-event="click:clearLog"]': '<i class="fa fa-eraser"></i> Clear'},
-				{ '.log': '<% logContent %>' }
+				{ '.log': '<% logContent %>' },
+				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinChanged"]': ''},
+				{ '.stdin-field-tooltip': '<i class="fa fa-keyboard-o"></i> stdin:'}
 			]
 		}
 	},
@@ -242,7 +275,7 @@ var Task = absurd.component('Task', {
 		this.setMode(data ? 'dashboard' : 'edit');
 	},
 	getId: function() {
-		return this.data.id;
+		return this.data && this.data.id && this.data.id != '' ? this.data.id : getId();
 	},
 	setMode: function(m) {
 		this.mode = m;
@@ -253,6 +286,11 @@ var Task = absurd.component('Task', {
 		this.dispatch('home');
 	},
 	// *********************************************** edit mode
+	goToEditMode: function(e, dom) {
+		e && e.preventDefault();
+		this.setMode('edit');
+		this.qs('input[name="name"]').focus();
+	},
 	addCommand: function(e, index) {
 		index = parseInt(index);
 		this.data.commands.splice(index+1, 0, '');
@@ -266,8 +304,8 @@ var Task = absurd.component('Task', {
 	},
 	changeCommand: function(e, index) {
 		index = parseInt(index);
-		this.data.commands[index] = e.target.value;
-		e.target.setAttribute('value', e.target.value)
+		this.data.commands[index] = e.target.value.replace(/"/g, '&quot;');
+		e.target.setAttribute('value', e.target.value);
 	},
 	changeCommandName: function(e) {
 		this.data.name = e.target.value;
@@ -281,19 +319,16 @@ var Task = absurd.component('Task', {
 		this.dispatch('save');
 	},
 	// *********************************************** dashboard mode
-	goToEditMode: function(e, dom) {
-		e && e.preventDefault();
-		this.setMode('edit');
-		dom('input[name="name"]').el.focus();
-	},
 	startTasks: function(e) {
 		e && e.preventDefault();
 		if(this.started) return;
+		this.setMode('dashboard');
 		this.started = true;
 		this.commandsToProcess = this.data.commands.slice(0);
 		this.populate();
 		this.processTask();
 		this.dispatch('save');
+		// this.qs('.stdin-field').focus();
 	},
 	processTask: function() {
 		if(!this.commandsToProcess || this.commandsToProcess.length == 0) {
@@ -304,13 +339,32 @@ var Task = absurd.component('Task', {
 			return;
 		}
 		var command = this.commandsToProcess.shift();
-		this.log('<p class="log-command">' + command + ' <i class="fa fa-angle-left"></i></p>');
-		this.dispatch('data', {
-			id: this.data.id,
-			action: 'run-command',
-			command: command,
-			cwd: this.data.cwd
-		});
+
+		// ********************************************************* chrome
+		if(command.indexOf('chrome:') === 0) {
+			var parts = command.split(':'), self = this;
+			parts.shift();
+			chrome.runtime.sendMessage({
+				type: parts.shift(),
+				data: parts.join(':')
+			}, function(res) {
+				if(res) {
+					self.response({ action: 'data', data: typeof res == 'object' ? JSON.stringify(res): res });
+				}
+				self.response({ action: 'end', err: false, code: 'none'});
+			});
+			this.log('<p class="log-command">' + command + ' <i class="fa fa-angle-left"></i></p>');
+
+		// ********************************************************* nodejs
+		} else {
+			this.log('<p class="log-command">' + command + ' <i class="fa fa-angle-left"></i></p>');
+			this.dispatch('data', {
+				id: this.data.id,
+				action: 'run-command',
+				command: command,
+				cwd: this.data.cwd
+			});
+		}
 	},
 	response: function(data) {
 		switch(data.action) {
@@ -330,16 +384,18 @@ var Task = absurd.component('Task', {
 					}
 				}
 				this.log('<p class="log-end">end (code: ' + data.code + ')</p>');
-				this.processTask(data);
+				this.processTask();
 			break;
 		}
 	},
 	stopTasks: function(e) {
 		e && e.preventDefault();
+		this.setMode('dashboard');
 		this.dispatch('stop', {
 			id: this.data.id,
 			action: 'stop-command'
 		});
+		this.commandsToProcess = [];
 	},
 	deleteTask: function(e) {
 		if(confirm('Are you sure?')) {
@@ -359,6 +415,26 @@ var Task = absurd.component('Task', {
 	clearLog: function() {
 		this.logContent = '';
 		this.populate();
+	},
+	stdinChanged: function(e) {
+		if(this.started) {
+			if(e.keyCode === 13) { // enter
+				var input = e.target.value;
+				this.log('<p class="log-stdin"><i class="fa fa-keyboard-o"></i> ' + input + '</p>');
+				e.target.value = '';
+				Yez.send({
+					action: 'stdin-input',
+					id: this.getId(),
+					input: input
+				}, function(data) {
+					// no need to process the result
+				}.bind(this));
+			} else if(e.keyCode === 27) { // escape
+				e.target.value = '';
+			}
+		} else {
+			e.target.value = '';
+		}
 	},
 	// choosing cwd
 	chooseCWD: function(e) {
