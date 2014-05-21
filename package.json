@@ -1,6 +1,6 @@
 {
   "name": "yez",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/krasimir/yez",
   "description": "Chrome extension which acts as task runner",
   "main": "./node/index.js",
@@ -11,10 +11,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "socket.io": "0.9.16"
+    "socket.io": "0.9.16",
+    "ps-tree": "0.0.3"
   },
   "devDependencies": {
-    "expect.js": "0.3.1"
+    "expect.js": "0.3.1",
+    "grunt": "0.4.1",
+    "grunt-contrib-concat": "0.3.0",
+    "grunt-contrib-watch": "0.4.4"
   },
   "keywords": [
     "chrome",

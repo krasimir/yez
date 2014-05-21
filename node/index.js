@@ -7,7 +7,7 @@ var app = require('http').createServer(function(){}),
     TaskRunner = require('./TaskRunner'),
     path = require('path'),
     defaultCWD = path.normalize(process.cwd()),
-    runners = {};
+    runners = {}, lastActive = 0;
 
 app.listen(port);
 
@@ -37,6 +37,27 @@ var cleaningRunners = function() {
         }
         runners = res;
     }
+}
+var reportingProcesses = function() {
+    var active = 0;
+    if(runners) {        
+        for(var id in runners) {
+            var stillRunning = false;
+            for(var i=0; i<runners[id].length; i++) {
+                 if(runners[id][i].ended === false) {
+                    stillRunning = true;
+                 }
+            }
+            if(stillRunning) {
+                active += 1;
+            }
+        }
+        if(active != lastActive) {
+            lastActive = active;
+            console.log('Running processes: ' + active);
+        }
+    }
+    setTimeout(reportingProcesses, 1600);
 }
 
 io.set('log level', 1);
@@ -72,6 +93,15 @@ io.sockets.on('connection', function (socket) {
                         code: code
                     });
                     cleaningRunners();
+                })
+                .exit(function(code, signal) {
+                    io.sockets.emit('response', {
+                        action: 'exit',
+                        id: id,
+                        signal: signal,
+                        code: code
+                    });
+                    cleaningRunners();
                 });
                 if(!runners[id]) runners[id] = [];
                 runners[id].push(runner);
@@ -80,9 +110,15 @@ io.sockets.on('connection', function (socket) {
                 if(runners[id]) {
                     runners[id].forEach(function(r) {
                         r.stop();
+                    });                    
+                } else {
+                    io.sockets.emit('response', {
+                        action: 'end',
+                        id: id,
+                        err: { err: 'Stopped' },
+                        data: [],
+                        code: null
                     });
-                    delete runners[id];
-                    cleaningRunners();                    
                 }
             break;
             case 'stdin-input': 
@@ -147,4 +183,6 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-console.log('Yez is running!');
+reportingProcesses();
+
+console.log('Yez! is running.');

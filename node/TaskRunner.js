@@ -1,9 +1,33 @@
+var psTree = require('ps-tree'),
+	os = require('os'),
+	cp = require('child_process'),
+	parser = require('./helpers/CommandParser'),
+	isWin = /^win/.test(process.platform);
+
+var kill = function (pid, signal, callback) {
+	signal   = signal || 'SIGKILL';
+	callback = callback || function () {};
+	var killTree = true;
+	if(killTree) {
+		psTree(pid, function (err, children) {
+			[pid].concat(
+				children.map(function (p) {
+					return p.PID;
+				})
+			).forEach(function (tpid) {
+				try { process.kill(tpid, signal) }
+				catch (ex) { }
+			});
+			callback();
+		});
+	} else {
+		try { process.kill(pid, signal) }
+		catch (ex) { }
+		callback();
+	}
+};
 module.exports = function() {
-	var api = {},
-		cp = require('child_process'),
-		parser = require('./helpers/CommandParser'),
-		processing = null,
-		os = require('os');
+	var api = {}, processing = null;
 
 	api.ended = false;
 	api.run = function(c, path) {
@@ -13,11 +37,13 @@ module.exports = function() {
 				cwd: path || process.cwd(),
 				env: process.env,
 				max: 1,
-				silent: true
+				silent: true,
+				// detached: true
 			},
 			out = [], outcb = null,
 			err = [], errcb = null,
-			endcb = null, pathExtWin = ['.cmd', '.bat'];
+			endcb = null, exitcb = null,
+			pathExtWin = ['.cmd', '.bat'];
 
 		try {
 			(function go(c) {
@@ -53,8 +79,14 @@ module.exports = function() {
 						endcb && endcb(err.length > 0 ? err : false, out, code);
 					}
 				});
+				processing.on('exit', function (code, signal) {
+					// console.log('exit code: ' + code + ' signal: ' + signal);
+					api.ended = true;
+					exitcb && exitcb(code, signal);
+				});
 			})(c);
 		} catch(err) {
+			// console.log('Error: ', err);
 			api.ended = true;
 			endcb && endcb(err, out, code);
 		}
@@ -62,15 +94,24 @@ module.exports = function() {
 		return {
 			data: function(cb) { outcb = cb; return this; },
 			err: function(cb) { errcb = cb; return this; },
-			end: function(cb) { endcb = cb; return this; }
+			end: function(cb) { endcb = cb; return this; },
+			exit: function(cb) { exitcb = cb; return this; }
 		}
 
 	}
-	api.stop = function(cb) {
+	api.stop = function() {
 		if(processing) {
-			processing.kill();
-		} else {
-			cb && cb('The command is not running.');
+			if(!isWin) {
+				kill(processing.pid);
+			} else {
+				cp.exec('taskkill /PID ' + processing.pid + ' /T /F', function (error, stdout, stderr) {
+				    // console.log('stdout: ' + stdout);
+				    // console.log('stderr: ' + stderr);
+				    // if(error !== null) {
+				    //   	console.log('exec error: ' + error);
+				    // }
+				});				
+			}
 		}
 	}
 	api.write = function(value) {

@@ -1,200 +1,3 @@
-var TaskCSSBreadcrumbs = function() {
-	return {
-		bxz: 'bb',
-		pad: '6px 14px',
-		bg: '#F9F7F2',
-		bdb: 'solid 1px #E7E7E7',
-		bdt: 'solid 1px #fff',
-		color: '#575757',
-		fz: '14px',
-		a: {
-			color: '#999',
-			fz: '14px',
-			ted: 'underline',
-			'&:hover': {
-				color: '#000'
-			}
-		}
-	};
-}
-var TaskCSSEdit = function() {
-	return {
-		bxz: 'bb',
-		pad: '10px',
-		display: '<% mode == "edit" ? "block" : "none" %>',
-		'.element': {
-			pos: 'r',
-			wid: '100%',
-			bxz: 'bb',
-			mar: '6px 0 6px 0',
-			label: {
-				wid: '30%',
-				pad: '0 20px 0 0',
-				bxz: 'bb',
-				bg: '#EDE9E0',
-				fl: 'l',
-				pad: '10px',
-				bdtlrs: '10px',
-				bdblrs: '10px',
-				ta: 'r',
-				bdr: 'solid 2px #DECAB6',
-				bdb: 'solid 1px #999',
-				hei: '47px',
-				ov: 'h'
-			},
-			'.field': {
-				wid: '70%',
-				fl: 'l',
-				bxz: 'bb',
-				bg: '#F8F5EF',
-				bdtrrs: '10px',
-				bdbrrs: '10px',
-				bdb: 'solid 1px #999',
-				input: {
-					hei: '46px',
-					bd: 'n',
-					bg: 'n',
-					bxz: 'bb',
-					wid: '100%',
-					pad: '10px'
-				}
-			},
-			'&:after': {
-				content: '" "',
-				d: 'tb',
-				clear: 'both'
-			},
-			'.sub-left': {
-				color: '#000',
-				d: 'b',
-				pos: 'a',
-				top: '10px',
-				left: '10px',
-				pad: '0 10px',
-				bg: '#F5F3EF',
-				bdrsa: '4px',
-				'&:hover': { bg: '#D5CCBB' }
-			},
-			'.sub-right': {
-				color: '#000',
-				d: 'b',
-				pos: 'a',
-				top: '10px',
-				right: '10px',
-				pad: '0 10px',
-				bg: '#FBFAF7',
-				bdrsa: '4px',
-				'&:hover': { bg: '#E6DBC4' }
-			}
-		},
-		'.actions': {
-			clear: 'both',
-			mar: '0 0 0 30%',
-			pad: '6px 0 0 0',
-			a: button(),
-			'.cancel': buttonTransparent()
-		}
-	};
-}
-var TaskCSSDashboard = function() {
-	return {
-		display: '<% mode == "dashboard" ? "block" : "none" %>',
-		bxz: 'bb',
-		pad: '10px',
-		h1: {
-			mar: '20px 0 20px 0',
-			pad: 0,
-			fz: '30px'
-		},
-		'.log': {
-			bxz: 'bb',
-			pos: 'a',
-			top: '144px',
-			left: '10px',
-			pad: '10px',
-			bg: '#FAFAFA',
-			wid: 'calc(100% - 18px)',
-			hei: 'calc(100% - 187px)',
-			fz: '12px',
-			lh: '20px',
-			bdrsa: '4px',
-			ovx: 'h',
-			ovy: 's',
-			p: {
-				pad: '0 4px',
-				mar: '0 0 4px 0',
-				bdrsa: '2px'
-			},
-			'.log-command': {
-				bg: '#C0DFE7',
-				bdb: 'solid 1px #E1E1E1',
-				ta: 'r'
-			},
-			'.log-error': {
-				bg: '#F39C9C',
-				bdb: 'solid 1px #E1E1E1'
-			},
-			'.log-end': {
-				bg: '#E4CEC2',
-				bdb: 'solid 1px #E1E1E1'
-			},
-			'.log-response': {
-				lh: '16px'
-			},
-			'.log-task-end': {
-				bg: '#87E789',
-				bdb: 'solid 1px #E1E1E1'
-			},
-			'.log-info': {
-				bg: '#C6E7E8',
-				color: '#2E7072',
-				bdb: 'solid 1px #66BFC1',
-				bdrsa: '4px'
-			},
-			'.log-stdin': {
-				bg: '#C6E7E8',
-				color: '#2E7072',
-				bdb: 'solid 1px #66BFC1',
-				bdrsa: '4px'
-			}
-		},
-		'.stdin-field': {
-			bxz: 'bb',
-			pos: 'a',
-			bottom: '7px',
-			right: '8px',
-			pad: '4px 4px 4px 75px',
-			bdrsa: '4px',
-			wid: 'calc(100% - 17px)',
-			bd: 'solid 1px #C5C5C5',
-			ff: "'Roboto', 'sans-serif'"
-		},
-		'.stdin-field-tooltip': {
-			pos: 'a',
-			bottom: '10px',
-			left: '18px',
-			color: '#999'
-		},
-		'.clear-log': {
-			color: '#999',
-			fz: '12px',
-			pos: 'a',
-			top: '104px',
-			right: '12px',
-			ted: 'n',
-			'&:hover': {
-				color: '#000'
-			}
-		}
-	}
-}
-var TaskCSSSubNav = function() {
-	return {
-		pad: '10px 0 0 10px',
-		'.operation': button(),
-		'.hidden': { d: 'n' }
-	}
-}
 var Task = absurd.component('Task', {
 	css: {
 		'.task-<% getId() %>': {
@@ -386,6 +189,9 @@ var Task = absurd.component('Task', {
 				this.log('<p class="log-end">end (code: ' + data.code + ')</p>');
 				this.processTask();
 			break;
+			case 'exit':
+				this.log('<p class="log-response">exit (code: ' + data.code + ', signal: ' + data.signal + ')</p>');
+			break;
 		}
 	},
 	stopTasks: function(e) {
@@ -396,6 +202,7 @@ var Task = absurd.component('Task', {
 			action: 'stop-command'
 		});
 		this.commandsToProcess = [];
+		this.log('<p class="log-command">stopping ... <i class="fa fa-angle-left"></i></p>');
 	},
 	deleteTask: function(e) {
 		if(confirm('Are you sure?')) {
@@ -447,3 +254,200 @@ var Task = absurd.component('Task', {
 		}.bind(this));
 	}
 });
+function TaskCSSBreadcrumbs() {
+	return {
+		bxz: 'bb',
+		pad: '6px 14px',
+		bg: '#F9F7F2',
+		bdb: 'solid 1px #E7E7E7',
+		bdt: 'solid 1px #fff',
+		color: '#575757',
+		fz: '14px',
+		a: {
+			color: '#999',
+			fz: '14px',
+			ted: 'underline',
+			'&:hover': {
+				color: '#000'
+			}
+		}
+	};
+}
+function TaskCSSEdit() {
+	return {
+		bxz: 'bb',
+		pad: '10px',
+		display: '<% mode == "edit" ? "block" : "none" %>',
+		'.element': {
+			pos: 'r',
+			wid: '100%',
+			bxz: 'bb',
+			mar: '6px 0 6px 0',
+			label: {
+				wid: '30%',
+				pad: '0 20px 0 0',
+				bxz: 'bb',
+				bg: '#EDE9E0',
+				fl: 'l',
+				pad: '10px',
+				bdtlrs: '10px',
+				bdblrs: '10px',
+				ta: 'r',
+				bdr: 'solid 2px #DECAB6',
+				bdb: 'solid 1px #999',
+				hei: '47px',
+				ov: 'h'
+			},
+			'.field': {
+				wid: '70%',
+				fl: 'l',
+				bxz: 'bb',
+				bg: '#F8F5EF',
+				bdtrrs: '10px',
+				bdbrrs: '10px',
+				bdb: 'solid 1px #999',
+				input: {
+					hei: '46px',
+					bd: 'n',
+					bg: 'n',
+					bxz: 'bb',
+					wid: '100%',
+					pad: '10px'
+				}
+			},
+			'&:after': {
+				content: '" "',
+				d: 'tb',
+				clear: 'both'
+			},
+			'.sub-left': {
+				color: '#000',
+				d: 'b',
+				pos: 'a',
+				top: '10px',
+				left: '10px',
+				pad: '0 10px',
+				bg: '#F5F3EF',
+				bdrsa: '4px',
+				'&:hover': { bg: '#D5CCBB' }
+			},
+			'.sub-right': {
+				color: '#000',
+				d: 'b',
+				pos: 'a',
+				top: '10px',
+				right: '10px',
+				pad: '0 10px',
+				bg: '#FBFAF7',
+				bdrsa: '4px',
+				'&:hover': { bg: '#E6DBC4' }
+			}
+		},
+		'.actions': {
+			clear: 'both',
+			mar: '0 0 0 30%',
+			pad: '6px 0 0 0',
+			a: button(),
+			'.cancel': buttonTransparent()
+		}
+	};
+}
+function TaskCSSDashboard() {
+	return {
+		display: '<% mode == "dashboard" ? "block" : "none" %>',
+		bxz: 'bb',
+		pad: '10px',
+		h1: {
+			mar: '20px 0 20px 0',
+			pad: 0,
+			fz: '30px'
+		},
+		'.log': {
+			bxz: 'bb',
+			pos: 'a',
+			top: '144px',
+			left: '10px',
+			pad: '10px',
+			bg: '#FAFAFA',
+			wid: 'calc(100% - 18px)',
+			hei: 'calc(100% - 187px)',
+			fz: '12px',
+			lh: '20px',
+			bdrsa: '4px',
+			ovx: 'h',
+			ovy: 's',
+			p: {
+				pad: '0 4px',
+				mar: '0 0 4px 0',
+				bdrsa: '2px'
+			},
+			'.log-command': {
+				bg: '#C0DFE7',
+				bdb: 'solid 1px #E1E1E1',
+				ta: 'r'
+			},
+			'.log-error': {
+				bg: '#F39C9C',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-end': {
+				bg: '#E4CEC2',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-response': {
+				lh: '16px'
+			},
+			'.log-task-end': {
+				bg: '#87E789',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-info': {
+				bg: '#C6E7E8',
+				color: '#2E7072',
+				bdb: 'solid 1px #66BFC1',
+				bdrsa: '4px'
+			},
+			'.log-stdin': {
+				bg: '#C6E7E8',
+				color: '#2E7072',
+				bdb: 'solid 1px #66BFC1',
+				bdrsa: '4px'
+			}
+		},
+		'.stdin-field': {
+			bxz: 'bb',
+			pos: 'a',
+			bottom: '7px',
+			right: '8px',
+			pad: '4px 4px 4px 75px',
+			bdrsa: '4px',
+			wid: 'calc(100% - 17px)',
+			bd: 'solid 1px #C5C5C5',
+			ff: "'Roboto', 'sans-serif'"
+		},
+		'.stdin-field-tooltip': {
+			pos: 'a',
+			bottom: '10px',
+			left: '18px',
+			color: '#999'
+		},
+		'.clear-log': {
+			color: '#999',
+			fz: '12px',
+			pos: 'a',
+			top: '104px',
+			right: '12px',
+			ted: 'n',
+			'&:hover': {
+				color: '#000'
+			}
+		}
+	}
+}
+function TaskCSSSubNav() {
+	return {
+		pad: '10px 0 0 10px',
+		'.operation': button(),
+		'.hidden': { d: 'n' }
+	}
+}

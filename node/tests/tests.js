@@ -1,6 +1,7 @@
 var expect = require('expect.js');
 var TaskRunner = require('../TaskRunner');
 var parser = require('../helpers/CommandParser');
+var fs = require('fs');
 
 describe("/ Command line parsing /", function() {
 	it("should parse command without parameter", function(done) {
@@ -133,5 +134,31 @@ describe("/ Running commands /", function(done) {
 			expect(data[1]).to.equal('Hello Yezzzy. It\'s nice to mee you.\n');
 			done();
 		});
+	});
+	it("should start and stop grunt", function(done) {
+		this.timeout(5000);
+		var runner = TaskRunner(), data = [];
+		runner.run('grunt', __dirname + '/commands/grunt-test')
+		.data(function(d) { 
+			// console.log(data.length);
+			data.push(d);			
+		})
+		.end(function(err, d, code) {
+			// console.log('\n\nend', err, code);
+		})
+		.exit(function(code, signal) {
+			// console.log('\n\nexit', code, signal);
+		});
+		setTimeout(function() {
+			runner.stop();
+			var totalResponses = data.length;
+			var file = __dirname + '/commands/grunt-test/src/A.js';
+			var fileContent = fs.readFileSync(file);
+			fs.writeFileSync(file, fileContent + 'c');
+			setTimeout(function() {
+				expect(data.length).to.equal(totalResponses);
+				done();
+			}, 1000);
+		}, 1000);
 	});
 })
