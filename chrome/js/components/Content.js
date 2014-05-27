@@ -1,6 +1,7 @@
 var Content = absurd.component('Content', {
 	css: { '[data-component="content"]': { d: 'n' } },
 	html: '[data-component="content"]',
+	current: null,
 	constructor: function() {
 		this.populate();
 	},
@@ -13,8 +14,14 @@ var Content = absurd.component('Content', {
 		if(component.appended) {
 			component.appended();
 		}
+		this.current = component;
 	},
 	visible: function(v) {
 		this.el.style.display = v ? 'block' : 'none';
+	},
+	passKeypressSignal: function(signal) {
+		if(this.current && this.current[signal]) {
+			this.current[signal]();
+		}
 	}
 })

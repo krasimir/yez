@@ -6,19 +6,43 @@ var Nav = absurd.component('Nav', {
 			d: 'n',
 			a: [
 				button(),
-				{ bxz: 'bb', wid: '40px', hei: '35px', ov: 'h', ta: 'c' }
+				{ 
+					bxz: 'bb', 
+					wid: '40px', 
+					hei: '35px', 
+					ov: 'h', 
+					ta: 'c'
+				}
 			],
 			'.task': {
 				fz: '12px',
-				bg: '#E9E9E9'
+				bg: '#FFFFFF'
+			},
+			'.add': {
+				bg: 'none',
+				bdb: 'none'
+			},
+			'.add-task': {
+				pos: 'a',
+				right: '245px',
+				top: '7px',
+				wid: '85px'
+			},
+			'.add-terminal': {
+				pos: 'a',
+				right: '142px',
+				top: '7px',
+				wid: '108px'
 			}
 		}
 	},
 	html: {
 		'nav[data-component="nav"]': [
-			'<% for(var i=0; i<tasksRunning.length; i++) { %>',
-			{ 'a[href="#" data-absurd-event="click:openTask:<% i %>" class="task"]': '<% tasksRunning[i].name.substr(0, 3) + "..." %>'},
+			'<% for(var i=0; i<tasksRunning.length; i++) { var name = tasksRunning[i].name; %>',
+			{ 'a[href="#" data-absurd-event="click:openTask:<% i %>" class="task" title="<% name %>"]': '<% tasksRunning[i].name.substr(0, 3) + "..." %>'},
 			'<% } %>',
+			{ 'a[href="#" data-absurd-event="click:addTask" class="add add-task" title="Terminal"]': '<i class="fa fa-plus-circle"></i> Task' },
+			{ 'a[href="#" data-absurd-event="click:addTerminal" class="add add-terminal" title="Terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
 		]
 	},
 	tabs: [],
@@ -56,5 +80,11 @@ var Nav = absurd.component('Nav', {
 		if(this.tasksRunning[index]) {
 			this.dispatch('open-task', {id: this.tasksRunning[index].id});
 		}
+	},
+	addTerminal: function(e) {
+		this.dispatch('add-terminal');
+	},
+	addTask: function(e) {
+		this.dispatch('add-task');
 	}
 });

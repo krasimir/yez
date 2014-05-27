@@ -8,7 +8,8 @@ var Task = absurd.component('Task', {
 		id: '',
 		name: 'Task',
 		cwd: '',
-		commands: ['']
+		commands: [''],
+		independent: []
 	},
 	constructor: function(data) {
 		this.data = data;
@@ -40,6 +41,21 @@ var Task = absurd.component('Task', {
 		index = parseInt(index);
 		if(this.data.commands.length === 1) return;
 		this.data.commands.splice(index, 1);
+		this.populate();
+	},
+	independentCommand: function(e, index) {
+		index = parseInt(index);
+		if(!this.data.independent) {
+			this.data.independent = [];
+			this.data.independent.push(index);
+		} else {
+			var i = this.data.independent.indexOf(index);
+			if(i >= 0) {
+				this.data.independent.splice(i, 1);
+			} else {
+				this.data.independent.push(index);
+			}
+		}
 		this.populate();
 	},
 	changeCommand: function(e, index) {
@@ -78,10 +94,12 @@ var Task = absurd.component('Task', {
 		if(this.started) return;
 		this.setMode('dashboard');
 		this.started = true;
+		this.endedCommands = 0;
 		this.commandsToProcess = this.data.commands.slice(0);
 		this.populate();
 		this.processTask();
 		this.dispatch('save');
+		this.endedCommands = 0;
 		// this.qs('.stdin-field').focus();
 	},
 	stopTasks: function(e) {
@@ -92,25 +110,31 @@ var Task = absurd.component('Task', {
 			action: 'stop-command'
 		});
 		this.commandsToProcess = [];
-		this.log('<p class="log-command">stopping ... <i class="fa fa-angle-left"></i></p>');
+		this.endedCommands = -2;
+		this.log('<p class="log-command"><i class="fa fa-angle-right"></i> stopping ...</p>');
 	},
 	restartTasks: function(e) {
 		e && e.preventDefault();
 		this.restart = true;
 		this.stopTasks(e);
 	},
+	// Loop that sends the commands
 	processTask: function() {
 		if(!this.commandsToProcess || this.commandsToProcess.length == 0) {
-			this.started = false;
-			this.populate();
-			this.log('<p class="log-task-end">' + this.data.commands.length + ' command' + (this.data.commands.length > 1 ? 's' : '') + ' finished</p>');
-			this.dispatch('save');
-			if(this.restart) {
-				this.restart = false;
-				this.clearLog().startTasks();
+			if(this.endedCommands >= this.data.commands.length || this.endedCommands == -1) {
+				this.started = false;
+				this.populate();
+				this.log('<p class="log-task-end">task finished</p>');
+				this.dispatch('save');
+				this.dispatch('ended');
+				if(this.restart) {
+					this.restart = false;
+					this.clearLog().startTasks();
+				}
 			}
 			return;
 		}
+		var index = this.data.commands.length - this.commandsToProcess.length;
 		var command = this.commandsToProcess.shift();
 		// ********************************************************* chrome
 		if(command.indexOf('chrome:') === 0) {
@@ -125,11 +149,11 @@ var Task = absurd.component('Task', {
 				}
 				self.response({ action: 'end', err: false, code: 'none'});
 			});
-			this.log('<p class="log-command">' + command + ' <i class="fa fa-angle-left"></i></p>');
+			this.log('<p class="log-command"><i class="fa fa-angle-right"></i> ' + command + '</p>');
 
 		// ********************************************************* nodejs
 		} else {
-			this.log('<p class="log-command">' + command + ' <i class="fa fa-angle-left"></i></p>');
+			this.log('<p class="log-command"><i class="fa fa-angle-right"></i> ' + command + '</p>');
 			this.dispatch('data', {
 				id: this.data.id,
 				action: 'run-command',
@@ -137,7 +161,12 @@ var Task = absurd.component('Task', {
 				cwd: this.data.cwd
 			});
 		}
+		// check if it is locked to the chain
+		if(this.data.independent && this.data.independent.indexOf(index) >= 0) {
+			this.processTask();
+		}
 	},
+	// process the response from the Node.js part
 	response: function(data) {
 		switch(data.action) {
 			case 'err':
@@ -156,8 +185,8 @@ var Task = absurd.component('Task', {
 					}
 				}
 				this.log('<p class="log-end">end (code: ' + data.code + ')</p>');
+				this.endedCommands += 1;
 				this.processTask();
-				this.dispatch('ended');
 			break;
 			case 'exit':
 				this.log('<p class="log-response">exit (code: ' + data.code + ', signal: ' + data.signal + ')</p>');
@@ -194,6 +223,13 @@ var Task = absurd.component('Task', {
 		} else if(e.keyCode === 27) { // escape
 			e.target.value = '';
 		}
+	},
+	// *********************************************** keypress signals
+	'ctrl+l': function() {
+		this.clearLog();
+	},
+	'ctrl+enter': function() {
+		this.restartTasks();
 	}
 });
 function TaskTemplate() {
@@ -230,15 +266,20 @@ function TaskTemplate() {
 						'a.sub-right[href="#" data-absurd-event="click:chooseCWD:<% i %>"]': '<i class="fa fa-folder-open"></i>'
 					}
 				},
-				'<% for(var i=0; i<data.commands.length; i++) { var c = data.commands[i]; %>',
+				'<% for(var i=0; i<data.commands.length; i++) { \
+					var c = data.commands[i]; \
+					var indIcon = data.independent && data.independent.indexOf(i) >= 0 ? "fa-unlock" : "fa-lock"; \
+					var tip = indIcon == "fa-lock" ? "Run it independently" : "Lock the command to the chain"; \
+				%>',
 				{
 					'.element': {
 						label: '<i class="fa fa-wrench"></i> <% i+1 %>',
 						'.field': {
 							'input[type="text" value="<% c %>" data-absurd-event="keyup:changeCommand:<% i %>"]': ''
 						},
-						'a.sub-left[href="#" data-absurd-event="click:addCommand:<% i %>"]': '<i class="fa fa-plus-circle"></i>',
-						'a.sub-right[href="#" data-absurd-event="click:removeCommand:<% i %>"]': '<i class="fa fa-minus-circle"></i>'
+						'a.sub-left[href="#" title="Add new command" data-absurd-event="click:addCommand:<% i %>"]': '<i class="fa fa-plus-circle"></i>',
+						'a.sub-right[href="#" title="Remove the command" data-absurd-event="click:removeCommand:<% i %>"]': '<i class="fa fa-minus-circle"></i>',
+						'a.sub-independent[href="#" title="<% tip %>" data-absurd-event="click:independentCommand:<% i %>"]': '<i class="fa <% indIcon %>"></i>'
 					}
 				},
 				'<% } %>',
@@ -343,7 +384,7 @@ function TaskCSSEdit() {
 				d: 'tb',
 				clear: 'both'
 			},
-			'.sub-left': {
+			'.sub-left, .sub-independent': {
 				color: '#000',
 				d: 'b',
 				pos: 'a',
@@ -364,6 +405,13 @@ function TaskCSSEdit() {
 				bg: '#FBFAF7',
 				bdrsa: '4px',
 				'&:hover': { bg: '#E6DBC4' }
+			},
+			'.sub-independent': {
+				ta: 'c',
+				bxz: 'bb',
+				width: '34px',
+				top: '10px',
+				left: '53px'
 			}
 		},
 		'.actions': {
@@ -406,16 +454,14 @@ function TaskCSSDashboard() {
 			},
 			'.log-command': {
 				bg: '#C0DFE7',
-				bdb: 'solid 1px #E1E1E1',
-				ta: 'r'
+				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-error': {
 				bg: '#F39C9C',
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-end': {
-				bg: '#E4CEC2',
-				bdb: 'solid 1px #E1E1E1'
+				ta: 'r'
 			},
 			'.log-response': {
 				lh: '16px'

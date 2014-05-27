@@ -101,8 +101,15 @@ var Yez = absurd.component('Yez', {
 		this.content = Content();
 		this.home = Home();
 
-		this.nav.on('open-task', function(data) {
+		this.nav
+		.on('open-task', function(data) {
 			showTask(data.id);
+		})
+		.on('add-task', function() {
+			newTask();
+		})
+		.on('add-terminal', function(data) {
+			
 		});
 
 		this.home
@@ -138,13 +145,13 @@ var Yez = absurd.component('Yez', {
 				self.dispatch('tasks-updated');
 			}
 		})
-		.on('new-task', function() {
+		.on('new-task', newTask = function() {
 			var newTask = self.initializeTask();
 			self.content.append(newTask);
 			newTask.goToEditMode();
 		});
 
-		this.connect().showHome();
+		this.connect().showHome().initializeKeyPress();
 
 	},
 	initializeTask: function(data) {
@@ -200,6 +207,16 @@ var Yez = absurd.component('Yez', {
 		} else {
 			cb({ action: 'error', msg: 'No back-end!' });
 		}
+	},
+	initializeKeyPress: function() {
+		var keypress = new window.keypress.Listener(), self = this;
+		keypress.simple_combo("ctrl l", function() {
+			self.content.passKeypressSignal('ctrl+l');
+		});
+		keypress.simple_combo("ctrl enter", function() {
+			self.content.passKeypressSignal('ctrl+enter');
+		});
+		return this;
 	},
 	'tasks-updated': function() {
 		this.home.setTasks(this.tasks);
