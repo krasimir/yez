@@ -1,42 +1,5 @@
 var Yez = absurd.component('Yez', {
-	css: {
-		'body, html': {
-			wid: '100%', hei: '100%',
-			mar: 0, pad: 0,
-			ff: "'Roboto', 'sans-serif'",
-			fz: '16px', lh: '26px'
-		},
-		'.left': { fl: 'l' },
-		'.right': { fl: 'r' },
-		'code': {
-			bd: 'solid 1px #D8D8D8',
-			pad: '0 2px 0 2px'
-		},
-		'.clear, .clearfix': {
-			clear: 'both'
-		},
-		'.content': {
-			d: 'b'
-		},
-		'header': {
-			bg: '#F3EEE4',
-			bdb: 'solid 2px #DFD2B7',
-			'.logo': {
-				d: 'b', fl: 'l',
-				mar: '0 4px 0 10px',
-				opacity: 0.5
-			},
-			'&:after': {
-				d: 'tb',
-				content: '" "',
-				clear: 'both'
-			}
-		},
-		hr: {
-			bdt: 'none', bdb: 'dotted 1px #999',
-			mar: '0 10px'
-		}
-	},
+	css: HomeCSS(),
 	host: 'localhost',
 	port: 9172,
 	connected: false,
@@ -126,7 +89,7 @@ var Yez = absurd.component('Yez', {
 						this.tasks[t.data.id] = t;
 					}
 				} catch(err) {
-
+					console.log(err);
 				}
 			}
 		}
@@ -142,27 +105,43 @@ var Yez = absurd.component('Yez', {
 			showTask(data.id);
 		});
 
-		this.home.on('show-task', showTask = function(id) {
+		this.home
+		.on('show-task', showTask = function(id) {
 			if(self.tasks[id]) {
 				var t = self.tasks[id];
 				self.content.append(t);
 			}
-		}).on('show-and-run-task', function(id) {
+		})
+		.on('run-task', function(id) {
 			if(self.tasks[id]) {
 				var t = self.tasks[id];
 				self.content.append(t);
 				t.startTasks();
 			}
-		}).on('new-task', function() {
-			var newTask = self.initializeTask();
-			self.content.append(newTask);
-			newTask.goToEditMode();
-		}).on('stop-task', function(id) {
+		})
+		.on('run-task-silent', function(id) {
+			if(self.tasks[id]) {
+				self.tasks[id].startTasks();
+				self.dispatch('tasks-updated');
+			}
+		})
+		.on('stop-task', function(id) {
 			if(self.tasks[id]) {
 				var t = self.tasks[id];
 				self.content.append(t);
 				t.stopTasks();
 			}
+		})
+		.on('stop-task-silent', function(id) {
+			if(self.tasks[id]) {
+				self.tasks[id].stopTasks();
+				self.dispatch('tasks-updated');
+			}
+		})
+		.on('new-task', function() {
+			var newTask = self.initializeTask();
+			self.content.append(newTask);
+			newTask.goToEditMode();
 		});
 
 		this.connect().showHome();
@@ -183,19 +162,18 @@ var Yez = absurd.component('Yez', {
 			} else {
 				t.response({ action: 'error', msg: 'No back-end!' });
 			}
-		}).on('save', function() {
+		})
+		.on('save', function() {
 			self.tasks[t.getId()] = t;
-			self.saveToStorage();
-		}).on('home', function() {
-			self.showHome();
-		}).on('delete-task', function() {
+			self.dispatch('tasks-updated');
+		})
+		.on('home', this.showHome.bind(this))
+		.on('delete-task', function() {
 			delete self.tasks[t.data.id];
-			self.saveToStorage().showHome();
-		}).on('stop', function(data) {
-			delete data.target;
-			if(self.socket && self.connected) {
-				self.socket.emit('data', data);
-			}
+			self.dispatch('tasks-updated').showHome();
+		})
+		.on('ended', function() {
+			self.dispatch('tasks-updated')
 		});
 		return t;
 	},
@@ -222,5 +200,50 @@ var Yez = absurd.component('Yez', {
 		} else {
 			cb({ action: 'error', msg: 'No back-end!' });
 		}
+	},
+	'tasks-updated': function() {
+		this.home.setTasks(this.tasks);
+		this.saveToStorage();
 	}
 })();
+
+function HomeCSS() {
+	return {
+		'body, html': {
+			wid: '100%', hei: '100%',
+			mar: 0, pad: 0,
+			ff: "'Roboto', 'sans-serif'",
+			fz: '16px', lh: '26px'
+		},
+		'.left': { fl: 'l' },
+		'.right': { fl: 'r' },
+		'code': {
+			bd: 'solid 1px #D8D8D8',
+			pad: '0 2px 0 2px'
+		},
+		'.clear, .clearfix': {
+			clear: 'both'
+		},
+		'.content': {
+			d: 'b'
+		},
+		'header': {
+			bg: '#F3EEE4',
+			bdb: 'solid 2px #DFD2B7',
+			'.logo': {
+				d: 'b', fl: 'l',
+				mar: '0 4px 0 10px',
+				opacity: 0.5
+			},
+			'&:after': {
+				d: 'tb',
+				content: '" "',
+				clear: 'both'
+			}
+		},
+		hr: {
+			bdt: 'none', bdb: 'dotted 1px #999',
+			mar: '0 10px'
+		}
+	}
+}

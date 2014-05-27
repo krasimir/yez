@@ -1,69 +1,6 @@
 var Task = absurd.component('Task', {
-	css: {
-		'.task-<% getId() %>': {
-			'.breadcrumbs': TaskCSSBreadcrumbs(),
-			'.edit': TaskCSSEdit(),
-			'.dashboard': TaskCSSDashboard(),
-			'.sub-nav': TaskCSSSubNav()
-		}
-	},
-	html: {
-		'div[class="task-<% getId() %>"]': {
-			'.breadcrumbs': [
-				'<i class="fa fa-angle-right"></i>',
-				{ 'a[href="#" data-absurd-event="click:gotoHome"]': '&nbsp;Home'},
-				' / <% data.name %>'
-			],
-			'.sub-nav': [
-				{ 'a[href="#" class="operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
-				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
-				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
-				{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
-			],
-			'.edit': [
-				{
-					'.element': {
-						label: 'Name',
-						'.field': {
-							'input[type="text" name="name" value="<% data.name %>" data-absurd-event="keyup:changeCommandName"]': ''
-						}
-					}
-				},
-				{
-					'.element': {
-						label: 'Working directory',
-						'.field': {
-							'input[type="text" name="cwd" value="<% data.cwd %>" data-absurd-event="change:changeCWD"]': ''
-						},
-						'a.sub-right[href="#" data-absurd-event="click:chooseCWD:<% i %>"]': '<i class="fa fa-folder-open"></i>'
-					}
-				},
-				'<% for(var i=0; i<data.commands.length; i++) { var c = data.commands[i]; %>',
-				{
-					'.element': {
-						label: '<i class="fa fa-wrench"></i> <% i+1 %>',
-						'.field': {
-							'input[type="text" value="<% c %>" data-absurd-event="keyup:changeCommand:<% i %>"]': ''
-						},
-						'a.sub-left[href="#" data-absurd-event="click:addCommand:<% i %>"]': '<i class="fa fa-plus-circle"></i>',
-						'a.sub-right[href="#" data-absurd-event="click:removeCommand:<% i %>"]': '<i class="fa fa-minus-circle"></i>'
-					}
-				},
-				'<% } %>',
-				{
-					'.actions': [
-						{ 'a[href="#" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' }
-					]
-				}
-			],
-			'.dashboard': [
-				{ 'a[href="#" class="clear-log" data-absurd-event="click:clearLog"]': '<i class="fa fa-eraser"></i> Clear'},
-				{ '.log': '<% logContent %>' },
-				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinChanged"]': ''},
-				{ '.stdin-field-tooltip': '<i class="fa fa-keyboard-o"></i> stdin:'}
-			]
-		}
-	},
+	css: TaskCSS(),
+	html: TaskTemplate(),
 	mode: 'dashboard',
 	started: false,
 	logContent: '',
@@ -121,6 +58,20 @@ var Task = absurd.component('Task', {
 		this.setMode('dashboard');
 		this.dispatch('save');
 	},
+	deleteTask: function(e) {
+		if(confirm('Are you sure?')) {
+			this.dispatch('delete-task');
+		}
+	},
+	chooseCWD: function(e) {
+		e.preventDefault();
+		CWD(this.data.cwd, function(cwd) {
+			if(cwd) {
+				this.data.cwd = cwd;
+				this.populate();
+			}
+		}.bind(this));
+	},
 	// *********************************************** dashboard mode
 	startTasks: function(e) {
 		e && e.preventDefault();
@@ -133,16 +84,34 @@ var Task = absurd.component('Task', {
 		this.dispatch('save');
 		// this.qs('.stdin-field').focus();
 	},
+	stopTasks: function(e) {
+		e && e.preventDefault();
+		this.setMode('dashboard');
+		this.dispatch('data', {
+			id: this.data.id,
+			action: 'stop-command'
+		});
+		this.commandsToProcess = [];
+		this.log('<p class="log-command">stopping ... <i class="fa fa-angle-left"></i></p>');
+	},
+	restartTasks: function(e) {
+		e && e.preventDefault();
+		this.restart = true;
+		this.stopTasks(e);
+	},
 	processTask: function() {
 		if(!this.commandsToProcess || this.commandsToProcess.length == 0) {
 			this.started = false;
 			this.populate();
 			this.log('<p class="log-task-end">' + this.data.commands.length + ' command' + (this.data.commands.length > 1 ? 's' : '') + ' finished</p>');
 			this.dispatch('save');
+			if(this.restart) {
+				this.restart = false;
+				this.clearLog().startTasks();
+			}
 			return;
 		}
 		var command = this.commandsToProcess.shift();
-
 		// ********************************************************* chrome
 		if(command.indexOf('chrome:') === 0) {
 			var parts = command.split(':'), self = this;
@@ -188,25 +157,11 @@ var Task = absurd.component('Task', {
 				}
 				this.log('<p class="log-end">end (code: ' + data.code + ')</p>');
 				this.processTask();
+				this.dispatch('ended');
 			break;
 			case 'exit':
 				this.log('<p class="log-response">exit (code: ' + data.code + ', signal: ' + data.signal + ')</p>');
 			break;
-		}
-	},
-	stopTasks: function(e) {
-		e && e.preventDefault();
-		this.setMode('dashboard');
-		this.dispatch('stop', {
-			id: this.data.id,
-			action: 'stop-command'
-		});
-		this.commandsToProcess = [];
-		this.log('<p class="log-command">stopping ... <i class="fa fa-angle-left"></i></p>');
-	},
-	deleteTask: function(e) {
-		if(confirm('Are you sure?')) {
-			this.dispatch('delete-task');
 		}
 	},
 	log: function(msg, dom) {
@@ -222,38 +177,106 @@ var Task = absurd.component('Task', {
 	clearLog: function() {
 		this.logContent = '';
 		this.populate();
+		return this;
 	},
 	stdinChanged: function(e) {
-		if(this.started) {
-			if(e.keyCode === 13) { // enter
-				var input = e.target.value;
-				this.log('<p class="log-stdin"><i class="fa fa-keyboard-o"></i> ' + input + '</p>');
-				e.target.value = '';
-				Yez.send({
-					action: 'stdin-input',
-					id: this.getId(),
-					input: input
-				}, function(data) {
-					// no need to process the result
-				}.bind(this));
-			} else if(e.keyCode === 27) { // escape
-				e.target.value = '';
-			}
-		} else {
+		if(e.keyCode === 13) { // enter
+			var input = e.target.value;
+			this.log('<p class="log-stdin"><i class="fa fa-keyboard-o"></i> ' + input + '</p>');
+			e.target.value = '';
+			Yez.send({
+				action: 'stdin-input',
+				id: this.getId(),
+				input: input
+			}, function(data) {
+				// no need to process the result
+			}.bind(this));
+		} else if(e.keyCode === 27) { // escape
 			e.target.value = '';
 		}
-	},
-	// choosing cwd
-	chooseCWD: function(e) {
-		e.preventDefault();
-		CWD(this.data.cwd, function(cwd) {
-			if(cwd) {
-				this.data.cwd = cwd;
-				this.populate();
-			}
-		}.bind(this));
 	}
 });
+function TaskTemplate() {
+	return {
+		'div[class="task-<% getId() %>"]': {
+			'.task-cwd': '<i class="fa fa-location-arrow"></i> <% data.cwd %>',
+			'.breadcrumbs': [
+				'<i class="fa fa-angle-right"></i>',
+				{ 'a[href="#" data-absurd-event="click:gotoHome"]': '&nbsp;Home'},
+				' / <% data.name %>'
+			],
+			'.sub-nav': [
+				{ 'a[href="#" class="operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
+				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:restartTasks"]': '<i class="fa fa-repeat"></i> Restart'},
+				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
+				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
+				{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
+			],
+			'.edit': [
+				{
+					'.element': {
+						label: 'Name',
+						'.field': {
+							'input[type="text" name="name" value="<% data.name %>" data-absurd-event="keyup:changeCommandName"]': ''
+						}
+					}
+				},
+				{
+					'.element': {
+						label: 'Working directory',
+						'.field': {
+							'input[type="text" name="cwd" value="<% data.cwd %>" data-absurd-event="change:changeCWD"]': ''
+						},
+						'a.sub-right[href="#" data-absurd-event="click:chooseCWD:<% i %>"]': '<i class="fa fa-folder-open"></i>'
+					}
+				},
+				'<% for(var i=0; i<data.commands.length; i++) { var c = data.commands[i]; %>',
+				{
+					'.element': {
+						label: '<i class="fa fa-wrench"></i> <% i+1 %>',
+						'.field': {
+							'input[type="text" value="<% c %>" data-absurd-event="keyup:changeCommand:<% i %>"]': ''
+						},
+						'a.sub-left[href="#" data-absurd-event="click:addCommand:<% i %>"]': '<i class="fa fa-plus-circle"></i>',
+						'a.sub-right[href="#" data-absurd-event="click:removeCommand:<% i %>"]': '<i class="fa fa-minus-circle"></i>'
+					}
+				},
+				'<% } %>',
+				{
+					'.actions': [
+						{ 'a[href="#" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' }
+					]
+				}
+			],
+			'.dashboard': [
+				{ 'a[href="#" class="clear-log" data-absurd-event="click:clearLog"]': '<i class="fa fa-eraser"></i> Clear'},
+				{ '.log': '<% logContent %>' },
+				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinChanged"]': ''},
+				{ '.stdin-field-tooltip': '<i class="fa fa-angle-right"></i>'}
+			]
+		}
+	}
+}
+function TaskCSS() {
+	return {
+		'.task-<% getId() %>': {
+			'.task-cwd': TaskCSSCWD(),
+			'.breadcrumbs': TaskCSSBreadcrumbs(),
+			'.edit': TaskCSSEdit(),
+			'.dashboard': TaskCSSDashboard(),
+			'.sub-nav': TaskCSSSubNav()
+		}
+	}
+}
+function TaskCSSCWD() {
+	return {
+		pos: 'a',
+		top: '56px',
+		right: '12px',
+		color: '#575757',
+		fz: '14px'
+	}
+}
 function TaskCSSBreadcrumbs() {
 	return {
 		bxz: 'bb',
@@ -419,7 +442,7 @@ function TaskCSSDashboard() {
 			pos: 'a',
 			bottom: '7px',
 			right: '8px',
-			pad: '4px 4px 4px 75px',
+			pad: '4px 4px 4px 18px',
 			bdrsa: '4px',
 			wid: 'calc(100% - 17px)',
 			bd: 'solid 1px #C5C5C5',

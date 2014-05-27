@@ -4,12 +4,18 @@ var Home = absurd.component('Home', {
 		'div[data-component="home"]': [
 			{ h1: '<% tasks.length > 0 ? "Your tasks:" : "" %>' },
 			{ 'input[class="filter" data-absurd-event="keyup:filter" autofocus]': ''},
-			'<% for(var i=0; i<tasks.length; i++) { var started = tasks[i].started ? " started" : ""; var name = tasks[i].name; %>',
+			'<% for(var i=0; i<tasks.length; i++) { \
+				var started = tasks[i].started ? " started" : ""; \
+				var name = tasks[i].name; \
+				var group = tasks[i].group ? " group" : ""; \
+				var grouped = tasks[i].grouped ? " grouped" : ""; \
+				var id = tasks[i].id; \
+			%>',
 			{ 
-				'div[class="task<% started %>"]': {
-					'a[href="#" data-absurd-event="click:showTask:<% i %>" data-name="<% name %>"]': '<i class="fa <% tasks[i].started ? "fa-refresh" : "fa-stop" %>"></i> <% tasks[i].name %>',
-					'a[href="#" data-absurd-event="click:showAndRunTask:<% i %>" class="action"]': '<i class="fa fa-refresh"></i> Run',
-					'a[href="#" data-absurd-event="click:stopTask:<% i %>" class="action stop"]': '<i class="fa fa-stop"></i> Stop'
+				'div[class="task<% started %><% group %><% grouped %>"]': {
+					'a[href="#" data-absurd-event="click:showTask:<% id %>" data-name="<% name %>"]': '<i class="fa <% tasks[i].started ? "fa-refresh" : "fa-stop" %>"></i> <% tasks[i].name %>',
+					'a[href="#" data-absurd-event="click:runTask:<% id %>" class="action"]': '<i class="fa fa-refresh"></i> Run',
+					'a[href="#" data-absurd-event="click:stopTask:<% id %>" class="action stop"]': '<i class="fa fa-stop"></i> Stop'
 				}
 			},
 			'<% } %>',
@@ -23,37 +29,27 @@ var Home = absurd.component('Home', {
 			for(var i in ts) {
 				this.tasks.push({ id: ts[i].getId(), name: ts[i].data.name, started: ts[i].started });
 			}
+			this.orderTasks();
 		}
 		this.populate();
 		return this;
 	},
-	showTask: function(e, index) {
-		index = parseInt(index);
-		this.dispatch('show-task', this.tasks[index].id);
+	showTask: function(e, id) {
+		if(id != -1) {
+			this.dispatch('show-task', id);
+		}
 	},
-	showAndRunTask: function(e, index) {
+	runTask: function(e, id) {
 		e.preventDefault();
-		index = parseInt(index);
-		this.dispatch('show-and-run-task', this.tasks[index].id);
+		this.dispatch(e.ctrlKey === false ? 'run-task' : 'run-task-silent', id);
 	},
-	stopTask: function(e, index) {
+	stopTask: function(e, id) {
 		e.preventDefault();
-		index = parseInt(index);
-		this.dispatch('stop-task', this.tasks[index].id);
+		this.dispatch(e.ctrlKey === false ? 'stop-task' : 'stop-task-silent', id);
 	},
 	newTask: function(e) {
 		e.preventDefault();
 		this.dispatch('new-task')
-	},
-	moveUp: function(e, index) {
-		e.preventDefault();
-		index = parseInt(index);
-		this.dispatch('move-up', this.tasks[index].id);
-	},
-	moveDown: function(e, index) {
-		e.preventDefault();
-		index = parseInt(index);
-		this.dispatch('move-down', this.tasks[index].id);
 	},
 	filter: function(e, dom) {
 		var value = e.target.value;
@@ -73,6 +69,32 @@ var Home = absurd.component('Home', {
 		setTimeout(function() {
 			dom('.filter').el.focus();
 		}, 300);
+	},
+	orderTasks: function() {
+		this.tasks.sort(function(a, b) {
+			return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+		});
+		var word = '', arr = [], added = false;
+		for(var i=0; i<this.tasks.length; i++) {
+			var w = this.tasks[i].name.toLowerCase().split(' ').shift();
+			if(word != w) {
+				word = w;
+				added = false;
+			} else {
+				if(!added) {
+					added = true;
+					this.tasks[i-1].grouped = true;
+					arr.splice(arr.length-1, 0, { 
+						id: -1,
+						group: true, 
+						name: word.charAt(0).toUpperCase() + word.substr(1, word.length-1)
+					});
+				}
+				this.tasks[i].grouped = true;
+			}
+			arr.push(this.tasks[i]);
+		}
+		this.tasks = arr;
 	}
 });
 function HomeCSS() {
@@ -122,6 +144,35 @@ function HomeCSS() {
 				},
 				'a.action.stop': {
 					d: 'b'
+				}
+			},
+			'.grouped': {
+				ml: '30px',
+				'&:before': {
+					d: 'b',
+					pos: 'a',
+					content: '" "',
+					width: '19px',
+					height: '10px',
+					bdb: 'solid 2px #000',
+					bdl: 'solid 2px #000',
+					top: '8px',
+					left: '-28px'
+				}
+			},
+			'.group': {
+				'a.action': { d: 'n' },
+				'a': {
+					color: '#8E8E8E',
+					fz: '20px',
+					pad: '4px 0',
+					cursor: 'default',
+					bg: 'none',
+					bdb: 'none',
+					i: { d: 'n' },
+					'&:hover': {
+						bg: 'none'
+					}
 				}
 			},
 			'.newtask': {
