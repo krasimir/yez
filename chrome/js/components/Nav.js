@@ -38,11 +38,14 @@ var Nav = absurd.component('Nav', {
 	},
 	html: {
 		'nav[data-component="nav"]': [
-			'<% for(var i=0; i<tasksRunning.length; i++) { var name = tasksRunning[i].name; %>',
-			{ 'a[href="#" data-absurd-event="click:openTask:<% i %>" class="task" title="<% name %>"]': '<% tasksRunning[i].name.substr(0, 3) + "..." %>'},
-			'<% } %>',
-			{ 'a[href="#" data-absurd-event="click:addTask" class="add add-task" title="Terminal"]': '<i class="fa fa-plus-circle"></i> Task' },
-			{ 'a[href="#" data-absurd-event="click:addTerminal" class="add add-terminal" title="Terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
+			{ 'a[href="#" data-absurd-event="click:addTask" class="add add-task" title="New task"]': '<i class="fa fa-plus-circle"></i> Task' },
+			{ 'a[href="#" data-absurd-event="click:addTerminal" class="add add-terminal" title="New terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
+			'<% for(var i=0; i<tasksRunning.length; i++) { \
+				var name = tasksRunning[i].name; \
+				var id = tasksRunning[i].id; \
+			%>',
+			{ 'a[href="#" data-absurd-event="click:openTask:<% id %>" class="task" title="<% name %>"]': '<% tasksRunning[i].name.substr(0, 3) + "..." %>'},
+			'<% } %>'
 		]
 	},
 	tabs: [],
@@ -74,17 +77,16 @@ var Nav = absurd.component('Nav', {
 			self.startCheckingTasks();
 		}, 300);
 	},
-	openTask: function(e, index) {
+	openTask: function(e, id) {
 		e.preventDefault();
-		index = parseInt(index);
-		if(this.tasksRunning[index]) {
-			this.dispatch('open-task', {id: this.tasksRunning[index].id});
-		}
+		this.dispatch('open-task', {id: id});
 	},
 	addTerminal: function(e) {
+		e.preventDefault();
 		this.dispatch('add-terminal');
 	},
 	addTask: function(e) {
+		e.preventDefault();
 		this.dispatch('add-task');
 	}
 });

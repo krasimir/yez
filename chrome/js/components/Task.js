@@ -14,6 +14,7 @@ var Task = absurd.component('Task', {
 	constructor: function(data) {
 		this.data = data;
 		this.setMode(data ? 'dashboard' : 'edit');
+		if(data.terminal) this.terminalInit();
 	},
 	getId: function() {
 		return this.data && this.data.id && this.data.id != '' ? this.data.id : getId();
@@ -189,7 +190,7 @@ var Task = absurd.component('Task', {
 				this.processTask();
 			break;
 			case 'exit':
-				this.log('<p class="log-response">exit (code: ' + data.code + ', signal: ' + data.signal + ')</p>');
+				this.log('<p class="log-end">exit (code: ' + data.code + ', signal: ' + data.signal + ')</p>');
 			break;
 		}
 	},
@@ -214,15 +215,27 @@ var Task = absurd.component('Task', {
 			this.log('<p class="log-stdin"><i class="fa fa-keyboard-o"></i> ' + input + '</p>');
 			e.target.value = '';
 			Yez.send({
-				action: 'stdin-input',
+				action: this.data.terminal ? 'terminal' : 'stdin-input',
 				id: this.getId(),
-				input: input
+				input: input,
+				cwd: this.data.cwd
 			}, function(data) {
 				// no need to process the result
 			}.bind(this));
 		} else if(e.keyCode === 27) { // escape
 			e.target.value = '';
 		}
+	},
+	// *********************************************** terminal
+	terminalInit: function() {
+		var self = this;
+		this.html['div[class="task-<% getId() %>"]']['.sub-nav'] = [
+			{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
+		];
+		console.log(this.qs('.stdin-field'));
+		setTimeout(function() {
+			self.qs('.stdin-field').focus();
+		}, 200);		
 	},
 	// *********************************************** keypress signals
 	'ctrl+l': function() {

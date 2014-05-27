@@ -109,13 +109,24 @@ var Yez = absurd.component('Yez', {
 			newTask();
 		})
 		.on('add-terminal', function(data) {
-			
+			var newTask = self.initializeTask({ 
+				terminal: true,
+				name: 'Terminal', 
+				cwd: self.defaultCWD,
+				commands: [''],
+				id: getId()
+			});
+			self.content.append(newTask);
+			newTask.setMode('dashboard');
+			newTask.started = true;
+			self.tasks[newTask.getId()] = newTask;
 		});
 
 		this.home
 		.on('show-task', showTask = function(id) {
 			if(self.tasks[id]) {
 				var t = self.tasks[id];
+				t.setMode('dashboard');
 				self.content.append(t);
 			}
 		})
@@ -191,7 +202,9 @@ var Yez = absurd.component('Yez', {
 	saveToStorage: function() {
 		var tasks = [];
 		for(var id in this.tasks) {
-			tasks.push(this.tasks[id].data);
+			if(!this.tasks[id].data.terminal) {
+				tasks.push(this.tasks[id].data);
+			}
 		}
 		if(window.localStorage) {
 			window.localStorage.setItem('YezTasks', JSON.stringify(tasks));
