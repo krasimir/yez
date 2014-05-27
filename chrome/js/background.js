@@ -69,6 +69,7 @@ var onMessageListener = function(command, sender, sendResponse) {
             chrome.tabs.getSelected(null, function (tab) {
                 var clickResponse = null;
                 command.type = 'click';
+                command.data = jsCodeUtilities(command.data);
                 chrome.tabs.sendMessage(tab.id, command, function(response) {
                     sendResponse(clickResponse);
                 });
@@ -80,7 +81,7 @@ var onMessageListener = function(command, sender, sendResponse) {
                 TabCompleteNotifier.add(tab.id, function() {
                     sendResponse(sendResponse(clickResponse ? JSON.stringify(clickResponse) : null));
                 });
-                command.data = command.data.replace(/&quot;/g, '"');
+                command.data = jsCodeUtilities(command.data);
                 chrome.tabs.executeScript(tab.id, {code: command.data}, function(response) {
                     clickResponse = response;
                 });
@@ -88,7 +89,8 @@ var onMessageListener = function(command, sender, sendResponse) {
         break;
         case "js":
             chrome.tabs.getSelected(null, function(tab){
-                command.data = command.data.replace(/&quot;/g, '"');
+                command.data = jsCodeUtilities(command.data);
+                console.log(command.data);
                 chrome.tabs.executeScript(tab.id, {code: command.data}, function(response) {
                     sendResponse(response ? JSON.stringify(response) : null);
                 });
@@ -101,6 +103,12 @@ var onUpdatedListener = function(tabId, info, tab) {
     if(info.status == "complete") {
         TabCompleteNotifier.notify(tabId);
     }
+}
+var jsCodeUtilities = function(code) {
+    code = code.replace(/&quot;/g, '"');
+    code = code.replace(/qs/g, 'document.querySelector');
+    code = code.replace(/qsa/g, 'document.querySelectorAll');
+    return code;
 }
 
 chrome.runtime.onMessage.addListener(onMessageListener);
