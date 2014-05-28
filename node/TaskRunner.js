@@ -44,7 +44,6 @@ module.exports = function() {
 			err = [], errcb = null,
 			endcb = null, exitcb = null,
 			pathExtWin = ['.cmd', '.bat'];
-			console.log(c);
 		try {
 			(function go(c) {
 				preventEnding = false;

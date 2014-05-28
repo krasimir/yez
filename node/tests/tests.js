@@ -35,6 +35,15 @@ describe("/ Command line parsing /", function() {
 		expect(res.args[2]).to.be.equal('-f');
 		done();
 	});
+	it("should parse complex command", function(done) {
+		var res = parser('git commit -am "Message here - with dash"');
+		expect(res.command).to.be.equal('git');
+		expect(res.args.length).to.be.equal(3);
+		expect(res.args[0]).to.be.equal('commit');
+		expect(res.args[1]).to.be.equal('-am');
+		expect(res.args[2]).to.be.equal('"Message here - with dash"');
+		done();
+	});
 });
 
 describe("/ Running commands /", function(done) {

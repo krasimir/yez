@@ -12,7 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "socket.io": "0.9.16",
-    "ps-tree": "0.0.3"
+    "ps-tree": "0.0.3",
+    "spawn-args": "0.0.2"
   },
   "devDependencies": {
     "expect.js": "0.3.1",
