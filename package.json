@@ -1,6 +1,6 @@
 {
   "name": "yez",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "https://github.com/krasimir/yez",
   "description": "Chrome extension which acts as task runner",
   "main": "./node/index.js",

@@ -158,7 +158,7 @@ var Task = absurd.component('Task', {
 			this.dispatch('data', {
 				id: this.data.id,
 				action: 'run-command',
-				command: command,
+				command: command.replace(/&quot;/g, '"'),
 				cwd: this.data.cwd
 			});
 		}
@@ -177,15 +177,18 @@ var Task = absurd.component('Task', {
 				this.log('<p class="log-response">' + data.data + '</p>');
 			break;
 			case 'end':
+				var allErrors = '';
 				if(data.err != false) {
+					allErrors += '<br />';
 					for(var i=0; i<data.err.length; i++) {
 						var err = data.err[i], errDesc;
-						errDesc = err.code == 'ENOENT' ? 'Wrong file, directory or command name.<br />Error: ' : '';						
+						errDesc = err.code == 'ENOENT' ? 'Something went wrong!<br />Error: ' : '';						
 						if(typeof err == 'object') err = JSON.stringify(err);
-						this.log('<p class="log-error">' + errDesc + err + '</p>');
+						allErrors += errDesc + err + '<br />';
 					}
+					allErrors = '';
 				}
-				this.log('<p class="log-end">end (code: ' + data.code + ')</p>');
+				this.log('<p class="log-end">end (code: ' + data.code + ')' + allErrors + '</p>');
 				this.endedCommands += 1;
 				this.processTask();
 			break;
@@ -471,6 +474,10 @@ function TaskCSSDashboard() {
 			},
 			'.log-error': {
 				bg: '#F39C9C',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-error-end': {
+				bg: '#F8C2C2',
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-end': {

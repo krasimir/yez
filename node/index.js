@@ -136,7 +136,6 @@ io.sockets.on('connection', function (socket) {
             break;
             case 'terminal': 
                 var runner = TaskRunner();
-                console.log(data.input);
                 runner.run(data.input, data.cwd || defaultCWD)
                 .data(function(d) {
                     io.sockets.emit('response', {
