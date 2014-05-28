@@ -169,6 +169,23 @@ io.sockets.on('connection', function (socket) {
                     });
                 });
             break;
+            case 'cd':
+                var dir = path.normalize(data.dir);
+                fs.exists(dir, function(exists) {
+                    if(exists) {
+                        io.sockets.emit('beacon-response', {
+                            id: id,
+                            dir: dir
+                        });
+                    } else {
+                        io.sockets.emit('beacon-response', {
+                            id: id,
+                            err: { msg: 'Wrong directory "' + dir + '".' }
+                        });
+                    }
+                });
+                
+            break;
             case 'list':
                 var error = function(err) {
                     io.sockets.emit('beacon-response', {

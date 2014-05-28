@@ -221,18 +221,35 @@ var Task = absurd.component('Task', {
 	},
 	stdinChanged: function(e) {
 		if(e.keyCode === 13) { // enter
-			var input = e.target.value;
+			var input = e.target.value, self = this;
 			this.log('<p class="log-stdin"><i class="fa fa-keyboard-o"></i> ' + input + '</p>');
 			e.target.value = '';
-			Yez.send({
-				action: this.data.terminal ? 'terminal' : 'stdin-input',
-				action: 'terminal',
-				id: this.getId(),
-				input: input,
-				cwd: this.data.cwd
-			}, function(data) {
-				// no need to process the result
-			}.bind(this));
+			if(input.split(/ /g)[0].toLowerCase() == 'cd') {
+				var pathToAppend = input.split(/ /g);
+				pathToAppend.shift();
+				Yez.send({
+					action: 'cd',
+					id: this.getId(),
+					dir: this.data.cwd + '/' + pathToAppend.join(' ')
+				}, function(data) {
+					if(data.err) {
+						self.log('<p class="log-error"><i class="fa fa-keyboard-o"></i> ' + data.err.msg + '</p>');
+					} else if(data.dir) {
+						self.data.cwd = normalizePath(data.dir);
+						self.populate();
+					}
+				})
+			} else {
+				Yez.send({
+					// action: this.data.terminal ? 'terminal' : 'stdin-input',
+					action: 'terminal',
+					id: this.getId(),
+					input: input,
+					cwd: this.data.cwd
+				}, function(data) {
+					// no need to process the result
+				}.bind(this));
+			}
 		} else if(e.keyCode === 27) { // escape
 			e.target.value = '';
 		}
