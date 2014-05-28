@@ -40,6 +40,7 @@ var Nav = absurd.component('Nav', {
 		'nav[data-component="nav"]': [
 			{ 'a[href="#" data-absurd-event="click:addTask" class="add add-task" title="New task"]': '<i class="fa fa-plus-circle"></i> Task' },
 			{ 'a[href="#" data-absurd-event="click:addTerminal" class="add add-terminal" title="New terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
+			{ 'a[href="#" data-absurd-event="click:toHome" class="task" title="Back to home"]': '<i class="fa fa-home"></i>' },
 			'<% for(var i=0; i<tasksRunning.length; i++) { \
 				var name = tasksRunning[i].name; \
 				var id = tasksRunning[i].id; \
@@ -80,6 +81,10 @@ var Nav = absurd.component('Nav', {
 	openTask: function(e, id) {
 		e.preventDefault();
 		this.dispatch('open-task', {id: id});
+	},
+	toHome: function(e) {
+		e.preventDefault();
+		this.dispatch('to-home');
 	},
 	addTerminal: function(e) {
 		e.preventDefault();

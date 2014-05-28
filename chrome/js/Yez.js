@@ -120,7 +120,8 @@ var Yez = absurd.component('Yez', {
 			newTask.setMode('dashboard');
 			newTask.started = true;
 			self.tasks[newTask.getId()] = newTask;
-		});
+		})
+		.on('to-home', this.showHome.bind(this));
 
 		this.home
 		.on('show-task', showTask = function(id) {

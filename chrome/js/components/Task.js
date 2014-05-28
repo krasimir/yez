@@ -27,6 +27,14 @@ var Task = absurd.component('Task', {
 		e.preventDefault();
 		this.dispatch('home');
 	},
+	appended: function() {
+		var self = this;
+		if(this.mode == 'dashboard') {
+			setTimeout(function() {
+				self.qs('.stdin-field').focus();
+			}, 200);	
+		}
+	},
 	// *********************************************** edit mode
 	goToEditMode: function(e, dom) {
 		e && e.preventDefault();
@@ -101,7 +109,6 @@ var Task = absurd.component('Task', {
 		this.processTask();
 		this.dispatch('save');
 		this.endedCommands = 0;
-		// this.qs('.stdin-field').focus();
 	},
 	stopTasks: function(e) {
 		e && e.preventDefault();
@@ -219,6 +226,7 @@ var Task = absurd.component('Task', {
 			e.target.value = '';
 			Yez.send({
 				action: this.data.terminal ? 'terminal' : 'stdin-input',
+				action: 'terminal',
 				id: this.getId(),
 				input: input,
 				cwd: this.data.cwd
@@ -234,11 +242,7 @@ var Task = absurd.component('Task', {
 		var self = this;
 		this.html['div[class="task-<% getId() %>"]']['.sub-nav'] = [
 			{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
-		];
-		console.log(this.qs('.stdin-field'));
-		setTimeout(function() {
-			self.qs('.stdin-field').focus();
-		}, 200);		
+		];	
 	},
 	// *********************************************** keypress signals
 	'ctrl+l': function() {
@@ -251,12 +255,6 @@ var Task = absurd.component('Task', {
 function TaskTemplate() {
 	return {
 		'div[class="task-<% getId() %>"]': {
-			'.task-cwd': '<i class="fa fa-location-arrow"></i> <% data.cwd %>',
-			'.breadcrumbs': [
-				'<i class="fa fa-angle-right"></i>',
-				{ 'a[href="#" data-absurd-event="click:gotoHome"]': '&nbsp;Home'},
-				' / <% data.name %>'
-			],
 			'.sub-nav': [
 				{ 'a[href="#" class="operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
 				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:restartTasks"]': '<i class="fa fa-repeat"></i> Restart'},
@@ -309,7 +307,8 @@ function TaskTemplate() {
 				{ 'a[href="#" class="clear-log" data-absurd-event="click:clearLog"]': '<i class="fa fa-eraser"></i> Clear'},
 				{ '.log': '<% logContent %>' },
 				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinChanged"]': ''},
-				{ '.stdin-field-tooltip': '<i class="fa fa-angle-right"></i>'}
+				{ '.stdin-field-tooltip': '<i class="fa fa-angle-right"></i>'},
+				{ '.task-cwd': '<i class="fa fa-dot-circle-o"></i> <% data.cwd %>' }
 			]
 		}
 	}
@@ -318,7 +317,6 @@ function TaskCSS() {
 	return {
 		'.task-<% getId() %>': {
 			'.task-cwd': TaskCSSCWD(),
-			'.breadcrumbs': TaskCSSBreadcrumbs(),
 			'.edit': TaskCSSEdit(),
 			'.dashboard': TaskCSSDashboard(),
 			'.sub-nav': TaskCSSSubNav()
@@ -328,30 +326,11 @@ function TaskCSS() {
 function TaskCSSCWD() {
 	return {
 		pos: 'a',
-		top: '56px',
-		right: '12px',
+		bottom: '42px',
+		left: '12px',
 		color: '#575757',
 		fz: '14px'
 	}
-}
-function TaskCSSBreadcrumbs() {
-	return {
-		bxz: 'bb',
-		pad: '6px 14px',
-		bg: '#F9F7F2',
-		bdb: 'solid 1px #E7E7E7',
-		bdt: 'solid 1px #fff',
-		color: '#575757',
-		fz: '14px',
-		a: {
-			color: '#999',
-			fz: '14px',
-			ted: 'underline',
-			'&:hover': {
-				color: '#000'
-			}
-		}
-	};
 }
 function TaskCSSEdit() {
 	return {
@@ -452,12 +431,12 @@ function TaskCSSDashboard() {
 		'.log': {
 			bxz: 'bb',
 			pos: 'a',
-			top: '144px',
+			top: '107px',
 			left: '10px',
 			pad: '10px',
 			bg: '#FAFAFA',
 			wid: 'calc(100% - 18px)',
-			hei: 'calc(100% - 187px)',
+			hei: 'calc(100% - 181px)',
 			fz: '12px',
 			lh: '20px',
 			bdrsa: '4px',
@@ -481,7 +460,9 @@ function TaskCSSDashboard() {
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-end': {
-				ta: 'r'
+				ta: 'r',
+				pad: 0,
+				lh: '16px'
 			},
 			'.log-response': {
 				lh: '16px'
@@ -524,7 +505,7 @@ function TaskCSSDashboard() {
 			color: '#999',
 			fz: '12px',
 			pos: 'a',
-			top: '104px',
+			top: '69px',
 			right: '12px',
 			ted: 'n',
 			'&:hover': {
