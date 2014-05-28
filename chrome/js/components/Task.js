@@ -13,7 +13,9 @@ var Task = absurd.component('Task', {
 	},
 	constructor: function(data) {
 		this.data = data;
-		this.setMode(data ? 'dashboard' : 'edit');
+		this
+		.setMode(data ? 'dashboard' : 'edit')
+		.gitStatus();
 		if(data.terminal) this.terminalInit();
 	},
 	getId: function() {
@@ -22,10 +24,12 @@ var Task = absurd.component('Task', {
 	setMode: function(m) {
 		this.mode = m;
 		this.populate();
+		return this;
 	},
 	gotoHome: function(e) {
 		e.preventDefault();
 		this.dispatch('home');
+		return this;
 	},
 	appended: function() {
 		var self = this;
@@ -238,7 +242,7 @@ var Task = absurd.component('Task', {
 						self.data.cwd = normalizePath(data.dir);
 						self.populate();
 					}
-				})
+				});
 			} else {
 				Yez.send({
 					// action: this.data.terminal ? 'terminal' : 'stdin-input',
@@ -260,6 +264,23 @@ var Task = absurd.component('Task', {
 		this.html['div[class="task-<% getId() %>"]']['.sub-nav'] = [
 			{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
 		];	
+	},
+	gitStatus: function(value) {
+		if(!this.gitStatusHolder) {
+			this.gitStatusHolder = this.qs('.git-status');
+		}
+		if(!value) {
+			this.gitStatusHolder.innerHTML = '';
+		} else {
+			var str = '<i class="fa fa-git"></i> ', changes = '';
+			for(var i in value.status) {
+				changes += i + value.status[i] + ' ';
+			}
+			str += '<span style="' + (changes != '' ? 'color: red' : 'color: green') + '">' + value.branch + '</span>';
+			str += changes != '' ? ' / <small>' + changes : '</small>';
+			this.gitStatusHolder.innerHTML = str;
+		}
+		return this;
 	},
 	// *********************************************** keypress signals
 	'ctrl+l': function() {
@@ -325,7 +346,8 @@ function TaskTemplate() {
 				{ '.log': '<% logContent %>' },
 				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinChanged"]': ''},
 				{ '.stdin-field-tooltip': '<i class="fa fa-angle-right"></i>'},
-				{ '.task-cwd': '<i class="fa fa-dot-circle-o"></i> <% data.cwd %>' }
+				{ '.task-cwd': '<i class="fa fa-dot-circle-o"></i> <% data.cwd %>' },
+				{ '.git-status': '' }
 			]
 		}
 	}
@@ -334,6 +356,7 @@ function TaskCSS() {
 	return {
 		'.task-<% getId() %>': {
 			'.task-cwd': TaskCSSCWD(),
+			'.git-status': TaskCSSGitStatus(),
 			'.edit': TaskCSSEdit(),
 			'.dashboard': TaskCSSDashboard(),
 			'.sub-nav': TaskCSSSubNav()
@@ -345,6 +368,15 @@ function TaskCSSCWD() {
 		pos: 'a',
 		bottom: '42px',
 		left: '12px',
+		color: '#575757',
+		fz: '14px'
+	}
+}
+function TaskCSSGitStatus() {
+	return {
+		pos: 'a',
+		bottom: '42px',
+		right: '12px',
 		color: '#575757',
 		fz: '14px'
 	}

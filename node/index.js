@@ -67,6 +67,7 @@ io.sockets.on('connection', function (socket) {
         if(!data || !data.id) return;
         var id = data.id;
         switch(data.action) {
+            /********************************************************************** run command */
             case 'run-command':
                 var runner = TaskRunner();
                 runner.run(data.command, data.cwd || defaultCWD)
@@ -106,6 +107,7 @@ io.sockets.on('connection', function (socket) {
                 if(!runners[id]) runners[id] = [];
                 runners[id].push(runner);
             break;
+            /********************************************************************** stop command */
             case 'stop-command':
                 if(runners[id]) {
                     runners[id].forEach(function(r) {
@@ -121,6 +123,7 @@ io.sockets.on('connection', function (socket) {
                     });
                 }
             break;
+            /********************************************************************** stdin */
             case 'stdin-input': 
                 if(runners[id]) {
                     var res = 0;
@@ -134,6 +137,7 @@ io.sockets.on('connection', function (socket) {
                     });
                 }
             break;
+            /********************************************************************** terminal */
             case 'terminal': 
                 var runner = TaskRunner();
                 runner.run(data.input, data.cwd || defaultCWD)
@@ -169,6 +173,7 @@ io.sockets.on('connection', function (socket) {
                     });
                 });
             break;
+            /********************************************************************** change directory */
             case 'cd':
                 var dir = path.normalize(data.dir);
                 fs.exists(dir, function(exists) {
@@ -186,6 +191,24 @@ io.sockets.on('connection', function (socket) {
                 });
                 
             break;
+            /********************************************************************** git status */
+            case 'git-status': 
+                var runner = TaskRunner();
+                runner.run('git status -sb', data.cwd || defaultCWD)
+                .err(function(data) {
+                    io.sockets.emit('beacon-response', {
+                        id: id,
+                        err: data
+                    });
+                })
+                .end(function(err, d, code) {
+                    io.sockets.emit('beacon-response', {
+                        id: id,
+                        data: d
+                    });
+                });
+            break;
+            /********************************************************************** list */
             case 'list':
                 var error = function(err) {
                     io.sockets.emit('beacon-response', {
