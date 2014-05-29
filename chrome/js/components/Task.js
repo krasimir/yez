@@ -13,10 +13,10 @@ var Task = absurd.component('Task', {
 	},
 	constructor: function(data) {
 		this.data = data;
+		if(data.terminal) this.terminalInit();
 		this
 		.setMode(data ? 'dashboard' : 'edit')
 		.gitStatus();
-		if(data.terminal) this.terminalInit();
 	},
 	getId: function() {
 		return this.data && this.data.id && this.data.id != '' ? this.data.id : getId();
@@ -260,9 +260,8 @@ var Task = absurd.component('Task', {
 	},
 	// *********************************************** terminal
 	terminalInit: function() {
-		var self = this;
 		this.html['div[class="task-<% getId() %>"]']['.sub-nav'] = [
-			{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
+			{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Close'}
 		];	
 	},
 	gitStatus: function(value) {

@@ -52,7 +52,6 @@ describe("/ Running commands /", function(done) {
 		runner.run('node -v')
 		.data(function(d) { data.push(d); })
 		.end(function(err, d, code) {
-			expect(data[0].indexOf('v0.10') === 0).to.equal(true);
 			expect(code).to.equal(0);
 			expect(err).to.equal(false);
 			done();
