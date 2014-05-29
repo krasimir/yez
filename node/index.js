@@ -192,7 +192,7 @@ io.sockets.on('connection', function (socket) {
                 
             break;
             /********************************************************************** git status */
-            case 'git-status': 
+            case 'git-status':
                 var runner = TaskRunner();
                 runner.run('git status -sb', data.cwd || defaultCWD)
                 .err(function(data) {
