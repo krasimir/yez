@@ -243,7 +243,8 @@ function HomeCSS() {
 		'body, html': {
 			wid: '100%', hei: '100%',
 			mar: 0, pad: 0,
-			ff: "'Roboto', 'sans-serif'",
+			// ff: "'Roboto', 'sans-serif'",
+			ff: 'Arial',
 			fz: '16px', lh: '26px'
 		},
 		'.left': { fl: 'l' },

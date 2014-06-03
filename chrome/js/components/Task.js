@@ -223,9 +223,14 @@ var Task = absurd.component('Task', {
 		this.populate();
 		return this;
 	},
-	stdinChanged: function(e) {
+	stdinKeyUp: function(e) {
+		var historyValue = '';
+		e && e.preventDefault();
+		e && e.stopPropagation();
 		if(e.keyCode === 13) { // enter
+			Autocomplete.clear();
 			var input = e.target.value, self = this;
+			TerminalHistory.store(input);
 			this.log('<p class="log-stdin"><i class="fa fa-keyboard-o"></i> ' + input + '</p>');
 			e.target.value = '';
 			if(input.split(/ /g)[0].toLowerCase() == 'cd') {
@@ -256,7 +261,31 @@ var Task = absurd.component('Task', {
 			}
 		} else if(e.keyCode === 27) { // escape
 			e.target.value = '';
+		} else if(e.keyCode === 38) { // up
+			if(historyValue = TerminalHistory.pull('up')) {
+				e.target.value = historyValue;
+			}
+		} else if(e.keyCode === 40) { // down
+			if(historyValue = TerminalHistory.pull('down')) {
+				e.target.value = historyValue;
+			}
+		} else {
+			Autocomplete.check(this.data.cwd);
 		}
+	},
+	stdinKeyDown: function(e) {
+		if(e.keyCode === 9) {
+			e.preventDefault();
+			Autocomplete.applyMatch();
+		}
+	},
+	stdinFocused: function(e) {
+		Autocomplete.setup(this.qs('.stdin-field'), this.qs('.autocomplete'));
+		TerminalHistory.setup(this.qs('.stdin-field'), this.getId());
+	},
+	stdinBlured: function(e) {
+		Autocomplete.off();
+		TerminalHistory.off();
 	},
 	// *********************************************** terminal
 	terminalInit: function() {
@@ -343,7 +372,8 @@ function TaskTemplate() {
 			'.dashboard': [
 				{ 'a[href="#" class="clear-log" data-absurd-event="click:clearLog"]': '<i class="fa fa-eraser"></i> Clear'},
 				{ '.log': '<% logContent %>' },
-				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinChanged"]': ''},
+				{ '.autocomplete': ''},
+				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinKeyUp,keydown:stdinKeyDown,focus:stdinFocused,blur:stdinBlured"]': ''},
 				{ '.stdin-field-tooltip': '<i class="fa fa-angle-right"></i>'},
 				{ '.task-cwd': '<i class="fa fa-dot-circle-o"></i> <% data.cwd %>' },
 				{ '.git-status': '' }
@@ -541,7 +571,20 @@ function TaskCSSDashboard() {
 			bdrsa: '4px',
 			wid: 'calc(100% - 17px)',
 			bd: 'solid 1px #C5C5C5',
-			ff: "'Roboto', 'sans-serif'"
+			// ff: "'Roboto', 'sans-serif'",
+			ff: "Arial",
+			bg: 'n'
+		},
+		'.autocomplete': {
+			bxz: 'bb',
+			pos: 'a',
+			bottom: '5px',
+			right: '7px',
+			pad: '4px 4px 4px 18px',
+			bdrsa: '4px',
+			wid: 'calc(100% - 17px)',
+			fz: '13px',
+			color: '#B8B8B8'
 		},
 		'.stdin-field-tooltip': {
 			pos: 'a',

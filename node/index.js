@@ -238,7 +238,7 @@ io.sockets.on('connection', function (socket) {
                                             if(err) { 
                                                 error(err);                                                 
                                             } else {
-                                                if(stats.isDirectory()) {
+                                                if(stats.isDirectory() || data.files) {
                                                     result.push(item);
                                                 }
                                             }
