@@ -1,7 +1,5 @@
 var Autocomplete = {
-	dictionary: {
-		node: '', git: ''
-	},
+	dictionary: {},
 	matchingWord: '',
 	setup: function(f, h) {
 		this.field = f;
@@ -63,6 +61,7 @@ var Autocomplete = {
 				if(typeof data.err == 'object') data.err = JSON.stringify(data.err);
 				// alert(data.err);
 			} else {
+				self.dictionary = {};
 				for(var i=0; i<data.files.length; i++) {
 					self.dictionary[data.files[i]] = '';
 				}
