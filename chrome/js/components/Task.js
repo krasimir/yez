@@ -571,20 +571,21 @@ function TaskCSSDashboard() {
 			bdrsa: '4px',
 			wid: 'calc(100% - 17px)',
 			bd: 'solid 1px #C5C5C5',
-			// ff: "'Roboto', 'sans-serif'",
-			ff: "Arial",
+			ff: "'Roboto', 'sans-serif'",
 			bg: 'n'
 		},
 		'.autocomplete': {
 			bxz: 'bb',
 			pos: 'a',
-			bottom: '5px',
+			bottom: '2px',
 			right: '7px',
 			pad: '4px 4px 4px 18px',
 			bdrsa: '4px',
 			wid: 'calc(100% - 17px)',
 			fz: '13px',
-			color: '#B8B8B8'
+			color: '#B8B8B8',
+			ov: 'h',
+			hei: '38px'
 		},
 		'.stdin-field-tooltip': {
 			pos: 'a',
