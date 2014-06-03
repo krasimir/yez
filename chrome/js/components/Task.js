@@ -316,6 +316,9 @@ var Task = absurd.component('Task', {
 	},
 	'ctrl+enter': function() {
 		this.restartTasks();
+	},
+	'ctrl+i': function() {
+		this.qs('.stdin-field').focus();
 	}
 });
 function TaskTemplate() {

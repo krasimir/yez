@@ -33,6 +33,7 @@ var Home = absurd.component('Home', {
 			}
 			this.orderTasks();
 		}
+		if(this.el) this.el.innerHTML = '';
 		this.populate();
 		return this;
 	},
@@ -97,6 +98,9 @@ var Home = absurd.component('Home', {
 			arr.push(this.tasks[i]);
 		}
 		this.tasks = arr;
+	},
+	'ctrl+i': function() {
+		this.qs('.filter').focus();
 	}
 });
 function HomeCSS() {

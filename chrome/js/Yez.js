@@ -79,6 +79,7 @@ var Yez = absurd.component('Yez', {
 
 		var self = this, showTask;
 
+		// getting the saved tasks
 		if(window.localStorage) {
 			var ts = window.localStorage.getItem('YezTasks');
 			if(ts) {
@@ -96,11 +97,13 @@ var Yez = absurd.component('Yez', {
 
 		this.populate();
 
+		// initializing the main components
 		this.status = Status(this.host, this.port);
 		this.nav = Nav();
 		this.content = Content();
 		this.home = Home();
 
+		// setting listeners of the navigation
 		this.nav
 		.on('open-task', function(data) {
 			showTask(data.id);
@@ -123,6 +126,7 @@ var Yez = absurd.component('Yez', {
 		})
 		.on('to-home', this.showHome.bind(this));
 
+		// setting listeners of the home page
 		this.home
 		.on('show-task', showTask = function(id) {
 			if(self.tasks[id]) {
@@ -163,6 +167,7 @@ var Yez = absurd.component('Yez', {
 			newTask.goToEditMode();
 		});
 
+		// connecting, showing home page and enabling the key binding
 		this.connect().showHome().initializeKeyPress();
 
 	},
@@ -229,6 +234,9 @@ var Yez = absurd.component('Yez', {
 		});
 		keypress.simple_combo("ctrl enter", function() {
 			self.content.passKeypressSignal('ctrl+enter');
+		});
+		keypress.simple_combo("ctrl i", function() {
+			self.content.passKeypressSignal('ctrl+i');
 		});
 		return this;
 	},
