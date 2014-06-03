@@ -577,7 +577,7 @@ function TaskCSSDashboard() {
 		'.autocomplete': {
 			bxz: 'bb',
 			pos: 'a',
-			bottom: '2px',
+			bottom: '1px',
 			right: '7px',
 			pad: '4px 4px 4px 18px',
 			bdrsa: '4px',
