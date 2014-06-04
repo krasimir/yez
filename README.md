@@ -9,7 +9,7 @@ Chrome extension that acts as task runner
 
 ## Usage
 
-* Install the Yez! module by running `npm install -g yez`
+* Install the Yez! module by running `npm install -g yez` or `npm install -g https://registry.npmjs.org/yez/-/yez-1.0.4.tgz`
 * Run `yez` in your console
 * Open Chrome browser and install the [extension](https://chrome.google.com/webstore/detail/yez/acbhddemkmodoahhmnphpcfmcfgpjmap)
 * Open Chrome's DevTools and find the Yez! tab
