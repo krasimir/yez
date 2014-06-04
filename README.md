@@ -1,6 +1,6 @@
 # Yez!
 
-Chrome extension that acts as task runner
+> Chrome extension that acts as terminal and task runner
 
 ## Installation
 
