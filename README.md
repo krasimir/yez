@@ -9,7 +9,7 @@
 
 ## Usage
 
-* Install the Yez! module by running `npm install -g yez` or `npm install -g https://registry.npmjs.org/yez/-/yez-1.0.4.tgz`
+* Install the Yez! module by running `npm install -g yez` or `npm install -g https://registry.npmjs.org/yez/-/yez-1.0.5.tgz`. If you have problems installing the module please check out the [this thread](https://github.com/krasimir/yez/issues/1).
 * Run `yez` in your console
 * Open Chrome browser and install the [extension](https://chrome.google.com/webstore/detail/yez/acbhddemkmodoahhmnphpcfmcfgpjmap)
 * Open Chrome's DevTools and find the Yez! tab
