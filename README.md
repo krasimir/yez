@@ -14,6 +14,15 @@
 * Open Chrome browser and install the [extension](https://chrome.google.com/webstore/detail/yez/acbhddemkmodoahhmnphpcfmcfgpjmap)
 * Open Chrome's DevTools and find the Yez! tab
 
+## Chrome extension shortcuts
+
+To open Yez! just press `Ctrl+Shift+I` which openes the DevTools console. Just after that press `Ctrl+]` till you reach the needed tab.
+
+* `Ctrl+l` - clearing the command output panel
+* `Ctrl+Enter` - restarting the task
+* `Ctrl+i` - bring the focus to the input field
+* `Ctrl+\` - opens a new terminal
+
 ## Running tests
 
 ```js

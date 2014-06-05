@@ -111,7 +111,7 @@ var Yez = absurd.component('Yez', {
 		.on('add-task', function() {
 			newTask();
 		})
-		.on('add-terminal', function(data) {
+		.on('add-terminal', this.addTerminal = function(data) {
 			var newTask = self.initializeTask({ 
 				terminal: true,
 				name: 'Terminal', 
@@ -238,7 +238,23 @@ var Yez = absurd.component('Yez', {
 		keypress.simple_combo("ctrl i", function() {
 			self.content.passKeypressSignal('ctrl+i');
 		});
+		keypress.simple_combo("ctrl \\", function() {
+			self.addTerminal();
+		});
 		return this;
+	},
+	aliases: function(value) {
+		if(typeof value == 'undefined') {
+			if(window.localStorage) {
+				var a = window.localStorage.getItem('YezAliases');
+				return a ? a : '';
+			}
+		} else {
+			if(window.localStorage) {
+				window.localStorage.setItem('YezAliases', value);
+				return value;
+			}
+		}
 	},
 	'tasks-updated': function() {
 		this.home.setTasks(this.tasks);

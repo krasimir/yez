@@ -1,52 +1,7 @@
 var CWD = absurd.component('CWD', {
-	css: {
-		'.cwd': {
-			wid: '100%',
-			hei: '100%',
-			pos: 'a', top: 0, left: 0,
-			bg: 'rgba(0, 0, 0, 0.5)',
-			'.content': {
-				pos: 'a', left: '2%', top: '2%',
-				wid: '94%', hei: '94%',
-				pad: '10px',
-				bg: '#F0F0F0',
-				bxz: 'bb',
-				'.info': {
-					bxz: 'bb',
-					hei: '60px',
-					fz: '12px',
-					lh: '16px'
-				},
-				'.inner': {
-					ovx: 'h', ovy: 's',
-					hei: 'calc(100% - 120px)',
-					bxz: 'bb',
-					a: {
-						d: 'b',
-						color: '#000',
-						ted: 'n',
-						pad: '0 0 0 4px',
-						bg: '#D4D4D4',
-						bdrsa: '4px',
-						fz: '12px',
-						mar: '0 0 2px 0',
-						bxz: 'bb',
-						'&:hover': {
-							bg: '#C0C0C0'
-						}
-					}
-				},
-				'.actions': {
-					mar: '20px 0 0 0',
-					a: [
-						button()
-					]
-				}
-			}
-		}
-	},
+	css: DialogStyles(),
 	html: {
-		'.cwd': {
+		'.dialog': {
 			'.content': {
 				'.info': '<i class="fa fa-arrow-circle-o-right"></i> <% cwd %>',
 				'.inner': [
@@ -104,3 +59,51 @@ var CWD = absurd.component('CWD', {
 		this.list(cwd);
 	}
 });
+function DialogStyles() {
+	return {
+		'.dialog': {
+			wid: '100%',
+			hei: '100%',
+			pos: 'a', top: 0, left: 0,
+			bg: 'rgba(0, 0, 0, 0.5)',
+			'.content': {
+				pos: 'a', left: '2%', top: '2%',
+				wid: '94%', hei: '94%',
+				pad: '10px',
+				bg: '#F0F0F0',
+				bxz: 'bb',
+				'.info': {
+					bxz: 'bb',
+					hei: '60px',
+					fz: '12px',
+					lh: '16px'
+				},
+				'.inner': {
+					ovx: 'h', ovy: 's',
+					hei: 'calc(100% - 120px)',
+					bxz: 'bb',
+					a: {
+						d: 'b',
+						color: '#000',
+						ted: 'n',
+						pad: '0 0 0 4px',
+						bg: '#D4D4D4',
+						bdrsa: '4px',
+						fz: '12px',
+						mar: '0 0 2px 0',
+						bxz: 'bb',
+						'&:hover': {
+							bg: '#C0C0C0'
+						}
+					}
+				},
+				'.actions': {
+					mar: '20px 0 0 0',
+					a: [
+						button()
+					]
+				}
+			}
+		}
+	}
+}

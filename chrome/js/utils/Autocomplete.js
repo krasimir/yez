@@ -61,7 +61,7 @@ var Autocomplete = {
 				if(typeof data.err == 'object') data.err = JSON.stringify(data.err);
 				// alert(data.err);
 			} else {
-				self.dictionary = {};
+				self.dictionary = extend({}, self.getAliases());
 				for(var i=0; i<data.files.length; i++) {
 					self.dictionary[data.files[i]] = '';
 				}
@@ -73,5 +73,14 @@ var Autocomplete = {
 		if(this.field && this.hint) {
 			this.hint.innerHTML = '';
 		}
+	},
+	getAliases: function() {
+		var aliases = Yez.aliases().split(/\n/g);
+		var res = {};
+		for(var i=0; i<aliases.length; i++) {
+			var a = aliases[i].split(':');
+			res[a[0]] = '';
+		}
+		return res;
 	}
 }

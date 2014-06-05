@@ -231,6 +231,7 @@ var Task = absurd.component('Task', {
 			Autocomplete.clear();
 			var input = e.target.value, self = this;
 			TerminalHistory.store(input);
+			input = this.applyAliases(input);
 			this.log('<p class="log-stdin"><i class="fa fa-keyboard-o"></i> ' + input + '</p>');
 			e.target.value = '';
 			if(input.split(/ /g)[0].toLowerCase() == 'cd') {
@@ -310,6 +311,19 @@ var Task = absurd.component('Task', {
 		}
 		return this;
 	},
+	editAliases: function() {
+		Editor(Yez.aliases, Yez.aliases(), 'Edit your aliases. Type one per line in the format "[regex]:[replacement]".');
+	},
+	applyAliases: function(input) {
+		var aliases = Yez.aliases().split(/\n/g);
+		for(var i=0; i<aliases.length; i++) {
+			var a = aliases[i].split(':');
+			var shortcut = a[0];
+			var replacement = a[1] ? a[1] : a[0];
+			input = input.replace(shortcut, replacement);
+		}
+		return input;
+	},
 	// *********************************************** keypress signals
 	'ctrl+l': function() {
 		this.clearLog();
@@ -379,7 +393,8 @@ function TaskTemplate() {
 				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinKeyUp,keydown:stdinKeyDown,focus:stdinFocused,blur:stdinBlured"]': ''},
 				{ '.stdin-field-tooltip': '<i class="fa fa-angle-right"></i>'},
 				{ '.task-cwd': '<i class="fa fa-dot-circle-o"></i> <% data.cwd %>' },
-				{ '.git-status': '' }
+				{ '.git-status': '' },
+				{ 'a[href="#" class="aliases" data-absurd-event="click:editAliases"]': '<i class="fa fa-heart"></i>'}
 			]
 		}
 	}
@@ -568,7 +583,7 @@ function TaskCSSDashboard() {
 		'.stdin-field': {
 			bxz: 'bb',
 			pos: 'a',
-			bottom: '7px',
+			bottom: '8px',
 			right: '8px',
 			pad: '4px 4px 4px 18px',
 			bdrsa: '4px',
@@ -606,6 +621,17 @@ function TaskCSSDashboard() {
 			'&:hover': {
 				color: '#000'
 			}
+		},
+		'.aliases': {
+			color: '#ACACAC',
+			fz: '18px',
+			pos: 'a',
+			bottom: '11px',
+			right: '15px',
+			ted: 'n',
+			'&:hover': {
+				color: '#F00'
+			}	
 		}
 	}
 }
