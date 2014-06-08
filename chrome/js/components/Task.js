@@ -234,6 +234,11 @@ var Task = absurd.component('Task', {
 			input = this.applyAliases(input);
 			this.log('<p class="log-stdin"><i class="fa fa-keyboard-o"></i> ' + input + '</p>');
 			e.target.value = '';
+			if(input.indexOf(' && ') >= 0) {
+				this.commandsToProcess = input.split(' && ');
+				this.processTask();
+				return;
+			}
 			if(input.split(/ /g)[0].toLowerCase() == 'cd') {
 				var pathToAppend = input.split(/ /g);
 				pathToAppend.shift();
@@ -252,9 +257,9 @@ var Task = absurd.component('Task', {
 			} else {
 				Yez.send({
 					// action: this.data.terminal ? 'terminal' : 'stdin-input',
-					action: 'terminal',
+					action: 'run-command',
 					id: this.getId(),
-					input: input,
+					command: input,
 					cwd: this.data.cwd
 				}, function(data) {
 					// no need to process the result
@@ -291,6 +296,7 @@ var Task = absurd.component('Task', {
 	// *********************************************** terminal
 	terminalInit: function() {
 		this.html['div[class="task-<% getId() %>"]']['.sub-nav'] = [
+			{ 'a[href="#" class="operation" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop all processes'},
 			{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Close'}
 		];	
 	},
@@ -334,6 +340,11 @@ var Task = absurd.component('Task', {
 	},
 	'ctrl+i': function() {
 		this.qs('.stdin-field').focus();
+	},
+	'ctrl+c': function() {
+		if(this.qs('.stdin-field') === document.activeElement) {
+			this.stopTasks();
+		}
 	}
 });
 function TaskTemplate() {
@@ -535,13 +546,13 @@ function TaskCSSDashboard() {
 			wid: 'calc(100% - 18px)',
 			hei: 'calc(100% - 181px)',
 			fz: '12px',
-			lh: '20px',
+			lh: '16px',
 			bdrsa: '4px',
 			ovx: 'h',
 			ovy: 's',
 			p: {
 				pad: '0 4px',
-				mar: '0 0 4px 0',
+				mar: '0 0 1px 0',
 				bdrsa: '2px'
 			},
 			'.log-command': {

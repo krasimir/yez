@@ -137,42 +137,6 @@ io.sockets.on('connection', function (socket) {
                     });
                 }
             break;
-            /********************************************************************** terminal */
-            case 'terminal': 
-                var runner = TaskRunner();
-                runner.run(data.input, data.cwd || defaultCWD)
-                .data(function(d) {
-                    io.sockets.emit('response', {
-                        action: 'data',
-                        id: id,
-                        data: d
-                    });
-                })
-                .err(function(data) {
-                    io.sockets.emit('response', {
-                        action: 'err',
-                        id: id,
-                        msg: data
-                    });
-                })
-                .end(function(err, d, code) {
-                    io.sockets.emit('response', {
-                        action: 'end',
-                        id: id,
-                        err: err,
-                        data: d,
-                        code: code
-                    });
-                })
-                .exit(function(code, signal) {
-                    io.sockets.emit('response', {
-                        action: 'exit',
-                        id: id,
-                        signal: signal,
-                        code: code
-                    });
-                });
-            break;
             /********************************************************************** change directory */
             case 'cd':
                 var dir = path.normalize(data.dir);

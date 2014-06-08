@@ -238,6 +238,9 @@ var Yez = absurd.component('Yez', {
 		keypress.simple_combo("ctrl i", function() {
 			self.content.passKeypressSignal('ctrl+i');
 		});
+		keypress.simple_combo("ctrl c", function() {
+			self.content.passKeypressSignal('ctrl+c');
+		});
 		keypress.simple_combo("ctrl \\", function() {
 			self.addTerminal();
 		});
