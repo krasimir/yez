@@ -180,6 +180,7 @@ var Task = absurd.component('Task', {
 	},
 	// process the response from the Node.js part
 	response: function(data) {
+		console.log(data);
 		switch(data.action) {
 			case 'err':
 				this.log('<p class="log-error">' + data.msg + '</p>');
