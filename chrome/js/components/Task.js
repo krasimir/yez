@@ -183,7 +183,11 @@ var Task = absurd.component('Task', {
 		console.log(data);
 		switch(data.action) {
 			case 'err':
-				this.log('<p class="log-error">' + data.msg + '</p>');
+				if(data.msg.toLowerCase().indexOf('warning') === 0) {
+					this.log('<p class="log-warning">' + data.msg + '</p>');	
+				} else {
+					this.log('<p class="log-error">' + data.msg + '</p>');	
+				}				
 			break;
 			case 'data':
 				this.log('<p class="log-response">' + data.data + '</p>');
@@ -562,6 +566,10 @@ function TaskCSSDashboard() {
 			},
 			'.log-error': {
 				bg: '#F39C9C',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-warning': {
+				bg: '#F3E29C',
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-error-end': {
