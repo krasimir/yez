@@ -9,7 +9,7 @@
 
 ## Usage
 
-1. Install the Yez! module by running `npm install -g yez` or<br />`npm install -g https://registry.npmjs.org/yez/-/yez-2.0.0.tgz`.<br />If you have problems installing the module please check out the [this thread](https://github.com/krasimir/yez/issues/1).
+1. Install the Yez! module by running `npm install -g yez` or<br />`npm install -g https://registry.npmjs.org/yez/-/yez-2.0.1.tgz`.<br />If you have problems installing the module please check out the [this thread](https://github.com/krasimir/yez/issues/1).
 
 2. Run `yez` in your console
 
