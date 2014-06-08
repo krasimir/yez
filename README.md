@@ -22,6 +22,7 @@ To open Yez! just press `Ctrl+Shift+I` which openes the DevTools console. Just a
 * `Ctrl+Enter` - restarting the task
 * `Ctrl+i` - bring the focus to the input field
 * `Ctrl+\` - opens a new terminal
+* `Ctrl+c` - stops the run tasks
 
 ## Running tests
 
