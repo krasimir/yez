@@ -11,7 +11,7 @@ module.exports = function(c) {
 		if(a.charAt(a.length-1) === '"') {
 			a = a.substr(0, a.length-1);
 		}
-		args[i] = a;
+		args[i] = a; 
 	}
 	return {
 		command: command,
