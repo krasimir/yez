@@ -320,7 +320,8 @@ var Task = absurd.component('Task', {
 			var a = aliases[i].split(':');
 			var shortcut = a[0];
 			var replacement = a[1] ? a[1] : a[0];
-			input = input.replace(shortcut, replacement);
+			var r = new RegExp(shortcut, "gi");
+			input = input.replace(r, replacement);
 		}
 		return input;
 	},
