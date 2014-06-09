@@ -33,6 +33,11 @@ To open Yez! just press `Ctrl+Shift+I` which openes the DevTools console. Just a
 npm test
 ```
 
+## Articles
+
+* [Sorry, Chrome killed the terminal](http://krasimirtsonev.com/blog/article/Sorry-Chrome-killed-the-terminal)
+* [Developing Node.js applications with Google Chrome](http://krasimirtsonev.com/blog/article/Developing-Nodejs-applications-with-Google-Chrome)
+
 ## Screenshots
 
 Using the extension as terminal
