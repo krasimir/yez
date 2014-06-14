@@ -90,11 +90,15 @@ var onMessageListener = function(command, sender, sendResponse) {
         case "js":
             chrome.tabs.getSelected(null, function(tab){
                 command.data = jsCodeUtilities(command.data);
-                console.log(command.data);
                 chrome.tabs.executeScript(tab.id, {code: command.data}, function(response) {
                     sendResponse(response ? JSON.stringify(response) : null);
                 });
             });
+        break;
+        case "wait":
+            setTimeout(function() {
+                sendResponse(true);
+            }, parseInt(command.data));
         break;
     }
     return true;
