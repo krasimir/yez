@@ -180,16 +180,21 @@ var Task = absurd.component('Task', {
 	},
 	// process the response from the Node.js part
 	response: function(data) {
+		var filterResponse = function(str) {
+			str = str.replace(/</g, '&lt;');
+			str = str.replace(/>/g, '&gt;');
+			return str;
+		}
 		switch(data.action) {
 			case 'err':
 				if(data.msg.toLowerCase().indexOf('warning') === 0) {
-					this.log('<p class="log-warning">' + data.msg + '</p>');	
+					this.log('<p class="log-warning">' + filterResponse(data.msg) + '</p>');	
 				} else {
-					this.log('<p class="log-error">' + data.msg + '</p>');	
+					this.log('<p class="log-error">' + filterResponse(data.msg) + '</p>');	
 				}				
 			break;
 			case 'data':
-				this.log('<p class="log-response">' + data.data + '</p>');
+				this.log('<p class="log-response">' + filterResponse(data.data) + '</p>');
 			break;
 			case 'end':
 				var allErrors = '';
@@ -203,7 +208,7 @@ var Task = absurd.component('Task', {
 					}
 					allErrors = '';
 				}
-				this.log('<p class="log-end">end (code: ' + data.code + ')' + allErrors + '</p>');
+				this.log('<p class="log-end">end (code: ' + data.code + ')' + filterResponse(allErrors) + '</p>');
 				this.endedCommands += 1;
 				this.processTask();
 			break;
