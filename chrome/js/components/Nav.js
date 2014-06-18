@@ -8,7 +8,7 @@ var Nav = absurd.component('Nav', {
 				button(),
 				{ 
 					bxz: 'bb', 
-					wid: '40px', 
+					//wid: '40px', 
 					hei: '35px', 
 					ov: 'h', 
 					ta: 'c'
@@ -45,7 +45,7 @@ var Nav = absurd.component('Nav', {
 				var name = tasksRunning[i].name; \
 				var id = tasksRunning[i].id; \
 			%>',
-			{ 'a[href="#" data-absurd-event="click:openTask:<% id %>" class="task" title="<% name %>"]': '<% tasksRunning[i].name.substr(0, 3) + "..." %>'},
+			{ 'a[href="#" data-absurd-event="click:openTask:<% id %>" class="task" title="<% name %>"]': '<% tasksRunning[i].name %>'},
 			'<% } %>'
 		]
 	},
