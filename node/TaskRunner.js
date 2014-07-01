@@ -48,6 +48,8 @@ module.exports = function() {
 			(function go(c) {
 				preventEnding = false;
 				processing = cp.spawn(c.command, c.args, options);
+				processing.stdout.setEncoding('utf8');
+				processing.stderr.setEncoding('utf8');
 				processing.stdout.on('data', function (data) {
 					// console.log('stdout: ' + data);
 					data = data.toString('utf8');
