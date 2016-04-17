@@ -110,7 +110,8 @@ function HomeCSS() {
 			pad: '14px',
 			h1: {
 				pad: 0,
-				mar: '0 0 17px 0'
+				mar: '0 0 17px 0',
+				color: '#ddd'
 			},
 			'.task': {
 				pos: 'r',
@@ -118,7 +119,8 @@ function HomeCSS() {
 					button(),
 					{
 						d: 'b',
-						mar: '0 0 6px 0'
+						mar: '0 0 6px 0',
+						bg: '#333'
 					}
 				],
 				'a.action': {
@@ -138,7 +140,7 @@ function HomeCSS() {
 				'a.action.stop': {
 					d: 'n',
 					bg: '#E83E3E',
-					color: '#FFF',
+					color: '#ddd',
 					'&:hover': {
 						bg: '#ED6565'
 					}
@@ -184,9 +186,9 @@ function HomeCSS() {
 			'.newtask': {
 				d: 'b',
 				mar: '10px 0 0 10px',
-				color: '#000',
+				color: '#ddd',
 				'&:hover': {
-					color: '#297317'
+					color: '#ccc'
 				}
 			},
 			'.filter': {
@@ -194,10 +196,12 @@ function HomeCSS() {
 				top: '62px',
 				right: '15px',
 				pad: '4px',
-				bdrsa: '4px',
+				bdrsa: '3px',
 				wid: '120px',
-				bd: 'solid 1px #C5C5C5',
-				ff: "'Roboto', 'sans-serif'"
+				bg: '#383838',
+				bd: 'solid 1px #555',
+				ff: "'Roboto', 'sans-serif'",
+				color: '#ddd'
 			}
 		}
 	}

@@ -286,8 +286,8 @@ function HomeCSS() {
 			d: 'b'
 		},
 		'header': {
-			bg: '#F3EEE4',
-			bdb: 'solid 2px #DFD2B7',
+			bg: '#333',
+			bdb: 'solid 1px #444',
 			'.logo': {
 				d: 'b', fl: 'l',
 				mar: '0 4px 0 10px',
@@ -298,6 +298,10 @@ function HomeCSS() {
 				content: '" "',
 				clear: 'both'
 			}
+		},
+		'input': {
+		  outline: 'none',
+		  fz: '13px'
 		},
 		hr: {
 			bdt: 'none', bdb: 'dotted 1px #999',

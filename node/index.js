@@ -1,19 +1,18 @@
 #!/usr/bin/env node
 
 var electron = require('electron'),
-    electronApp = electron.app,  
-    Menu = electron.Menu,
-    Tray = electron.Tray,
-    appIcon = null;
-
-var app = require('http').createServer(function(){}),
+    electronApp = electron.app,    
+    app = require('http').createServer(function(){}),
     io = require('socket.io').listen(app),    
     fs = require('fs'),
     port = 9172,
     TaskRunner = require('./TaskRunner'),
     path = require('path'),
     defaultCWD = path.normalize(process.cwd()),
-    runners = {}, lastActive = 0;
+    runners = {}, 
+    lastActive = 0,
+    appIcon = null,
+    open = require('open');
 
 electronApp.on('ready', function(){
 
@@ -235,18 +234,35 @@ electronApp.on('ready', function(){
 
     reportingProcesses();
 
-    appIcon = new Tray( path.normalize( __dirname + '/../chrome/img/icon16w.png') );
-    
-    var contextMenu = Menu.buildFromTemplate([
-      { 
-        label: 'Close', 
-        click: function () {       
-          electronApp.quit();
-        } 
-      }
-    ]);
-    appIcon.setToolTip('Yez! Server Running');
-    appIcon.setContextMenu(contextMenu);
+    appIcon = new electron.Tray( path.normalize( __dirname + '/../chrome/img/icon16w.png') );
+    appIcon.setToolTip('Yez! is running');
+    appIcon.setContextMenu(electron.Menu.buildFromTemplate([{
+        label: 'Light Style', 
+        type: 'radio', 
+        checked: true, 
+        click: function () { appIcon.setImage( path.normalize( __dirname + '/../chrome/img/icon16w.png') ) } 
+      }, { 
+        label: 'Dark Style', 
+        type: 'radio', 
+        click: function () { appIcon.setImage( path.normalize( __dirname + '/../chrome/img/icon16.png') ) } 
+      }, { 
+        type: 'separator'
+      }, {
+        label: 'Developer tools', 
+        click: function () { TaskRunner().run('devtool'); } 
+      }, { 
+        type: 'separator'
+      }, { 
+        label: 'View in Store', 
+        click: function () { open('https://chrome.google.com/webstore/detail/yez/acbhddemkmodoahhmnphpcfmcfgpjmap'); } 
+      }, { 
+        label: 'About Yez!', 
+        click: function () { open('https://github.com/krasimir/yez'); } 
+      }, { 
+        type: 'separator'
+      }, { 
+        label: 'Close', click: function () {  electronApp.quit(); } 
+    }]));
 
 });
 
