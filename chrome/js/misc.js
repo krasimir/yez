@@ -1,15 +1,14 @@
 var button = function() {
 	return {
 		d: 'ib',
-		color: '#000',
+		color: '#ddd',
+		bg: '#444',
 		ted: 'n',
 		pad: '4px 10px',
-		bg: '#E7E7E7',
-		bdb: 'solid 1px #919191',
 		bdrsa: '8px',
 		mar: '0 6px 0 0',
 		'&:hover': {
-			bg: '#D5D5D5'
+			bg: '#555'
 		}
 	}
 }

@@ -4,6 +4,7 @@
   "homepage": "https://github.com/krasimir/yez",
   "description": "Chrome extension which acts as task runner",
   "main": "./node/index.js",
+  "bin": { "yez": "./node/index.js" },
   "author": {
     "name": "Krasimir Tsonev",
     "email": "info@krasimirtsonev.com",
@@ -11,6 +12,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "electron-prebuilt": "0.37.6",
     "socket.io": "0.9.16",
     "ps-tree": "0.0.3",
     "spawn-args": "0.0.2"
@@ -31,11 +33,31 @@
     "type": "git",
     "url": "https://github.com/krasimir/yez.git"
   },
-  "bin": {
-    "yez": "./node/index.js"
-  },
   "scripts": {
     "test": "mocha ./node/tests --reporter spec",
     "start": "node ./node/index.js"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/krasimir/yez/issues"
+  },
+  "_id": "yez@2.0.2",
+  "dist": {
+    "shasum": "958fd0bcc3b7d1b186f1fb2d70b9fc849447a9cf",
+    "tarball": "http://registry.npmjs.org/yez/-/yez-2.0.2.tgz"
+  },
+  "_from": "yez@latest",
+  "_npmVersion": "1.3.24",
+  "_npmUser": {
+    "name": "krasimir",
+    "email": "krasimir@outset.ws"
+  },
+  "maintainers": [
+    {
+      "name": "krasimir",
+      "email": "krasimir@outset.ws"
+    }
+  ],
+  "directories": {},
+  "_shasum": "958fd0bcc3b7d1b186f1fb2d70b9fc849447a9cf",
+  "_resolved": "https://registry.npmjs.org/yez/-/yez-2.0.2.tgz"
 }

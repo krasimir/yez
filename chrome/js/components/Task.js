@@ -249,8 +249,9 @@ var Task = absurd.component('Task', {
 				return;
 			}
 			if(input.split(/ /g)[0].toLowerCase() == 'cd') {
-				var pathToAppend = input.split(/ /g), loc;
-				var appendOnlyIf = ['/'];
+				var pathToAppend = input.split(/ /g),
+				    loc,
+				    appendOnlyIf = ['/'];
 				pathToAppend.shift();
 				loc = pathToAppend.join(' ');
 				Yez.send({
@@ -438,7 +439,7 @@ function TaskCSSCWD() {
 		pos: 'a',
 		bottom: '42px',
 		left: '12px',
-		color: '#575757',
+		color: '#eee',
 		fz: '14px'
 	}
 }
@@ -447,12 +448,13 @@ function TaskCSSGitStatus() {
 		pos: 'a',
 		bottom: '42px',
 		right: '12px',
-		color: '#575757',
+		color: '#ccc',
 		fz: '14px'
 	}
 }
 function TaskCSSEdit() {
 	return {
+		color: '#fff',
 		bxz: 'bb',
 		pad: '10px',
 		display: '<% mode == "edit" ? "block" : "none" %>',
@@ -465,26 +467,25 @@ function TaskCSSEdit() {
 				wid: '30%',
 				pad: '0 20px 0 0',
 				bxz: 'bb',
-				bg: '#EDE9E0',
+				bg: '#444',
 				fl: 'l',
 				pad: '10px',
 				bdtlrs: '10px',
 				bdblrs: '10px',
 				ta: 'r',
-				bdr: 'solid 2px #DECAB6',
-				bdb: 'solid 1px #999',
-				hei: '47px',
+				bdr: 'solid 1px #555',
+				hei: '46px',
 				ov: 'h'
 			},
 			'.field': {
 				wid: '70%',
 				fl: 'l',
 				bxz: 'bb',
-				bg: '#F8F5EF',
+				bg: '#444',
 				bdtrrs: '10px',
 				bdbrrs: '10px',
-				bdb: 'solid 1px #999',
 				input: {
+					color: '#fff',
 					hei: '46px',
 					bd: 'n',
 					bg: 'n',
@@ -499,26 +500,26 @@ function TaskCSSEdit() {
 				clear: 'both'
 			},
 			'.sub-left, .sub-independent': {
-				color: '#000',
+				color: '#eee',
 				d: 'b',
 				pos: 'a',
 				top: '10px',
 				left: '10px',
 				pad: '0 10px',
-				bg: '#F5F3EF',
+				bg: '#333',
 				bdrsa: '4px',
-				'&:hover': { bg: '#D5CCBB' }
+				'&:hover': { bg: '#555' }
 			},
 			'.sub-right': {
-				color: '#000',
+				color: '#eee',
 				d: 'b',
 				pos: 'a',
 				top: '10px',
 				right: '10px',
 				pad: '0 10px',
-				bg: '#FBFAF7',
+				bg: '#333',
 				bdrsa: '4px',
-				'&:hover': { bg: '#E6DBC4' }
+				'&:hover': { bg: '#555' }
 			},
 			'.sub-independent': {
 				ta: 'c',
@@ -553,7 +554,8 @@ function TaskCSSDashboard() {
 			top: '107px',
 			left: '10px',
 			pad: '10px',
-			bg: '#FAFAFA',
+			bg: '#444',
+			color: '#ddd',
 			wid: 'calc(100% - 18px)',
 			hei: 'calc(100% - 181px)',
 			fz: '12px',
@@ -567,19 +569,19 @@ function TaskCSSDashboard() {
 				bdrsa: '2px'
 			},
 			'.log-command': {
-				bg: '#C0DFE7',
+				bg: '#305D69',
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-error': {
-				bg: '#F39C9C',
+				bg: '#6B2A2A',
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-warning': {
-				bg: '#F3E29C',
+				bg: '#A29042',
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-error-end': {
-				bg: '#F8C2C2',
+				bg: '#9C6666',
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-end': {
@@ -617,7 +619,8 @@ function TaskCSSDashboard() {
 			wid: 'calc(100% - 17px)',
 			bd: 'solid 1px #C5C5C5',
 			ff: "'Roboto', 'sans-serif'",
-			bg: 'n'
+			bg: '#444',			
+			color: '#ddd'
 		},
 		'.autocomplete': {
 			bxz: 'bb',
@@ -638,17 +641,17 @@ function TaskCSSDashboard() {
 			left: '18px',
 			color: '#999'
 		},
-		'.clear-log': {
-			color: '#999',
-			fz: '12px',
-			pos: 'a',
-			top: '69px',
-			right: '12px',
-			ted: 'n',
-			'&:hover': {
-				color: '#000'
+		'.clear-log': [
+		    button(), 
+		    {
+				pos: 'a',
+				top: '58px',
+				right: '12px',
+				ted: 'n',
+				'&:hover': {
+					color: '#fff'
 			}
-		},
+		}],
 		'.aliases': {
 			color: '#ACACAC',
 			fz: '18px',
