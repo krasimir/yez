@@ -249,12 +249,15 @@ var Task = absurd.component('Task', {
 				return;
 			}
 			if(input.split(/ /g)[0].toLowerCase() == 'cd') {
-				var pathToAppend = input.split(/ /g);
+				var pathToAppend = input.split(/ /g),
+				    loc,
+				    appendOnlyIf = ['/'];
 				pathToAppend.shift();
+				loc = pathToAppend.join(' ');
 				Yez.send({
 					action: 'cd',
 					id: this.getId(),
-					dir: this.data.cwd + '/' + pathToAppend.join(' ')
+					dir: appendOnlyIf.indexOf(loc.charAt(0)) >= 0 ? loc : this.data.cwd + '/' + loc
 				}, function(data) {
 					if(data.err) {
 						self.log('<p class="log-error"><i class="fa fa-keyboard-o"></i> ' + data.err.msg + '</p>');
