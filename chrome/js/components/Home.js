@@ -127,7 +127,7 @@ function HomeCSS() {
 					pos: 'a',
 					top: 0,
 					right: 0,
-					bg: '#84DC6D',
+					bg: '#3e9828',
 					bdb: 'n',
 					wid: '60px',
 					ta: 'c',
