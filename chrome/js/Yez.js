@@ -7,6 +7,7 @@ var Yez = absurd.component('Yez', {
 	beacons: {},
 	defaultCWD: '',
 	retry: 1,
+	sep: '/',
 	connect: function() {
 		if(this.connected) { return; }
 		var self = this;
@@ -18,7 +19,7 @@ var Yez = absurd.component('Yez', {
 			self.connected = true;
 			self.status.setStatus(true);
 			self.nav.visible(true);
-			self.content.visible(true);
+			self.content.visible(true);			
 		});
 		this.socket.on('disconnect', function() {
 			self.connected = false;
@@ -27,7 +28,8 @@ var Yez = absurd.component('Yez', {
 			self.content.visible(false);
 			self.connect();
 		});
-		this.socket.on('initial', function(data) {
+		this.socket.on('initial', function(data) {			
+			Yez.sep = data.sep;
 			self.defaultCWD = normalizePath(data.cwd);
 			// marking tasks as started
 			if(data.running && data.running.length > 0) {
@@ -271,7 +273,8 @@ function HomeCSS() {
 			wid: '100%', hei: '100%',
 			mar: 0, pad: 0,
 			ff: "'Roboto', 'sans-serif'",
-			fz: '16px', lh: '26px'
+			fz: '16px', lh: '26px',
+			bg: '#242424'
 		},
 		'.left': { fl: 'l' },
 		'.right': { fl: 'r' },

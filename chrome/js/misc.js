@@ -30,6 +30,6 @@ var getId = function (prefix) {
     return d;
 };
 var normalizePath = function(p) {
-	return p.replace(/\\/g, '/');
+	return p.replace(/\\/g, Yez.sep || '/');
 }
 absurd = Absurd();

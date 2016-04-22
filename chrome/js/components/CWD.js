@@ -37,13 +37,13 @@ var CWD = absurd.component('CWD', {
 		e && e.preventDefault();
 		index = parseInt(index);
 		if(index == 0) {
-			var pathParts = normalizePath(this.cwd).split('/');
+			var pathParts = normalizePath(this.cwd).split(Yez.sep);
 			pathParts.pop();
-			var path = pathParts.join('/');
-			if(path.charAt(path.length-1) == ':') path = path + '/';
+			var path = pathParts.join(Yez.sep);
+			if(path.charAt(path.length-1) == ':') path = path + Yez.sep;
 			this.list(path);
 		} else {
-			this.list(this.cwd + '/' + this.links[index]);
+			this.list(this.cwd + Yez.sep + this.links[index]);
 		}
 	},
 	result: function(e, res) {

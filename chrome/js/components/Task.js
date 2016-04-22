@@ -251,13 +251,13 @@ var Task = absurd.component('Task', {
 			if(input.split(/ /g)[0].toLowerCase() == 'cd') {
 				var pathToAppend = input.split(/ /g),
 				    loc,
-				    appendOnlyIf = ['/'];
+				    appendOnlyIf = [Yez.sep];
 				pathToAppend.shift();
 				loc = pathToAppend.join(' ');
 				Yez.send({
 					action: 'cd',
 					id: this.getId(),
-					dir: appendOnlyIf.indexOf(loc.charAt(0)) >= 0 ? loc : this.data.cwd + '/' + loc
+					dir: appendOnlyIf.indexOf(loc.charAt(0)) >= 0 ? loc : this.data.cwd + Yez.sep + loc
 				}, function(data) {
 					if(data.err) {
 						self.log('<p class="log-error"><i class="fa fa-keyboard-o"></i> ' + data.err.msg + '</p>');
@@ -554,59 +554,70 @@ function TaskCSSDashboard() {
 			top: '107px',
 			left: '10px',
 			pad: '10px',
-			bg: '#444',
-			color: '#ddd',
+			bg: '#181818',
+			color: '#ccc',
 			wid: 'calc(100% - 18px)',
 			hei: 'calc(100% - 181px)',
 			fz: '12px',
 			lh: '16px',
-			bdrsa: '4px',
 			ovx: 'h',
 			ovy: 's',
+			bdrsa: '2px',
 			p: {
-				pad: '0 4px',
-				mar: '0 0 1px 0',
-				bdrsa: '2px'
+				pad: '2px 4px',
+				mar: '0 0 -1px 0',
+				'min-height': '15px'
 			},
 			'.log-command': {
-				bg: '#305D69',
-				bdb: 'solid 1px #E1E1E1'
+				color: '#ccc',
+				bg: '#222',
+				bdb: 'solid 1px #666',
+				bdt: 'solid 1px #666'
 			},
 			'.log-error': {
-				bg: '#6B2A2A',
-				bdb: 'solid 1px #E1E1E1'
+				color: '#ff8080',
+				bg: '#290000',
+				bdb: 'solid 1px #5b0000',
+				bdt: 'solid 1px #5b0000'
 			},
 			'.log-warning': {
-				bg: '#A29042',
-				bdb: 'solid 1px #E1E1E1'
+				color: '#ffdc9e',
+				bg: '#332b00',
+				bdb: 'solid 1px #A29042',
+				bdt: 'solid 1px #A29042'
 			},
 			'.log-error-end': {
-				bg: '#9C6666',
-				bdb: 'solid 1px #E1E1E1'
+				color: '#ff8080',
+				bg: '#290000',
+				bdb: 'solid 1px #5b0000',
+				bdt: 'solid 1px #5b0000'
 			},
 			'.log-end': {
-				ta: 'r',
-				pad: 0,
-				lh: '16px'
+				color: '#bbb'
 			},
 			'.log-response': {
-				lh: '16px'
+				lh: '16px',				
+				color: '#cfff80',
+				bg: '#193900',
+				bdb: 'solid 1px #5b8b00',
+				bdt: 'solid 1px #5b8b00'
 			},
 			'.log-task-end': {
-				bg: '#87E789',
-				bdb: 'solid 1px #E1E1E1'
+				color: '#ffdc9e',
+				bg: '#332b00',
+				bdb: 'solid 1px #A29042',
+				bdt: 'solid 1px #A29042'
 			},
 			'.log-info': {
 				bg: '#C6E7E8',
 				color: '#2E7072',
-				bdb: 'solid 1px #66BFC1',
-				bdrsa: '4px'
+				bdb: 'solid 1px #66BFC1'
 			},
 			'.log-stdin': {
-				bg: '#C6E7E8',
-				color: '#2E7072',
-				bdb: 'solid 1px #66BFC1',
-				bdrsa: '4px'
+				color: '#fff',
+				bg: '#333',
+				bdb: 'solid 1px #777',
+				bdt: 'solid 1px #777'
 			}
 		},
 		'.stdin-field': {
@@ -617,10 +628,10 @@ function TaskCSSDashboard() {
 			pad: '4px 4px 4px 18px',
 			bdrsa: '4px',
 			wid: 'calc(100% - 17px)',
-			bd: 'solid 1px #C5C5C5',
+			bd: 'solid 1px #555',
 			ff: "'Roboto', 'sans-serif'",
-			bg: '#444',			
-			color: '#ddd'
+			bg: '#383838',			
+			color: '#eee'
 		},
 		'.autocomplete': {
 			bxz: 'bb',
