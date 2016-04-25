@@ -12,6 +12,12 @@ var button = function() {
 		}
 	}
 }
+var buttonDark = function() {
+	return {
+		color: '#ddd',
+		bg: '#444'
+	}
+}
 var buttonTransparent = function() {
 	return {
 		opacity: 0.4,

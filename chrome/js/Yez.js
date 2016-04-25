@@ -273,7 +273,9 @@ function HomeCSS() {
 			wid: '100%', hei: '100%',
 			mar: 0, pad: 0,
 			ff: "'Roboto', 'sans-serif'",
-			fz: '16px', lh: '26px',
+			fz: '16px', lh: '26px'			
+		},
+		'.dark': {
 			bg: '#242424'
 		},
 		'.left': { fl: 'l' },
@@ -289,8 +291,8 @@ function HomeCSS() {
 			d: 'b'
 		},
 		'header': {
-			bg: '#333',
-			bdb: 'solid 1px #444',
+			bg: '#F3EEE4',
+			bdb: 'solid 2px #DFD2B7',
 			'.logo': {
 				d: 'b', fl: 'l',
 				mar: '0 4px 0 10px',
@@ -301,6 +303,10 @@ function HomeCSS() {
 				content: '" "',
 				clear: 'both'
 			}
+		},
+		'.dark header': {
+			bg: '#333',
+			bdb: 'solid 1px #444'
 		},
 		'input': {
 		  outline: 'none',

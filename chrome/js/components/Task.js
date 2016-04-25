@@ -427,9 +427,13 @@ function TaskCSS() {
 	return {
 		'.task-<% getId() %>': {
 			'.task-cwd': TaskCSSCWD(),
+			'.dark .task-cwd': DarkTaskCSSCWD(),
 			'.git-status': TaskCSSGitStatus(),
+			'.dark .git-status': DarkTaskCSSGitStatus(),
 			'.edit': TaskCSSEdit(),
+			'.dark .edit': DarkTaskCSSEdit(),
 			'.dashboard': TaskCSSDashboard(),
+			'.dark .dashboard': DarkTaskCSSDashboard(),
 			'.sub-nav': TaskCSSSubNav()
 		}
 	}
@@ -439,8 +443,13 @@ function TaskCSSCWD() {
 		pos: 'a',
 		bottom: '42px',
 		left: '12px',
-		color: '#eee',
+		color: '#575757',
 		fz: '14px'
+	}
+}
+function DarkTaskCSSCWD() {
+	return {
+		color: '#eee'
 	}
 }
 function TaskCSSGitStatus() {
@@ -448,8 +457,13 @@ function TaskCSSGitStatus() {
 		pos: 'a',
 		bottom: '42px',
 		right: '12px',
-		color: '#ccc',
+		color: '#575757',
 		fz: '14px'
+	}
+}
+function DarkTaskCSSGitStatus() {
+	return {
+		color: '#ccc'
 	}
 }
 function TaskCSSEdit() {
@@ -467,25 +481,25 @@ function TaskCSSEdit() {
 				wid: '30%',
 				pad: '0 20px 0 0',
 				bxz: 'bb',
-				bg: '#444',
+				bg: '#EDE9E0',
 				fl: 'l',
 				pad: '10px',
 				bdtlrs: '10px',
 				bdblrs: '10px',
 				ta: 'r',
-				bdr: 'solid 1px #555',
-				hei: '46px',
+				bdr: 'solid 2px #DECAB6',
+				bdb: 'solid 1px #999',
+				hei: '47px',
 				ov: 'h'
 			},
 			'.field': {
 				wid: '70%',
 				fl: 'l',
 				bxz: 'bb',
-				bg: '#444',
+				bg: '#F8F5EF',
 				bdtrrs: '10px',
 				bdbrrs: '10px',
 				input: {
-					color: '#fff',
 					hei: '46px',
 					bd: 'n',
 					bg: 'n',
@@ -500,15 +514,15 @@ function TaskCSSEdit() {
 				clear: 'both'
 			},
 			'.sub-left, .sub-independent': {
-				color: '#eee',
+				color: '#000',
 				d: 'b',
 				pos: 'a',
 				top: '10px',
 				left: '10px',
 				pad: '0 10px',
-				bg: '#333',
+				bg: '#F5F3EF',
 				bdrsa: '4px',
-				'&:hover': { bg: '#555' }
+				'&:hover': { bg: '#D5CCBB' }
 			},
 			'.sub-right': {
 				color: '#eee',
@@ -517,9 +531,9 @@ function TaskCSSEdit() {
 				top: '10px',
 				right: '10px',
 				pad: '0 10px',
-				bg: '#333',
+				bg: '#FBFAF7',
 				bdrsa: '4px',
-				'&:hover': { bg: '#555' }
+				'&:hover': { bg: '#E6DBC4' }
 			},
 			'.sub-independent': {
 				ta: 'c',
@@ -538,6 +552,45 @@ function TaskCSSEdit() {
 		}
 	};
 }
+function DarkTaskCSSEdit() {
+	return {
+		color: '#fff',
+		bxz: 'bb',
+		pad: '10px',
+		display: '<% mode == "edit" ? "block" : "none" %>',
+		'.element': {
+			pos: 'r',
+			wid: '100%',
+			bxz: 'bb',
+			mar: '6px 0 6px 0',
+			label: {
+				bg: '#444',
+				bdr: 'solid 1px #555',
+				bdb: '0',
+				hei: '46px'
+			},
+			'.field': {
+				bg: '#444',
+				bdb: '0',
+				input: {
+					color: '#fff'
+				}
+			},
+			'.sub-left, .sub-independent': {
+				color: '#eee',
+				bg: '#333',
+				bdrsa: '3px',
+				'&:hover': { bg: '#555' }
+			},
+			'.sub-right': {
+				color: '#eee',
+				bg: '#333',
+				'&:hover': { bg: '#555' }
+			}
+		},
+		'.actions': buttonDark()
+	};
+}
 function TaskCSSDashboard() {
 	return {
 		display: '<% mode == "dashboard" ? "block" : "none" %>',
@@ -554,20 +607,123 @@ function TaskCSSDashboard() {
 			top: '107px',
 			left: '10px',
 			pad: '10px',
-			bg: '#181818',
-			color: '#ccc',
+			bg: '#FAFAFA',
 			wid: 'calc(100% - 18px)',
 			hei: 'calc(100% - 181px)',
 			fz: '12px',
 			lh: '16px',
+			bdrsa: '4px',
 			ovx: 'h',
-			ovy: 's',
-			bdrsa: '2px',
+			ovy: 's',			
 			p: {
-				pad: '2px 4px',
-				mar: '0 0 -1px 0',
-				'min-height': '15px'
+				pad: '0 4px',
+				mar: '0 0 1px 0',
+				bdrsa: '2px'
 			},
+			'.log-command': {
+				bg: '#C0DFE7',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-error': {
+				bg: '#F39C9C',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-warning': {
+				bg: '#F3E29C',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-error-end': {
+				bg: '#F8C2C2',
+				bdb: 'solid 1px #E1E1E1'
+			},
+			'.log-end': {
+				color: '#bbb'
+			},
+			'.log-response': {
+				lh: '16px',				
+				color: '#cfff80',
+				bg: '#193900',
+				bdb: 'solid 1px #5b8b00',
+				bdt: 'solid 1px #5b8b00'
+			},
+			'.log-task-end': {
+				color: '#ffdc9e',
+				bg: '#332b00',
+				bdb: 'solid 1px #A29042',
+				bdt: 'solid 1px #A29042'
+			},
+			'.log-info': {
+				bg: '#C6E7E8',
+				color: '#2E7072',
+				bdb: 'solid 1px #66BFC1'
+			},
+			'.log-stdin': {
+				color: '#fff',
+				bg: '#333',
+				bdb: 'solid 1px #777',
+				bdt: 'solid 1px #777'
+			}
+		},
+		'.stdin-field': {
+			bxz: 'bb',
+			pos: 'a',
+			bottom: '8px',
+			right: '8px',
+			pad: '4px 4px 4px 18px',
+			bdrsa: '4px',
+			wid: 'calc(100% - 17px)',
+			bd: 'solid 1px #555',
+			ff: "'Roboto', 'sans-serif'",
+			bg: 'n'
+		},
+		'.autocomplete': {
+			bxz: 'bb',
+			pos: 'a',
+			bottom: '1px',
+			right: '7px',
+			pad: '4px 4px 4px 18px',
+			bdrsa: '4px',
+			wid: 'calc(100% - 17px)',
+			fz: '13px',
+			color: '#B8B8B8',
+			ov: 'h',
+			hei: '38px'
+		},
+		'.stdin-field-tooltip': {
+			pos: 'a',
+			bottom: '10px',
+			left: '18px',
+			color: '#999'
+		},
+		'.clear-log': {
+			color: '#999',
+			fz: '12px',
+			pos: 'a',
+			top: '69px',
+			right: '12px',
+			ted: 'n',
+			'&:hover': {
+				color: '#000'
+			}
+		},
+		'.aliases': {
+			color: '#ACACAC',
+			fz: '18px',
+			pos: 'a',
+			bottom: '11px',
+			right: '15px',
+			ted: 'n',
+			'&:hover': {
+				color: '#F00'
+			}	
+		}
+	}
+}
+function DarkTaskCSSDashboard() {
+	return {
+		'.log': {
+			bg: '#181818',
+			color: '#ccc',
 			'.log-command': {
 				color: '#ccc',
 				bg: '#222',
@@ -621,59 +777,18 @@ function TaskCSSDashboard() {
 			}
 		},
 		'.stdin-field': {
-			bxz: 'bb',
-			pos: 'a',
-			bottom: '8px',
-			right: '8px',
-			pad: '4px 4px 4px 18px',
-			bdrsa: '4px',
-			wid: 'calc(100% - 17px)',
-			bd: 'solid 1px #555',
-			ff: "'Roboto', 'sans-serif'",
 			bg: '#383838',			
 			color: '#eee'
 		},
-		'.autocomplete': {
-			bxz: 'bb',
-			pos: 'a',
-			bottom: '1px',
-			right: '7px',
-			pad: '4px 4px 4px 18px',
-			bdrsa: '4px',
-			wid: 'calc(100% - 17px)',
-			fz: '13px',
-			color: '#B8B8B8',
-			ov: 'h',
-			hei: '38px'
-		},
-		'.stdin-field-tooltip': {
-			pos: 'a',
-			bottom: '10px',
-			left: '18px',
-			color: '#999'
-		},
 		'.clear-log': [
-		    button(), 
+		    button(),
+		    buttonDark(), 
 		    {
-				pos: 'a',
 				top: '58px',
-				right: '12px',
-				ted: 'n',
 				'&:hover': {
 					color: '#fff'
 			}
-		}],
-		'.aliases': {
-			color: '#ACACAC',
-			fz: '18px',
-			pos: 'a',
-			bottom: '11px',
-			right: '15px',
-			ted: 'n',
-			'&:hover': {
-				color: '#F00'
-			}	
-		}
+		}]
 	}
 }
 function TaskCSSSubNav() {

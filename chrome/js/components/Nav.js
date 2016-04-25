@@ -15,16 +15,28 @@ var Nav = absurd.component('Nav', {
 				}
 			],
 			'.task': {
-				fz: '12px'
+				fz: '12px',
+				bg: '#FFFFFF'
+			},
+			'.dark .task': {
+				bg: 'transparent'
 			},
 			'.add': {
+				bg: 'none',
+				bdb: 'none'
+			},
+			'.dark .add': {
+				bg: 'inherit',
 				bdb: 'none'
 			},
 			'.add-task': {
 				pos: 'a',
-				right: '255px',
+				right: '245px',
 				top: '7px',
 				wid: '85px',
+			},
+			'.dark .add-task': {
+				right: '255px'
 			},
 			'.add-terminal': {
 				pos: 'a',
