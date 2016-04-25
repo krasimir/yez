@@ -48,14 +48,14 @@ var Nav = absurd.component('Nav', {
 	},
 	html: {
 		'nav[data-component="nav"]': [
-			{ 'a[href="#" data-absurd-event="click:addTask" class="add add-task" title="New task"]': '<i class="fa fa-plus-circle"></i> Task' },
-			{ 'a[href="#" data-absurd-event="click:addTerminal" class="add add-terminal" title="New terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
-			{ 'a[href="#" data-absurd-event="click:toHome" class="task" title="Back to home"]': '<i class="fa fa-home"></i>' },
+			{ 'a[href="#" data-absurd-event="click:addTask" class="button add add-task" title="New task"]': '<i class="fa fa-plus-circle"></i> Task' },
+			{ 'a[href="#" data-absurd-event="click:addTerminal" class="button add add-terminal" title="New terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
+			{ 'a[href="#" data-absurd-event="click:toHome" class="button task" title="Back to home"]': '<i class="fa fa-home"></i>' },
 			'<% for(var i=0; i<tasksRunning.length; i++) { \
 				var name = tasksRunning[i].name; \
 				var id = tasksRunning[i].id; \
 			%>',
-			{ 'a[href="#" data-absurd-event="click:openTask:<% id %>" class="task" title="<% name %>"]': '<% tasksRunning[i].name %>'},
+			{ 'a[href="#" data-absurd-event="click:openTask:<% id %>" class="button task" title="<% name %>"]': '<% tasksRunning[i].name %>'},
 			'<% } %>'
 		]
 	},
@@ -67,7 +67,7 @@ var Nav = absurd.component('Nav', {
 		this.startCheckingTasks();
 	},
 	visible: function(s) {
-		this.css['[data-component="nav"]'].d = s ? 'b' : 'n';
+		this.css['[data-component="nav"]'].d = s ? 'b' : 'n';	
 		this.populate();
 	},
 	startCheckingTasks: function() {

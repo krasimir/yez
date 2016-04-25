@@ -307,9 +307,9 @@ var Task = absurd.component('Task', {
 	},
 	// *********************************************** terminal
 	terminalInit: function() {
-		this.html['div[class="task-<% getId() %>"]']['.sub-nav'] = [
-			{ 'a[href="#" class="operation" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop all processes'},
-			{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Close'}
+		this.html['div[class="task-id task-<% getId() %>"]']['.sub-nav'] = [
+			{ 'a[href="#" class="button operation" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop all processes'},
+			{ 'a[href="#" class="button operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Close'}
 		];	
 	},
 	gitStatus: function(value) {
@@ -361,13 +361,13 @@ var Task = absurd.component('Task', {
 });
 function TaskTemplate() {
 	return {
-		'div[class="task-<% getId() %>"]': {
+		'div[class="task-id task-<% getId() %>"]': {
 			'.sub-nav': [
-				{ 'a[href="#" class="operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
-				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:restartTasks"]': '<i class="fa fa-repeat"></i> Restart'},
-				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
-				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
-				{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
+				{ 'a[href="#" class="button operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
+				{ 'a[href="#" class="button operation<% started ? "" : " hidden" %>" data-absurd-event="click:restartTasks"]': '<i class="fa fa-repeat"></i> Restart'},
+				{ 'a[href="#" class="button operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
+				{ 'a[href="#" class="button operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
+				{ 'a[href="#" class="button operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
 			],
 			'.edit': [
 				{
@@ -406,7 +406,7 @@ function TaskTemplate() {
 				'<% } %>',
 				{
 					'.actions': [
-						{ 'a[href="#" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' }
+						{ 'a[href="#" class="button operation" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' }
 					]
 				}
 			],
@@ -427,13 +427,9 @@ function TaskCSS() {
 	return {
 		'.task-<% getId() %>': {
 			'.task-cwd': TaskCSSCWD(),
-			'.dark .task-cwd': DarkTaskCSSCWD(),
 			'.git-status': TaskCSSGitStatus(),
-			'.dark .git-status': DarkTaskCSSGitStatus(),
 			'.edit': TaskCSSEdit(),
-			'.dark .edit': DarkTaskCSSEdit(),
 			'.dashboard': TaskCSSDashboard(),
-			'.dark .dashboard': DarkTaskCSSDashboard(),
 			'.sub-nav': TaskCSSSubNav()
 		}
 	}
@@ -447,11 +443,6 @@ function TaskCSSCWD() {
 		fz: '14px'
 	}
 }
-function DarkTaskCSSCWD() {
-	return {
-		color: '#eee'
-	}
-}
 function TaskCSSGitStatus() {
 	return {
 		pos: 'a',
@@ -461,14 +452,8 @@ function TaskCSSGitStatus() {
 		fz: '14px'
 	}
 }
-function DarkTaskCSSGitStatus() {
-	return {
-		color: '#ccc'
-	}
-}
 function TaskCSSEdit() {
 	return {
-		color: '#fff',
 		bxz: 'bb',
 		pad: '10px',
 		display: '<% mode == "edit" ? "block" : "none" %>',
@@ -499,6 +484,7 @@ function TaskCSSEdit() {
 				bg: '#F8F5EF',
 				bdtrrs: '10px',
 				bdbrrs: '10px',
+				bdb: 'solid 1px #999',
 				input: {
 					hei: '46px',
 					bd: 'n',
@@ -525,7 +511,7 @@ function TaskCSSEdit() {
 				'&:hover': { bg: '#D5CCBB' }
 			},
 			'.sub-right': {
-				color: '#eee',
+				color: '#000',
 				d: 'b',
 				pos: 'a',
 				top: '10px',
@@ -550,45 +536,6 @@ function TaskCSSEdit() {
 			a: button(),
 			'.cancel': buttonTransparent()
 		}
-	};
-}
-function DarkTaskCSSEdit() {
-	return {
-		color: '#fff',
-		bxz: 'bb',
-		pad: '10px',
-		display: '<% mode == "edit" ? "block" : "none" %>',
-		'.element': {
-			pos: 'r',
-			wid: '100%',
-			bxz: 'bb',
-			mar: '6px 0 6px 0',
-			label: {
-				bg: '#444',
-				bdr: 'solid 1px #555',
-				bdb: '0',
-				hei: '46px'
-			},
-			'.field': {
-				bg: '#444',
-				bdb: '0',
-				input: {
-					color: '#fff'
-				}
-			},
-			'.sub-left, .sub-independent': {
-				color: '#eee',
-				bg: '#333',
-				bdrsa: '3px',
-				'&:hover': { bg: '#555' }
-			},
-			'.sub-right': {
-				color: '#eee',
-				bg: '#333',
-				'&:hover': { bg: '#555' }
-			}
-		},
-		'.actions': buttonDark()
 	};
 }
 function TaskCSSDashboard() {
@@ -637,31 +584,28 @@ function TaskCSSDashboard() {
 				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-end': {
-				color: '#bbb'
+				ta: 'r',
+				pad: 0,
+				lh: '16px'
 			},
 			'.log-response': {
-				lh: '16px',				
-				color: '#cfff80',
-				bg: '#193900',
-				bdb: 'solid 1px #5b8b00',
-				bdt: 'solid 1px #5b8b00'
+				lh: '16px'
 			},
 			'.log-task-end': {
-				color: '#ffdc9e',
-				bg: '#332b00',
-				bdb: 'solid 1px #A29042',
-				bdt: 'solid 1px #A29042'
+				bg: '#87E789',
+				bdb: 'solid 1px #E1E1E1'
 			},
 			'.log-info': {
 				bg: '#C6E7E8',
 				color: '#2E7072',
-				bdb: 'solid 1px #66BFC1'
+				bdb: 'solid 1px #66BFC1',
+				bdrsa: '4px'
 			},
 			'.log-stdin': {
-				color: '#fff',
-				bg: '#333',
-				bdb: 'solid 1px #777',
-				bdt: 'solid 1px #777'
+				bg: '#C6E7E8',
+				color: '#2E7072',
+				bdb: 'solid 1px #66BFC1',
+				bdrsa: '4px'
 			}
 		},
 		'.stdin-field': {
@@ -672,7 +616,7 @@ function TaskCSSDashboard() {
 			pad: '4px 4px 4px 18px',
 			bdrsa: '4px',
 			wid: 'calc(100% - 17px)',
-			bd: 'solid 1px #555',
+			bd: 'solid 1px #C5C5C5',
 			ff: "'Roboto', 'sans-serif'",
 			bg: 'n'
 		},
@@ -717,78 +661,6 @@ function TaskCSSDashboard() {
 				color: '#F00'
 			}	
 		}
-	}
-}
-function DarkTaskCSSDashboard() {
-	return {
-		'.log': {
-			bg: '#181818',
-			color: '#ccc',
-			'.log-command': {
-				color: '#ccc',
-				bg: '#222',
-				bdb: 'solid 1px #666',
-				bdt: 'solid 1px #666'
-			},
-			'.log-error': {
-				color: '#ff8080',
-				bg: '#290000',
-				bdb: 'solid 1px #5b0000',
-				bdt: 'solid 1px #5b0000'
-			},
-			'.log-warning': {
-				color: '#ffdc9e',
-				bg: '#332b00',
-				bdb: 'solid 1px #A29042',
-				bdt: 'solid 1px #A29042'
-			},
-			'.log-error-end': {
-				color: '#ff8080',
-				bg: '#290000',
-				bdb: 'solid 1px #5b0000',
-				bdt: 'solid 1px #5b0000'
-			},
-			'.log-end': {
-				color: '#bbb'
-			},
-			'.log-response': {
-				lh: '16px',				
-				color: '#cfff80',
-				bg: '#193900',
-				bdb: 'solid 1px #5b8b00',
-				bdt: 'solid 1px #5b8b00'
-			},
-			'.log-task-end': {
-				color: '#ffdc9e',
-				bg: '#332b00',
-				bdb: 'solid 1px #A29042',
-				bdt: 'solid 1px #A29042'
-			},
-			'.log-info': {
-				bg: '#C6E7E8',
-				color: '#2E7072',
-				bdb: 'solid 1px #66BFC1'
-			},
-			'.log-stdin': {
-				color: '#fff',
-				bg: '#333',
-				bdb: 'solid 1px #777',
-				bdt: 'solid 1px #777'
-			}
-		},
-		'.stdin-field': {
-			bg: '#383838',			
-			color: '#eee'
-		},
-		'.clear-log': [
-		    button(),
-		    buttonDark(), 
-		    {
-				top: '58px',
-				'&:hover': {
-					color: '#fff'
-			}
-		}]
 	}
 }
 function TaskCSSSubNav() {

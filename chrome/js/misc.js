@@ -1,21 +1,16 @@
 var button = function() {
 	return {
 		d: 'ib',
-		color: '#ddd',
-		bg: '#444',
+		color: '#111',
+		bg: '#E7E7E7',
+		bdb: 'solid 1px #919191',
 		ted: 'n',
 		pad: '4px 10px',
 		bdrsa: '8px',
 		mar: '0 6px 0 0',
 		'&:hover': {
-			bg: '#555'
+			bg: '#D5D5D5'
 		}
-	}
-}
-var buttonDark = function() {
-	return {
-		color: '#ddd',
-		bg: '#444'
 	}
 }
 var buttonTransparent = function() {

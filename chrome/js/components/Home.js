@@ -1,5 +1,7 @@
 var Home = absurd.component('Home', {
 	css: HomeCSS(),
+	trayChecked: false,
+	theme: 'light',
 	html: {
 		'div[data-component="home"]': [
 			{ h1: '<% tasks.length > 0 ? "Your tasks:" : "" %>' },
@@ -13,14 +15,23 @@ var Home = absurd.component('Home', {
 			%>',
 			{ 
 				'div[class="task<% started %><% group %><% grouped %>"]': {
-					'a[href="#" data-absurd-event="click:showTask:<% id %>" data-name="<% name %>"]': '<i class="fa <% tasks[i].started ? "fa-refresh" : "fa-stop" %>"></i> <% tasks[i].name %>',
-					'a[href="#" data-absurd-event="click:runTask:<% id %>" class="action"]': '<i class="fa fa-refresh"></i> Run',
-					'a[href="#" data-absurd-event="click:stopTask:<% id %>" class="action stop"]': '<i class="fa fa-stop"></i> Stop'
+					'a[href="#" data-absurd-event="click:showTask:<% id %>" class="button" data-name="<% name %>"]': '<i class="fa <% tasks[i].started ? "fa-refresh" : "fa-stop" %>"></i> <% tasks[i].name %>',
+					'a[href="#" data-absurd-event="click:runTask:<% id %>" class="button action"]': '<i class="fa fa-refresh"></i> Run',
+					'a[href="#" data-absurd-event="click:stopTask:<% id %>" class="button action stop"]': '<i class="fa fa-stop"></i> Stop'
 				}
 			},
 			'<% } %>',
-			{ 'a[href="#" class="newtask" data-absurd-event="click:newTask"]': '<i class="fa fa-plus-circle"></i> New task'}
+			{ 'a[href="#" class="newtask" data-absurd-event="click:newTask"]': '<i class="fa fa-plus-circle"></i> New task'},
+			{ 'div[class="options"]':'Options: <input type="checkbox" <% trayChecked %> name="tray" data-absurd-event="click:tray"/ >Tray icon<br>Theme: <input type="radio" name="theme" data-absurd-event="click:theme" <% (theme == "light") ? "checked" : "" %> value="light"/>Light<input type="radio" name="theme" data-absurd-event="click:theme" <% (theme == "dark") ? "checked" : "" %> value="dark"/>Dark'}
 		]
+	},	
+	tray: function (event) { 
+		//console.log('home.js click tray', event);
+		Yez.socket.emit('data', {action: 'tray', show: event.target.checked, id: 'tray'});
+	},
+	theme: function (event) { 
+		//console.log('home.js click theme', event);
+		Yez.socket.emit('data', {action: 'theme', theme: event.target.value, id: 'theme'});
 	},
 	tasks: [],
 	setTasks: function(ts) {
@@ -219,11 +230,10 @@ function HomeCSS() {
 				bd: 'solid 1px #C5C5C5',
 				ff: "'Roboto', 'sans-serif'"
 			},
-			'.dark .filter': {
-				bdrsa: '3px',
-				bg: '#383838',
-				bd: 'solid 1px #555',
-				color: '#ddd'
+			'.options': {
+				pos: 'f',
+				bot: '0',
+				rig: '10px'
 			}
 		}
 	}

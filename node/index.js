@@ -10,11 +10,12 @@ var app = require('http').createServer(function(){}),
     runners = {}, 
     lastActive = 0,
     electron = require('electron-prebuilt'),
-    proc = require('child_process');
+    proc = require('child_process'),
+    argv = require('yargs').argv;
 
 app.listen(port);
 
-proc.spawn(electron, [path.resolve(__dirname + '/../electron'), process.pid])
+proc.spawn(electron, [path.resolve(__dirname + '/../electron'), process.pid, argv.tray, argv.dark]);
 
 var getCurrentRunnersIds = function() {
     cleaningRunners();
@@ -72,6 +73,8 @@ io.sockets.on('connection', function (socket) {
       running: getCurrentRunnersIds(),
       sep: path.sep
     });
+    if (argv.dark) socket.emit('theme', {theme: 'dark'});
+    if (argv.tray) socket.emit('tray', {checked: 'true'});
     socket.on('data', function (data) {
         if(!data || !data.id) return;
         var id = data.id;
@@ -225,6 +228,14 @@ io.sockets.on('connection', function (socket) {
                 } catch(err) {
                     error(err);
                 }
+            break;
+            case 'tray':
+                //console.log('index.js socket tray', data);
+                io.sockets.emit('tray', data);
+            break;
+            case 'theme':
+                //console.log('index.js socket theme', data);
+                io.sockets.emit('theme', data);
             break;
         }
     });

@@ -10,8 +10,8 @@ var CWD = absurd.component('CWD', {
 					'<% } %>'
 				],
 				'.actions': [
-					{ 'a[href="#" data-absurd-event="click:result:ok"]': '<i class="fa fa-check-circle-o"></i> OK'},
-					{ 'a[href="#" data-absurd-event="click:result:cancel"]': '<i class="fa  fa-times-circle-o"></i> Cancel'}
+					{ 'a[href="#" class="button" data-absurd-event="click:result:ok"]': '<i class="fa fa-check-circle-o"></i> OK'},
+					{ 'a[href="#" class="button" data-absurd-event="click:result:cancel"]': '<i class="fa  fa-times-circle-o"></i> Cancel'}
 				]
 			}
 		}

@@ -9,8 +9,17 @@ var Yez = absurd.component('Yez', {
 	retry: 1,
 	sep: '/',
 	connect: function() {
-		if(this.connected) { return; }
+		if(this.connected) { return; }		
 		var self = this;
+		// comunication electronMainProcess -> ipc -> eletronBrowserWindow 
+		try {
+			self.ipc = require('electron').ipcRenderer;
+			self.ipc.on('message', function(event, message) { 
+			    //console.log('yez.js ipc', message)
+				self.socket.emit('data', {action: 'theme', theme: message, id: 'tray'});
+			});		      
+		} catch (error) {}
+		
 		this.socket = io.connect('http://' + this.host + ':' + this.port, {
 			'force new connection': true
 		});
@@ -67,6 +76,22 @@ var Yez = absurd.component('Yez', {
 			if(self.beacons[data.id]) {
 				self.beacons[data.id](data);
 			}
+		});
+		this.socket.on('tray', function(data) { 
+			//console.log('yez.js socket tray', data);
+			if (data.checked) {
+				var checked = Boolean(data.checked);
+				self.qs('input[name=tray]').checked = checked;
+				self.home.trayChecked = checked ? 'checked' : '';
+		    } else if (Yez.ipc) Yez.ipc.send('data', {id: 'tray', show: data.show});
+		});		 
+		this.socket.on('theme', function(data) { 
+			//console.log('yez.js socket theme', data);
+			self.qs('input[name=theme][value=dark]').checked = (data.theme == 'dark');
+			self.qs('input[name=theme][value=light]').checked = (data.theme == 'light');
+			self.home.theme = data.theme;
+			if (Yez.ipc) Yez.ipc.send('data', {id: 'theme', theme: data.theme});
+			document.body.className = data.theme;
 		});
 		setTimeout(function() {
 			if(!self.connected) {
@@ -273,10 +298,8 @@ function HomeCSS() {
 			wid: '100%', hei: '100%',
 			mar: 0, pad: 0,
 			ff: "'Roboto', 'sans-serif'",
-			fz: '16px', lh: '26px'			
-		},
-		'.dark': {
-			bg: '#242424'
+			fz: '16px', lh: '26px',
+			bg: '#fff'		
 		},
 		'.left': { fl: 'l' },
 		'.right': { fl: 'r' },
@@ -296,21 +319,16 @@ function HomeCSS() {
 			'.logo': {
 				d: 'b', fl: 'l',
 				mar: '0 4px 0 10px',
-				opacity: 0.5
+				wid: '48px',
+				hei: '48px',
+				op: 0.5,
+				bg: 'url("img/icon48.png")'
 			},
 			'&:after': {
 				d: 'tb',
 				content: '" "',
 				clear: 'both'
 			}
-		},
-		'.dark header': {
-			bg: '#333',
-			bdb: 'solid 1px #444'
-		},
-		'input': {
-		  outline: 'none',
-		  fz: '13px'
 		},
 		hr: {
 			bdt: 'none', bdb: 'dotted 1px #999',

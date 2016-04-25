@@ -32,9 +32,10 @@ var Status = absurd.component('Status', {
 		this.populate();
 	},
 	setStatus: function(s, retry) {
+		window.status = this;
 		this.status = s ? 'connected' : 'disconnected (' + retry + ' ' + (retry > 1 ? ' retries' : ' retry') + ')';
 		this.css['[data-component="status"]']['.info'].d = s ? 'n' : 'b';
-		this.css['[data-component="status"]']['.fa-flash'].color = s ? '#26A430' : '#CC151A';
+		this.css['[data-component="status"]']['.fa-flash'].color = s ? '#26A430' : '#CC151A';		
 		this.populate();
 	}
 })
