@@ -11,6 +11,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "open": "0.0.5",
+    "yargs": "4.6.0",
+    "electron-prebuilt": "0.37.6",
     "socket.io": "0.9.16",
     "ps-tree": "0.0.3",
     "spawn-args": "0.0.2"
