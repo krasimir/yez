@@ -37,12 +37,11 @@
   background: #333;
 }
 
-.dark [data-component="home"] .task a .action {
+.dark [data-component="home"] .task a.action {
   background: #3e9828;
 }
-
-.dark [data-component="home"] .task a .action .stop {
-  color: #ddd;
+.dark [data-component="home"] .task a.action:hover {
+  background: #84DC6D;
 }
 
 .dark [data-component="home"] .newtask {
@@ -69,7 +68,7 @@
 /* TASKS */
 
 .dark .task-id .task-cwd {
-  color: '#eee'
+  color: #eee;
 }
 
 .dark .task-id .git-status {
@@ -77,7 +76,7 @@
 }
 
 .task-id .edit {
-  color: '#fff'
+  color: #fff;
 }
 
 .dark .task-id .edit {
@@ -234,4 +233,20 @@
 .dark .task-id .dashboard .clear-log:hover {
   background: #555;
   color: #fff;
+}
+
+.dark .dialog .content {
+  background: #333;
+  color: #eee;
+}
+
+.dark .dialog .content .inner a,
+.dark .dialog .content .button {
+  background: #444;
+  color: #fff;
+  border: 0;
+}
+.dark .dialog .content .inner a
+.dark .dialog .content .button:hover {
+  background: #555;
 }

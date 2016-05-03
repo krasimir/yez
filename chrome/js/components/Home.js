@@ -1,7 +1,6 @@
 var Home = absurd.component('Home', {
-	css: HomeCSS(),
 	trayChecked: false,
-	theme: 'light',
+	theme: true,
 	html: {
 		'div[data-component="home"]': [
 			{ h1: '<% tasks.length > 0 ? "Your tasks:" : "" %>' },
@@ -22,16 +21,16 @@ var Home = absurd.component('Home', {
 			},
 			'<% } %>',
 			{ 'a[href="#" class="newtask" data-absurd-event="click:newTask"]': '<i class="fa fa-plus-circle"></i> New task'},
-			{ 'div[class="options"]':'Options: <input type="checkbox" <% trayChecked %> name="tray" data-absurd-event="click:tray"/ >Tray icon<br>Theme: <input type="radio" name="theme" data-absurd-event="click:theme" <% (theme == "light") ? "checked" : "" %> value="light"/>Light<input type="radio" name="theme" data-absurd-event="click:theme" <% (theme == "dark") ? "checked" : "" %> value="dark"/>Dark'}
+			{ 'div[class="options"]':'Options: <input type="checkbox" <% trayChecked ? "checked" : "" %> name="tray" data-absurd-event="click:trayClick"/ >Tray icon<br>Theme: <input type="radio" name="theme" data-absurd-event="click:themeClick" <% theme ? "checked" : "" %> value="light"/>Light<input type="radio" name="theme" data-absurd-event="click:themeClick" <% !theme ? "checked" : "" %> value="dark"/>Dark'}
 		]
 	},	
-	tray: function (event) { 
-		//console.log('home.js click tray', event);
-		Yez.socket.emit('data', {action: 'tray', show: event.target.checked, id: 'tray'});
+	trayClick: function (event) { 
+		//console.log('home.js click tray', event.target.checked);
+		Yez.socket.emit('data', {action: 'tray', show: event.target.checked, id: 'options'});
 	},
-	theme: function (event) { 
-		//console.log('home.js click theme', event);
-		Yez.socket.emit('data', {action: 'theme', theme: event.target.value, id: 'theme'});
+	themeClick: function (event) { 
+		//console.log('home.js click theme', event.target.value);
+		Yez.socket.emit('data', {action: 'theme', theme: event.target.value, id: 'options'});
 	},
 	tasks: [],
 	setTasks: function(ts) {
@@ -114,127 +113,3 @@ var Home = absurd.component('Home', {
 		this.qs('.filter').focus();
 	}
 });
-function HomeCSS() {
-	return {
-		'[data-component="home"]': {
-			bxz: 'bb',
-			pad: '14px',
-			h1: {
-				pad: 0,
-				mar: '0 0 17px 0'
-			},
-			'.dark h1': {
-			  color: '#ddd'	
-			},
-			'.task': {
-				pos: 'r',
-				a: [
-					button(),
-					{
-						d: 'b',
-						mar: '0 0 6px 0'
-					}
-				],
-				'a.action': {
-					pos: 'a',
-					top: 0,
-					right: 0,
-					bg: '#84DC6D',
-					bdb: 'n',
-					wid: '60px',
-					ta: 'c',
-					bdtlrs: '0',
-					bdblrs: '0',
-					'&:hover': {
-						bg: '#4EC730'
-					}
-				},
-				'a.action.stop': {
-					d: 'n',
-					bg: '#E83E3E',
-					color: '#FFF',
-					'&:hover': {
-						bg: '#ED6565'
-					}
-				}
-			},
-			'.dark .task': {
-				a: {
-					bg: '#333'
-				},
-				'a.action': {
-					bg: '#3e9828'
-				},
-				'a.action.stop': {
-					color: '#ddd'
-				}
-			},
-			'.started': {
-				'a.action': {
-					d: 'n'
-				},
-				'a.action.stop': {
-					d: 'b'
-				}
-			},
-			'.grouped': {
-				ml: '30px',
-				'&:before': {
-					d: 'b',
-					pos: 'a',
-					content: '" "',
-					width: '19px',
-					height: '10px',
-					bdb: 'solid 2px #000',
-					bdl: 'solid 2px #000',
-					top: '8px',
-					left: '-28px'
-				}
-			},
-			'.group': {
-				'a.action': { d: 'n' },
-				'a': {
-					color: '#8E8E8E',
-					fz: '20px',
-					pad: '4px 0',
-					cursor: 'default',
-					bg: 'none',
-					bdb: 'none',
-					i: { d: 'n' },
-					'&:hover': {
-						bg: 'none'
-					}
-				}
-			},
-			'.newtask': {
-				d: 'b',
-				mar: '10px 0 0 10px',
-				color: '#000',
-				'&:hover': {
-					color: '#297317'
-				}
-			},
-			'.dark .newtask': {
-				color: '#ddd',
-				'&:hover': {
-					color: '#ccc'
-				}
-			},			
-			'.filter': {
-				pos: 'a',
-				top: '62px',
-				right: '15px',
-				pad: '4px',
-				bdrsa: '4px',
-				wid: '120px',
-				bd: 'solid 1px #C5C5C5',
-				ff: "'Roboto', 'sans-serif'"
-			},
-			'.options': {
-				pos: 'f',
-				bot: '0',
-				rig: '10px'
-			}
-		}
-	}
-}

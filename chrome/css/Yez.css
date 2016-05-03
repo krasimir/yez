@@ -1,0 +1,73 @@
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', 'sans-serif';
+  font-size: 16px;
+  line-height: 26px;
+  background: #fff;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', 'sans-serif';
+  font-size: 16px;
+  line-height: 26px;
+  background: #fff;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+code {
+  border: solid 1px #D8D8D8;
+  padding: 0 2px 0 2px;
+}
+
+.clear {
+  clear: both;
+}
+
+.clearfix {
+  clear: both;
+}
+
+.content {
+  display: block;
+}
+
+header {
+  background: #F3EEE4;
+  border-bottom: solid 2px #DFD2B7;
+}
+
+header .logo {
+  display: block;
+  float: left;
+  margin: 0 4px 0 10px;
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+  background: url("../img/icon48.png");
+}
+
+header:after {
+  display: table;
+  content: " ";
+  clear: both;
+}
+
+hr {
+  border-top: none;
+  border-bottom: dotted 1px #999;
+  margin: 0 10px;
+}

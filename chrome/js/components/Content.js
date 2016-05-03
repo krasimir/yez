@@ -1,5 +1,4 @@
 var Content = absurd.component('Content', {
-	css: { '[data-component="content"]': { d: 'n' } },
 	html: '[data-component="content"]',
 	current: null,
 	constructor: function() {
@@ -57,6 +56,6 @@ var Content = absurd.component('Content', {
 				}
 			});
 		}
-		setTimeout(self.getGitStatus.bind(self), 1000);
+		setTimeout(self.getGitStatus.bind(self), 10000);
 	}
 })

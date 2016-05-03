@@ -1,0 +1,127 @@
+[data-component="home"] {
+  box-sizing: border-box;
+  padding: 14px;
+}
+
+[data-component="home"] h1 {
+  padding: 0;
+  margin: 0 0 17px 0;
+}
+
+[data-component="home"] .task {
+  position: relative;
+}
+
+[data-component="home"] .task a {
+  display: block;
+  background: #E7E7E7;
+  border-bottom: solid 1px #919191;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 8px;
+  margin: 0 0 6px 0;
+  color: #111;
+}
+
+[data-component="home"] .task a:hover {
+  background: #D5D5D5;
+}
+
+[data-component="home"] .task a.action {
+  position: absolute;
+  background: #84DC6D;
+  border-bottom: none;
+  width: 60px;
+  text-align: center;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  top: 0;
+  right: 0;
+}
+
+[data-component="home"] .task a.action:hover {
+  background: #4EC730;
+}
+
+[data-component="home"] .task a.action.stop {
+  display: none;
+  background: #E83E3E;
+  color: #FFF;
+}
+
+[data-component="home"] .task a.action.stop:hover {
+  background: #ED6565;
+}
+
+[data-component="home"] .started a.action {
+  display: none;
+}
+
+[data-component="home"] .started a.action.stop {
+  display: block;
+}
+
+[data-component="home"] .grouped {
+  margin-left: 30px;
+}
+
+[data-component="home"] .grouped:before {
+  display: block;
+  position: absolute;
+  border-bottom: solid 2px #000;
+  border-left: solid 2px #000;
+  content: " ";
+  width: 19px;
+  height: 10px;
+  top: 8px;
+  left: -28px;
+}
+
+[data-component="home"] .group a .action {
+  display: none;
+}
+
+[data-component="home"] .group a {
+  font-size: 20px;
+  padding: 4px 0;
+  background: none;
+  border-bottom: none;
+  color: #8E8E8E;
+  cursor: default;
+}
+
+[data-component="home"] .group a i {
+  display: none;
+}
+
+[data-component="home"] .group a:hover {
+  background: none;
+}
+
+[data-component="home"] .newtask {
+  display: block;
+  margin: 10px 0 0 10px;
+  color: #000;
+}
+
+[data-component="home"] .newtask:hover {
+  color: #297317;
+}
+
+
+[data-component="home"] .filter {
+  position: absolute;
+  padding: 4px;
+  border-radius: 4px;
+  width: 120px;
+  border: solid 1px #C5C5C5;
+  font-family: 'Roboto', 'sans-serif';
+  top: 62px;
+  right: 15px;
+}
+
+[data-component="home"] .options {
+  position: fixed;
+  bottom: 0;
+  right: 10px;
+}
