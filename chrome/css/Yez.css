@@ -71,3 +71,6 @@ hr {
   border-bottom: dotted 1px #999;
   margin: 0 10px;
 }
+[data-component="content"] {
+  display: none;
+}

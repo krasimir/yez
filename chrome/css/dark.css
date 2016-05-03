@@ -44,6 +44,13 @@
   background: #84DC6D;
 }
 
+[data-component="home"] .task a.action.stop {
+  background: #E83E3E;
+}
+[data-component="home"] .task a.action.stop:hover {
+  background: #ED6565;
+}
+
 .dark [data-component="home"] .newtask {
   color: #ddd;
 }

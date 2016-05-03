@@ -1,5 +1,4 @@
 var Editor = absurd.component('Editor', {
-	css: extend(DialogStyles(), EditorStyles()),
 	html: {
 		'.dialog': {
 			'.content': {
@@ -33,25 +32,3 @@ var Editor = absurd.component('Editor', {
 		}, 400);
 	}
 });
-function EditorStyles() {
-	return {
-		'.dialog .content .info': {
-			fz: '14px',
-			lh: '18px',
-			hei: '41px'
-		},
-		'.dialog .content .inner': {
-			hei: 'calc(100% - 102px)'
-		},
-		'.editor': {
-			textarea: {
-				wid: '100%',
-				hei: '100%',
-				ff: "'Roboto', 'sans-serif'",
-				bxz: 'bb',
-				pad: '6px',
-				bdrsa: '4px'
-			}
-		}
-	}
-}

@@ -25,11 +25,9 @@ var Home = absurd.component('Home', {
 		]
 	},	
 	trayClick: function (event) { 
-		//console.log('home.js click tray', event.target.checked);
 		Yez.socket.emit('data', {action: 'tray', show: event.target.checked, id: 'options'});
 	},
 	themeClick: function (event) { 
-		//console.log('home.js click theme', event.target.value);
 		Yez.socket.emit('data', {action: 'theme', theme: event.target.value, id: 'options'});
 	},
 	tasks: [],
@@ -77,11 +75,6 @@ var Home = absurd.component('Home', {
 				task.style.display = 'none';
 			}
 		}
-	},
-	appended: function(dom) {
-		setTimeout(function() {
-			dom('.filter').el.focus();
-		}, 300);
 	},
 	orderTasks: function() {
 		this.tasks.sort(function(a, b) {

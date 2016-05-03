@@ -4,6 +4,7 @@
   bottom: 42px;
   left: 12px;
   color: #575757;
+  cursor: pointer;
 }
 
 .task-id .git-status {

@@ -1,6 +1,5 @@
 var Task = absurd.component('Task', {
 	html: TaskTemplate(),
-	//mode: 'dashboard',
 	started: false,
 	logContent: '',
 	data: {
@@ -21,10 +20,8 @@ var Task = absurd.component('Task', {
 		return this.data && this.data.id && this.data.id != '' ? this.data.id : getId();
 	},
 	setMode: function(m) {
-		//this.mode = m;
 		this.populate();
 		if (!this.el) this.el = this.qs('.task-'+this.getId());
-		console.log('.task-'+this.getId(), this.el);
 		if (m == 'edit') this.addClass(m, this.el);
 		else this.removeClass(m, this.el);
 		return this;

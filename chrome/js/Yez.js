@@ -7,114 +7,8 @@ var Yez = absurd.component('Yez', {
 	defaultCWD: '',
 	retry: 1,
 	sep: '/',
-	connect: function() {
-		if(this.connected) { return; }		
-		var self = this;
-		try {
-			self.ipc = require('electron').ipcRenderer;
-			self.ipc.on('message', function(event, message) { 
-				self.socket.emit('data', {action: 'theme', theme: message, id: 'tray'});
-			});		      
-		} catch (error) { /*console.log('this is not an electron window');*/ }
-		this.socket = io.connect('http://' + this.host + ':' + this.port, {
-			'force new connection': true
-		});
-		this.socket.on('connect', function (data) {
-			self.retry = 1;
-			self.connected = true;
-			self.status.setStatus(true);
-			self.nav.visible(true);
-			self.content.visible(true);			
-		});
-		this.socket.on('disconnect', function() {
-			self.connected = false;
-			self.status.setStatus(false, self.retry);
-			self.nav.visible(false);
-			self.content.visible(false);
-			self.connect();
-		});
-		this.socket.on('initial', function(data) {			
-			Yez.sep = data.sep;
-			self.defaultCWD = normalizePath(data.cwd);
-			// marking tasks as started
-			if(data.running && data.running.length > 0) {
-				for(var i=0; i<data.running.length; i++) {
-					if(self.tasks[data.running[i].id]) {
-						var t = self.tasks[data.running[i].id];
-						t.started = true;
-						t.populate();
-					}
-				}
-				self.home.setTasks(self.tasks);
-			}
-			// remove the started state
-			for(id in self.tasks) {
-				var t = self.tasks[id];
-				if(t.started) {
-					var isItReally = false;
-					for(var i=0; i<data.running.length; i++) {
-						if(t.data.id === data.running[i].id) {
-							isItReally = true;
-						}
-					}
-					if(!isItReally) {
-						console.log('no it is not');
-					}
-				}
-			}
-		});
-		this.socket.on('response', function(data) {
-			if(self.tasks[data.id]) {
-				self.tasks[data.id].response(data);
-			}
-		});
-		this.socket.on('beacon-response', function(data) {
-			if(self.beacons[data.id]) {
-				self.beacons[data.id](data);
-			}
-		});
-		this.socket.on('tray', function(data) { 
-			if (data.checked) {
-				var checked = Boolean(data.checked);
-				self.qs('input[name=tray]').checked = checked;
-				self.home.trayChecked = checked;
-		    } else if (Yez.ipc) Yez.ipc.send('data', data);
-		});		 
-		this.socket.on('theme', function(data) { 
-			self.qs('input[name=theme][value=dark]').checked = (data.theme == 'dark');
-			self.qs('input[name=theme][value=light]').checked = (data.theme == 'light');
-			self.home.theme = (data.theme == 'light');
-			if (Yez.ipc) Yez.ipc.send('data', data);
-			document.body.className = data.theme;
-		});
-		setTimeout(function() {
-			if(!self.connected) {
-				self.retry += 1;
-				self.status.setStatus(false, self.retry);
-				self.connect();
-			}
-		}, 5000);
-		return this;
-	},
 	ready: function() {
-
 		var self = this, showTask;
-
-		// getting the saved tasks
-		if(window.localStorage) {
-			var ts = window.localStorage.getItem('YezTasks');
-			if(ts) {
-				try {
-					ts = JSON.parse(ts);
-					for(var i=0; i<ts.length; i++) {
-						var t = this.initializeTask(ts[i]);
-						this.tasks[t.data.id] = t;
-					}
-				} catch(err) {
-					console.log(err);
-				}
-			}
-		}
 
 		this.populate();
 
@@ -187,10 +81,85 @@ var Yez = absurd.component('Yez', {
 			self.content.append(newTask);
 			newTask.goToEditMode();
 		});
+		this.connect();
+	},
 
-		// connecting, showing home page and enabling the key binding
-		this.connect().showHome().initializeKeyPress();
+	connect: function() {
 
+		if(this.connected) { return; }
+
+		var self = this;
+
+		try {
+			self.ipc = require('electron').ipcRenderer;
+			self.ipc.on('theme', function(event, data) { 
+				self.socket.emit('data', {action: 'theme', theme: data, id: 'traymenu'});
+			});
+			self.ipc.on('tray', function(event, data) { 
+				self.socket.emit('data', {action: 'tray', checked: data, id: 'traymenu'});
+			});
+		} catch (error) {
+		  //console.log('this is not an electron window');
+		}
+		this.socket = io.connect('http://' + this.host + ':' + this.port, {
+			'force new connection': true
+		});
+		this.socket.on('connect', function (data) {
+			self.retry = 1;
+			self.connected = true;
+			self.status.setStatus(true);
+			self.nav.visible(true);
+			self.content.visible(true);			
+		});
+		this.socket.on('disconnect', function() {
+			self.connected = false;
+			self.status.setStatus(false, self.retry);
+			self.nav.visible(false);
+			self.content.visible(false);
+			self.connect();
+		});
+		this.socket.on('initial', function(data) {		
+			Yez.sep = data.sep;
+			self.defaultCWD = normalizePath(data.cwd);
+			self.setTasks(data);
+		});
+		this.socket.on('response', function(data) {
+			if(self.tasks[data.id]) {
+				self.tasks[data.id].response(data);
+			}
+		});
+		this.socket.on('beacon-response', function(data) {
+			if(self.beacons[data.id]) {
+				self.beacons[data.id](data);
+			}
+		});
+		this.socket.on('tray', function(data) { 
+			if (data.checked) {
+				var checked = Boolean(data.checked);
+				self.qs('input[name=tray]').checked = checked;
+				self.home.trayChecked = checked;
+		    } else if (Yez.ipc) Yez.ipc.send('data', data);
+		});		 
+		this.socket.on('theme', function(data) { 
+			self.qs('input[name=theme][value=dark]').checked = (data.theme == 'dark');
+			self.qs('input[name=theme][value=light]').checked = (data.theme == 'light');
+			self.home.theme = (data.theme == 'light');
+			if (Yez.ipc) Yez.ipc.send('data', data);
+			document.body.className = data.theme;
+		});
+		this.socket.on('updateTasks', function(data) { 
+		    self.setTasks(data);
+		});
+		setTimeout(function() {
+			if(!self.connected) {
+				self.retry += 1;
+				self.status.setStatus(false, self.retry);
+				self.connect();
+			}
+		}, 5000);
+		//showing home page and enabling the key binding
+        this.showHome().initializeKeyPress();
+		return this;
 	},
 	initializeTask: function(data) {
 		var self = this;
@@ -226,6 +195,40 @@ var Yez = absurd.component('Yez', {
 		this.content.append(this.home.setTasks(this.tasks));
 		return this;
 	},
+	setTasks: function(data) {
+		this.tasks = [];
+		var ts = JSON.parse(data.tasks);
+		for(var i=0; i<ts.length; i++) {
+			var t = this.initializeTask(ts[i]);
+			this.tasks[t.data.id] = t;
+		}
+		// marking tasks as started
+		if(data.running && data.running.length > 0) {
+			for(var i=0; i<data.running.length; i++) {
+				if(this.tasks[data.running[i].id]) {
+					var t = this.tasks[data.running[i].id];
+					t.started = true;
+					t.populate();
+				}
+			}				
+		}
+		// remove the started state
+		for(id in this.tasks) {
+			var t = this.tasks[id];
+			if(t.started) {
+				var isItReally = false;
+				for(var i=0; i<data.running.length; i++) {
+					if(t.data.id === data.running[i].id) {
+						isItReally = true;
+					}
+				}
+				if(!isItReally) {
+					console.log('no it is not');
+				}
+			}
+		}
+		this.home.setTasks(this.tasks);	
+	},
 	saveToStorage: function() {
 		var tasks = [];
 		for(var id in this.tasks) {
@@ -233,9 +236,7 @@ var Yez = absurd.component('Yez', {
 				tasks.push(this.tasks[id].data);
 			}
 		}
-		if(window.localStorage) {
-			window.localStorage.setItem('YezTasks', JSON.stringify(tasks));
-		}
+		this.socket.emit('data', {action: 'save', data: JSON.stringify(tasks), id: 'storage'});
 		return this;
 	},
 	send: function(data, cb) {
@@ -281,7 +282,7 @@ var Yez = absurd.component('Yez', {
 		}
 	},
 	'tasks-updated': function() {
-		this.home.setTasks(this.tasks);
+		this.home.setTasks(this.tasks);		
 		this.saveToStorage();
 	}
 })();
