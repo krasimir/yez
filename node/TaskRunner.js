@@ -43,10 +43,11 @@ module.exports = function() {
 			out = [], outcb = null,
 			err = [], errcb = null,
 			endcb = null, exitcb = null,
-			pathExtWin = ['.cmd', '.bat'];
+			pathExtWin = ['.cmd', '.bat', '.exe'];
 		try {
 			(function go(c) {
-				preventEnding = false;
+				preventEnding = false; 
+				//console.log(c.command, c.args, options);
 				processing = cp.spawn(c.command, c.args, options);
 				processing.stdout.setEncoding('utf8');
 				processing.stderr.setEncoding('utf8');
@@ -55,6 +56,12 @@ module.exports = function() {
 					data = data.toString('utf8');
 					out.push(data);
 					outcb && outcb(data);
+				});
+				processing.on('message', function (data) {
+					// console.log('message code: ' + data);					
+					data = data.toString('utf8');
+					out.push(data);
+					outcb && outcb(data);				
 				});
 				processing.stderr.on('data', function (data) {
 					// console.log('stderr: ' + data);
@@ -77,8 +84,13 @@ module.exports = function() {
 						go(c);
 					} else {
 						api.ended = true;
-						endcb && endcb(err.length > 0 ? err : false, out, code);
+						endcb && endcb(false, out, code);
 					}
+				});
+				processing.on('disconnect', function (code) {
+					// console.log('disconnect code: ' + code);					
+					api.ended = true;
+					endcb && endcb(false, out, code);					
 				});
 				processing.on('exit', function (code, signal) {
 					// console.log('exit code: ' + code + ' signal: ' + signal);

@@ -10,12 +10,11 @@ var app = require('http').createServer(function(){}),
     runners = {}, 
     lastActive = 0,
     electron = require('electron-prebuilt'),
+    spawnElectron,
     proc = require('child_process'),
     argv = require('yargs').argv;
 
 app.listen(port);
-
-proc.spawn(electron, [path.resolve(__dirname + '/../electron'), process.pid, argv.tray, argv.dark]);
 
 var getCurrentRunnersIds = function() {
     cleaningRunners();
@@ -26,7 +25,7 @@ var getCurrentRunnersIds = function() {
         }
     }
     return res;
-}
+};
 var cleaningRunners = function() {
     var res = {};
     if(runners) {        
@@ -43,7 +42,7 @@ var cleaningRunners = function() {
         }
         runners = res;
     }
-}
+};
 var reportingProcesses = function() {
     var active = 0;
     if(runners) {        
@@ -64,17 +63,45 @@ var reportingProcesses = function() {
         }
     }
     setTimeout(reportingProcesses, 1600);
-}
+};
+
+var savedTasks; //savedTasks.json data
+
+var readTasks = function () {
+    fs.readFile(path.resolve(__dirname+'/savedTasks.json'), 'utf8', function (err, data) {
+        if (err) throw err;
+        savedTasks = data;        
+    });
+};
+
+readTasks();
+
+var startElectron = function () {
+    if (!spawnElectron) {
+        spawnElectron = proc.spawn(electron, [
+            path.resolve(__dirname + '/../electron'), 
+            process.pid, 
+            argv.tray, 
+            argv.dark
+        ]);
+        spawnElectron.on('close', function () {
+             spawnElectron = null;
+        });
+    }
+};
+
+if (argv.tray) startElectron();
 
 io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
     socket.emit('initial', { 
-      cwd: defaultCWD, 
+      cwd: defaultCWD,
+      tasks: savedTasks,
       running: getCurrentRunnersIds(),
       sep: path.sep
-    });
-    if (argv.dark) socket.emit('theme', {theme: 'dark'});
+    });    
     if (argv.tray) socket.emit('tray', {checked: 'true'});
+    if (argv.dark) socket.emit('theme', {theme: 'dark'});
     socket.on('data', function (data) {
         if(!data || !data.id) return;
         var id = data.id;
@@ -211,7 +238,7 @@ io.sockets.on('connection', function (socket) {
                                         var item = files.shift();
                                         fs.stat(data.cwd + path.sep + item, function(err, stats) {
                                             if(err) { 
-                                                error(err);                                                 
+                                                error(err);
                                             } else {
                                                 if(stats.isDirectory() || data.files) {
                                                     result.push(item);
@@ -230,12 +257,25 @@ io.sockets.on('connection', function (socket) {
                 }
             break;
             case 'tray':
-                //console.log('index.js socket tray', data);
                 io.sockets.emit('tray', data);
+                if (Boolean(data.show)) {
+                    argv.tray = true;
+                    startElectron();
+                }
             break;
             case 'theme':
-                //console.log('index.js socket theme', data);
+                argv.dark = (data.theme == 'dark');
                 io.sockets.emit('theme', data);
+            break;
+            case 'save':
+                savedTasks = data.data;
+                io.sockets.emit('updateTasks', {
+                    tasks: savedTasks,
+                    running: getCurrentRunnersIds()
+                });
+                fs.writeFile(path.resolve(__dirname+'/savedTasks.json'), savedTasks, 'utf8', function (err) {
+                  if (err) throw err;
+                });
             break;
         }
     });

@@ -7,27 +7,36 @@ var electron = require('electron'),
     mainWindow,
     open = require('open'),
     serverPID = process.argv[2] || false,
+    trayOn = (process.argv[3] == 'true'),
+    darkOn = (process.argv[4] == 'true'),
     mainWindow,
     BrowserWindow = electron.BrowserWindow;
 
 var start = function () {
   buildWindow();
-  if (process.argv[3] == 'true') showTray();
+  if (trayOn) showTray();
 };
 
 var showTray = function() {
   if (!appIcon) {
     var icon = 'icon16.png';
-    if (process.argv[4] == 'true') icon = 'icon16w.png';
+    if (darkOn) icon = 'icon16w.png';
     appIcon = new electron.Tray(path.normalize(__dirname + '/../chrome/img/'+icon));
     appIcon.setToolTip('Yez! is running');
     appIcon.setContextMenu(menu);
+    if (mainWindow) mainWindow.webContents.send('tray', 'true');
+    appIcon.on('click', function () {
+      mainWindow.show()
+    });
   }
 };
 
 var hideTray = function() {
-  appIcon.destroy();
-  appIcon = null;
+  if (mainWindow) mainWindow.webContents.send('tray', 'false');
+  if (appIcon) {
+    appIcon.destroy();
+    appIcon = null; 
+  }
 };
 
 var buildWindow = function() {
@@ -43,13 +52,15 @@ var buildWindow = function() {
 }
 
 var setLight = function(i) {
-  appIcon.setImage(path.normalize(__dirname + '/../chrome/img/icon16.png'));
-  if (i !== 'icon') mainWindow.webContents.send('message', 'light');
+  darkOn = false;
+  if (appIcon) appIcon.setImage(path.normalize(__dirname + '/../chrome/img/icon16.png'));
+  if (i !== 'icon' && mainWindow) mainWindow.webContents.send('theme', 'light');
 };
 
 var setDark = function (i) {
-  appIcon.setImage(path.normalize(__dirname + '/../chrome/img/icon16w.png'));
-  if (i !== 'icon') mainWindow.webContents.send('message', 'dark');
+  darkOn = true;
+  if (appIcon) appIcon.setImage(path.normalize(__dirname + '/../chrome/img/icon16w.png'));
+  if (i !== 'icon' && mainWindow) mainWindow.webContents.send('theme', 'dark');
 };
 
 var menu = electron.Menu.buildFromTemplate([{
@@ -60,11 +71,12 @@ var menu = electron.Menu.buildFromTemplate([{
 }, {
   label: 'Light Style',
   type: 'radio',
-  checked: true,
+  checked: !darkOn,
   click: setLight
 }, {
   label: 'Dark Style',
   type: 'radio',
+  checked: darkOn,
   click: setDark
 }, {
   type: 'separator'
@@ -94,11 +106,11 @@ var menu = electron.Menu.buildFromTemplate([{
 
 electron.ipcMain.on('data', function(event, data) {
   //console.log('tray.js ipc', data);
-  if (data.id == 'tray') {
+  if (data.action == 'tray') {
     if (Boolean(data.show)) showTray();
     else hideTray();
   }
-  if (data.id == 'theme') {
+  if (data.action == 'theme') {
     if (data.theme == 'light') setLight('icon');
     if (data.theme == 'dark') setDark('icon');
   }
