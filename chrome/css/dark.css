@@ -66,6 +66,11 @@
   color: #ddd;
 }
 
+[data-component="home"] .grouped:before {
+  border-bottom: solid 2px #ccc;
+  border-left: solid 2px #ccc;
+}
+
 /* NAV */
 
 .dark [data-component="nav"] .add-task {
@@ -256,4 +261,10 @@
 .dark .dialog .content .inner a
 .dark .dialog .content .button:hover {
   background: #555;
+}
+
+.dark .dialog .editor textarea {
+  background: #222;
+  color: #ddd;
+  border: solid 1px #555;
 }

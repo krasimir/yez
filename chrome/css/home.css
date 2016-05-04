@@ -77,7 +77,7 @@
   left: -28px;
 }
 
-[data-component="home"] .group a .action {
+[data-component="home"] .group a.action {
   display: none;
 }
 
@@ -88,6 +88,7 @@
   border-bottom: none;
   color: #8E8E8E;
   cursor: default;
+  padding-left: 10px;
 }
 
 [data-component="home"] .group a i {

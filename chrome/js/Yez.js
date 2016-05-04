@@ -93,13 +93,14 @@ var Yez = absurd.component('Yez', {
 		try {
 			self.ipc = require('electron').ipcRenderer;
 			self.ipc.on('theme', function(event, data) { 
-				self.socket.emit('data', {action: 'theme', theme: data, id: 'traymenu'});
+				self.socket.emit('data', {action: 'theme', theme: data, id: 'ipc'});
 			});
 			self.ipc.on('tray', function(event, data) { 
-				self.socket.emit('data', {action: 'tray', checked: data, id: 'traymenu'});
+				self.socket.emit('data', {action: 'tray', show: data, id: 'ipc'});
+				console.log('ipc tray', {action: 'tray', show: data, id: 'ipc'});
 			});
 		} catch (error) {
-		  //console.log('this is not an electron window');
+		  // console.log('this is not an electron window');
 		}
 		this.socket = io.connect('http://' + this.host + ':' + this.port, {
 			'force new connection': true
@@ -119,9 +120,16 @@ var Yez = absurd.component('Yez', {
 			self.connect();
 		});
 		this.socket.on('initial', function(data) {		
-			Yez.sep = data.sep;
+			self.sep = data.sep;
+			self.savedAliases = data.aliases;
 			self.defaultCWD = normalizePath(data.cwd);
 			self.setTasks(data);
+			if (data.tray) {
+				self.toggleTray({show: 'true'});
+			}
+			if (data.dark) {
+				self.setTheme({theme: 'dark'});
+			}
 		});
 		this.socket.on('response', function(data) {
 			if(self.tasks[data.id]) {
@@ -133,19 +141,13 @@ var Yez = absurd.component('Yez', {
 				self.beacons[data.id](data);
 			}
 		});
-		this.socket.on('tray', function(data) { 
-			if (data.checked) {
-				var checked = Boolean(data.checked);
-				self.qs('input[name=tray]').checked = checked;
-				self.home.trayChecked = checked;
-		    } else if (Yez.ipc) Yez.ipc.send('data', data);
+		this.socket.on('tray', function(data) { console.log('socket tray ',data);			
+		    if (Yez.ipc) Yez.ipc.send('data', data);
+			self.toggleTray(data);
 		});		 
-		this.socket.on('theme', function(data) { 
-			self.qs('input[name=theme][value=dark]').checked = (data.theme == 'dark');
-			self.qs('input[name=theme][value=light]').checked = (data.theme == 'light');
-			self.home.theme = (data.theme == 'light');
-			if (Yez.ipc) Yez.ipc.send('data', data);
-			document.body.className = data.theme;
+		this.socket.on('theme', function(data) { console.log('socket theme ',data);
+		    if (Yez.ipc) Yez.ipc.send('data', data);
+			self.setTheme(data);
 		});
 		this.socket.on('updateTasks', function(data) { 
 		    self.setTasks(data);
@@ -157,9 +159,20 @@ var Yez = absurd.component('Yez', {
 				self.connect();
 			}
 		}, 5000);
-		//showing home page and enabling the key binding
+		// showing home page and enabling the key binding
         this.showHome().initializeKeyPress();
 		return this;
+	},
+	toggleTray: function (data) {
+		var checked = Boolean(data.checked) || Boolean(data.show);
+		this.qs('input[name=tray]').checked = checked;
+		this.home.trayChecked = checked;
+	},
+	setTheme: function (data) {
+		this.qs('input[name=theme][value=dark]').checked = (data.theme == 'dark');
+		this.qs('input[name=theme][value=light]').checked = (data.theme == 'light');
+		this.home.theme = (data.theme == 'light');			
+		document.body.className = data.theme;
 	},
 	initializeTask: function(data) {
 		var self = this;
@@ -229,14 +242,14 @@ var Yez = absurd.component('Yez', {
 		}
 		this.home.setTasks(this.tasks);	
 	},
-	saveToStorage: function() {
+	saveTasks: function() {
 		var tasks = [];
 		for(var id in this.tasks) {
 			if(!this.tasks[id].data.terminal) {
 				tasks.push(this.tasks[id].data);
 			}
 		}
-		this.socket.emit('data', {action: 'save', data: JSON.stringify(tasks), id: 'storage'});
+		this.socket.emit('data', {action: 'saveTasks', tasks: JSON.stringify(tasks), id: 'tasks'});
 		return this;
 	},
 	send: function(data, cb) {
@@ -269,20 +282,14 @@ var Yez = absurd.component('Yez', {
 		return this;
 	},
 	aliases: function(value) {
-		if(typeof value == 'undefined') {
-			if(window.localStorage) {
-				var a = window.localStorage.getItem('YezAliases');
-				return a ? a : '';
-			}
-		} else {
-			if(window.localStorage) {
-				window.localStorage.setItem('YezAliases', value);
-				return value;
-			}
+		if(typeof value != 'undefined') {
+			this.socket.emit('data', {action: 'aliases', aliases: value, id: 'tasks'});
 		}
+		this.savedAliases = value;
+		return this.savedAliases;
 	},
 	'tasks-updated': function() {
 		this.home.setTasks(this.tasks);		
-		this.saveToStorage();
+		this.saveTasks();
 	}
 })();

@@ -23,12 +23,6 @@ var Home = absurd.component('Home', {
 			{ 'a[href="#" class="newtask" data-absurd-event="click:newTask"]': '<i class="fa fa-plus-circle"></i> New task'},
 			{ 'div[class="options"]':'Options: <input type="checkbox" <% trayChecked ? "checked" : "" %> name="tray" data-absurd-event="click:trayClick"/ >Tray icon<br>Theme: <input type="radio" name="theme" data-absurd-event="click:themeClick" <% theme ? "checked" : "" %> value="light"/>Light<input type="radio" name="theme" data-absurd-event="click:themeClick" <% !theme ? "checked" : "" %> value="dark"/>Dark'}
 		]
-	},	
-	trayClick: function (event) { 
-		Yez.socket.emit('data', {action: 'tray', show: event.target.checked, id: 'options'});
-	},
-	themeClick: function (event) { 
-		Yez.socket.emit('data', {action: 'theme', theme: event.target.value, id: 'options'});
 	},
 	tasks: [],
 	setTasks: function(ts) {
@@ -104,5 +98,11 @@ var Home = absurd.component('Home', {
 	},
 	'ctrl+i': function() {
 		this.qs('.filter').focus();
+	},	
+	trayClick: function (event) { 
+		Yez.socket.emit('data', {action: 'tray', show: event.target.checked, id: 'options'});
+	},
+	themeClick: function (event) { 
+		Yez.socket.emit('data', {action: 'theme', theme: event.target.value, id: 'options'});
 	}
 });

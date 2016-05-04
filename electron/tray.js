@@ -6,9 +6,11 @@ var electron = require('electron'),
     BrowserWindow = electron.BrowserWindow,
     mainWindow,
     open = require('open'),
-    serverPID = process.argv[2] || false,
-    trayOn = (process.argv[3] == 'true'),
-    darkOn = (process.argv[4] == 'true'),
+    argv = JSON.parse(process.argv[2]),
+    serverPID = argv.pid || false,
+    trayOn = argv.tray,
+    darkOn = argv.dark,
+    port = argv.port,
     mainWindow,
     BrowserWindow = electron.BrowserWindow;
 
@@ -17,25 +19,23 @@ var start = function () {
   if (trayOn) showTray();
 };
 
-var showTray = function() {
+var showTray = function() {console.log('showTray');
   if (!appIcon) {
     var icon = 'icon16.png';
     if (darkOn) icon = 'icon16w.png';
     appIcon = new electron.Tray(path.normalize(__dirname + '/../chrome/img/'+icon));
     appIcon.setToolTip('Yez! is running');
     appIcon.setContextMenu(menu);
-    if (mainWindow) mainWindow.webContents.send('tray', 'true');
     appIcon.on('click', function () {
       mainWindow.show()
     });
   }
 };
 
-var hideTray = function() {
-  if (mainWindow) mainWindow.webContents.send('tray', 'false');
-  if (appIcon) {
+var hideTray = function(i) { console.log('hideTray');  
+  if (appIcon) { 
     appIcon.destroy();
-    appIcon = null; 
+    appIcon = null;
   }
 };
 
@@ -53,31 +53,38 @@ var buildWindow = function() {
 
 var setLight = function(i) {
   darkOn = false;
-  if (appIcon) appIcon.setImage(path.normalize(__dirname + '/../chrome/img/icon16.png'));
-  if (i !== 'icon' && mainWindow) mainWindow.webContents.send('theme', 'light');
+  if (appIcon) appIcon.setImage(path.normalize(__dirname + '/../chrome/img/icon16.png'));  
 };
 
 var setDark = function (i) {
   darkOn = true;
-  if (appIcon) appIcon.setImage(path.normalize(__dirname + '/../chrome/img/icon16w.png'));
-  if (i !== 'icon' && mainWindow) mainWindow.webContents.send('theme', 'dark');
+  if (appIcon) appIcon.setImage(path.normalize(__dirname + '/../chrome/img/icon16w.png'));  
 };
 
 var menu = electron.Menu.buildFromTemplate([{
   label: 'Open Yez!',
   click: function () { mainWindow.show(); }
 }, {
+  label: 'Yez! in browser',
+  click: function () { open('http://localhost') }
+}, {
   type: 'separator'
 }, {
-  label: 'Light Style',
+  label: 'Light Theme',
   type: 'radio',
   checked: !darkOn,
-  click: setLight
+  click: function () {
+    setLight();
+    if (mainWindow) mainWindow.webContents.send('theme', 'light');    
+  }
 }, {
-  label: 'Dark Style',
+  label: 'Dark Theme',
   type: 'radio',
   checked: darkOn,
-  click: setDark
+  click: function () {
+    setDark();
+    if (mainWindow) mainWindow.webContents.send('theme', 'dark');
+  }
 }, {
   type: 'separator'
 }, {
@@ -94,28 +101,30 @@ var menu = electron.Menu.buildFromTemplate([{
   type: 'separator'
 }, {
   label: 'Hide',
-  click: hideTray
+  click: function () {
+    hideTray();
+    if (mainWindow) mainWindow.webContents.send('tray', false);    
+  }
 }, {
   label: 'Close',
   click: function() {
-    electronApp.quit();
     if (serverPID) process.kill(serverPID);
+    electronApp.quit();
     process.exit(0);
   }
 }]);
 
 electron.ipcMain.on('data', function(event, data) {
-  //console.log('tray.js ipc', data);
   if (data.action == 'tray') {
     if (Boolean(data.show)) showTray();
-    else hideTray();
+    else hideTray('icon');
   }
   if (data.action == 'theme') {
-    if (data.theme == 'light') setLight('icon');
-    if (data.theme == 'dark') setDark('icon');
+    if (data.theme == 'light') setLight();
+    else setDark();
   }
 });
 
 electronApp.on('ready', start);
 
-//console.log('Electron is running.');
+console.log('Yez! electron task is running.');

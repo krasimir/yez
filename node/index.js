@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var app = require('http').createServer(function(){}),
+var app = require('http').createServer(),
     io = require('socket.io').listen(app),
     fs = require('fs'),
     port = 9172,
@@ -9,12 +9,14 @@ var app = require('http').createServer(function(){}),
     defaultCWD = path.normalize(process.cwd()),
     runners = {}, 
     lastActive = 0,
-    electron = require('electron-prebuilt'),
-    spawnElectron,
+    electron = require('electron-prebuilt'),    
     proc = require('child_process'),
-    argv = require('yargs').argv;
+    argv = require('yargs').argv,
+    httpServer = require('http-server');
 
 app.listen(port);
+
+httpServer.createServer({root: path.normalize(__dirname+'/../chrome')}).listen(80);
 
 var getCurrentRunnersIds = function() {
     cleaningRunners();
@@ -65,7 +67,7 @@ var reportingProcesses = function() {
     setTimeout(reportingProcesses, 1600);
 };
 
-var savedTasks; //savedTasks.json data
+var savedTasks;
 
 var readTasks = function () {
     fs.readFile(path.resolve(__dirname+'/savedTasks.json'), 'utf8', function (err, data) {
@@ -76,13 +78,29 @@ var readTasks = function () {
 
 readTasks();
 
+var savedAliases;
+
+var readAliases = function () {
+    fs.readFile(path.resolve(__dirname+'/savedAliases.json'), 'utf8', function (err, data) {
+        if (err) throw err;
+        savedAliases = data;        
+    });
+};
+
+readAliases();
+
+var spawnElectron;
+
 var startElectron = function () {
     if (!spawnElectron) {
         spawnElectron = proc.spawn(electron, [
-            path.resolve(__dirname + '/../electron'), 
-            process.pid, 
-            argv.tray, 
-            argv.dark
+            path.resolve(__dirname + '/../electron'),
+            JSON.stringify({
+                pid: process.pid, 
+                tray: argv.tray, 
+                dark: argv.dark,
+                port: port
+            })
         ]);
         spawnElectron.on('close', function () {
              spawnElectron = null;
@@ -97,11 +115,12 @@ io.sockets.on('connection', function (socket) {
     socket.emit('initial', { 
       cwd: defaultCWD,
       tasks: savedTasks,
+      aliases: savedAliases,
       running: getCurrentRunnersIds(),
-      sep: path.sep
-    });    
-    if (argv.tray) socket.emit('tray', {checked: 'true'});
-    if (argv.dark) socket.emit('theme', {theme: 'dark'});
+      sep: path.sep,
+      dark: argv.dark,
+      tray: argv.tray
+    });
     socket.on('data', function (data) {
         if(!data || !data.id) return;
         var id = data.id;
@@ -256,24 +275,37 @@ io.sockets.on('connection', function (socket) {
                     error(err);
                 }
             break;
-            case 'tray':
+            /********************************************************************** tray */
+            case 'tray': console.log(data);
+                data.id = 'update';
                 io.sockets.emit('tray', data);
-                if (Boolean(data.show)) {
-                    argv.tray = true;
-                    startElectron();
-                }
+                argv.tray = Boolean(data.show)
+                if (argv.tray) startElectron();
             break;
-            case 'theme':
+            /********************************************************************** theme */
+            case 'theme': console.log(data);
+                data.id = 'update';
+                io.sockets.emit('theme', data);                
                 argv.dark = (data.theme == 'dark');
-                io.sockets.emit('theme', data);
             break;
-            case 'save':
-                savedTasks = data.data;
+            /********************************************************************** save */
+            case 'saveTasks':
+                savedTasks = data.tasks;
                 io.sockets.emit('updateTasks', {
                     tasks: savedTasks,
                     running: getCurrentRunnersIds()
                 });
                 fs.writeFile(path.resolve(__dirname+'/savedTasks.json'), savedTasks, 'utf8', function (err) {
+                  if (err) throw err;
+                });
+            break;
+            /********************************************************************** aliases */
+            case 'aliases':
+                savedAliases = data.aliases;
+                io.sockets.emit('updateAliases', {
+                    aliases: savedAliases
+                });
+                fs.writeFile(path.resolve(__dirname+'/savedAliases.json'), savedAliases, 'utf8', function (err) {
                   if (err) throw err;
                 });
             break;
@@ -283,4 +315,4 @@ io.sockets.on('connection', function (socket) {
 
 reportingProcesses();
 
-console.log('Yez! is running.');
+console.log('Yez! back-end is running. Install the Chrome extension or open http://localhost');

@@ -7,8 +7,8 @@ var Editor = absurd.component('Editor', {
 					{ 'textarea' : '<% initialContent %>' }
 				],
 				'.actions': [
-					{ 'a[href="#" data-absurd-event="click:result:ok"]': '<i class="fa fa-check-circle-o"></i> OK'},
-					{ 'a[href="#" data-absurd-event="click:result:cancel"]': '<i class="fa  fa-times-circle-o"></i> Cancel'}
+					{ 'a[href="#" data-absurd-event="click:result:ok" class="button"]': '<i class="fa fa-check-circle-o"></i> OK'},
+					{ 'a[href="#" data-absurd-event="click:result:cancel" class="button"]': '<i class="fa  fa-times-circle-o"></i> Cancel'}
 				]
 			}
 		}

@@ -21,7 +21,7 @@
 .dialog .content .info {
   box-sizing: border-box;
   height: 60px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 16px;
 }
 
@@ -66,3 +66,12 @@
 .dialog .content .actions a:hover {
   background: #D5D5D5;
 }
+
+.dialog .editor textarea {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  border-radius: 4px;  
+}
+
