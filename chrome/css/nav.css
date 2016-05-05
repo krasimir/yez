@@ -1,8 +1,9 @@
 [data-component="nav"] {
   float: left;
-  padding: 0 0 0 10px;
+  padding: 0;
   display: block;
   width: calc(100% - 160px);
+  min-width: 240px;
 }
 
 [data-component="nav"] a {
@@ -10,9 +11,10 @@
   text-decoration: none;
   padding: 5px 8px;
   color: #111;
-  box-sizing: border-box;
   overflow: hidden;
   text-align: center;
+  border: 0;
+  background: transparent;
 }
 
 [data-component="nav"] a:hover {
@@ -21,9 +23,18 @@
 
 [data-component="nav"] .task {
   float: left;
-  padding: 3.5px 8px;
+  box-sizing: border-box;
 }
 
+[data-component="nav"] .task.current {
+  padding: 4px 7px 5px;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+}
+
+[data-component="nav"] .toHome {
+  padding: 3.5px 8px;
+}
 
 [data-component="nav"] .add {
   background: none;

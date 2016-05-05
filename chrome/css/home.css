@@ -18,21 +18,18 @@
 
 [data-component="home"] .task a {
   display: block;
-  background: #E7E7E7;
-  border-bottom: solid 1px #919191;
   text-decoration: none;
   padding: 4px 10px;
   border-radius: 3px;
   margin: 8px 0 4px 0;
-  color: #111;
 }
 [data-component="home"] .task a:hover {
-  background: #D5D5D5;
 }
 
 [data-component="home"] .task.group a {
   padding-left: 0;
   margin: 0 0 4px 0;
+  border: 0;
 }
 [data-component="home"] .task.grouped a {
   margin: 0 0 4px 0;
@@ -80,8 +77,8 @@
 [data-component="home"] .grouped:before {
   display: block;
   position: absolute;
-  border-bottom: solid 1px #000;
-  border-left: solid 1px #000;
+  border-bottom: solid 1px #7f8591;
+  border-left: solid 1px #7f8591;
   content: " ";
   width: 19px;
   height: 10px;
@@ -97,8 +94,7 @@
   font-size: 15px;
   padding: 4px 0;
   background: none;
-  border-bottom: none;
-  color: #8E8E8E;
+  color: #7f8591;
   cursor: default;
   padding-left: 10px;
 }
@@ -124,14 +120,16 @@
 
 
 [data-component="home"] .filter {
-  position: absolute;
   width: 120px;
-  top: 36px;
-  right: 10px;
+  float: right;
 }
 
 [data-component="home"] .options {
-  position: fixed;
-  bottom: 0;
+  position: absolute;
+  bottom: 5px;
   right: 10px;
+  line-height: 20px;
+}
+[data-component="home"] .options input {
+  vertical-align: sub;
 }

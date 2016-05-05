@@ -19,7 +19,7 @@ var start = function () {
   if (trayOn) showTray();
 };
 
-var showTray = function() {console.log('showTray');
+var showTray = function() {
   if (!appIcon) {
     var icon = 'icon16.png';
     if (darkOn) icon = 'icon16w.png';
@@ -32,7 +32,7 @@ var showTray = function() {console.log('showTray');
   }
 };
 
-var hideTray = function(i) { console.log('hideTray');  
+var hideTray = function(i) {  
   if (appIcon) { 
     appIcon.destroy();
     appIcon = null;

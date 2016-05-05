@@ -2,7 +2,7 @@
   position: relative;
   padding: 4px 14px 0 0;
   float: right;
-  color: #9F9F9F;
+  color: #666;
 }
 
 [data-component="status"] .fa-flash {

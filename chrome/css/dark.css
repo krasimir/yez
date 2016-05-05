@@ -20,28 +20,44 @@
   background: url("../img/icon19w.png");  
 }
 
-.dark .content [data-component] .button {
+.dark [data-component] .button {
   color: #a5a5a5;
+  background: #323232;
+  border: 1px solid #444;
+}
+
+.dark [data-component] .button:hover,
+.dark [data-component] .button.current:hover {
+  color: #fff;
   background: #3d3d3d;
+}
+
+.dark [data-component] .button.current {
+  background: #222;
+}
+/* NAV */
+
+.dark [data-component="nav"] .button {
+  background: #2a2a2a;
+  border: 0;
+}
+
+.dark [data-component="nav"] .toHome {
+  color: #ddd;
+}
+
+.dark [data-component="nav"] .task.current {
+  border: 1px solid #444;
   border-bottom: 0;
 }
 
-.dark .content [data-component] .button:hover {
-  color: #ccc;
-  background: #343434;
-}
-
-/* NAV */
-
-
-.dark .content [data-component="nav"] .button {
-  background: #2a2a2a;
+.dark [data-component="status"] .status {
+  color: #999;
 }
 
 /* HOME */
 
 .dark [data-component="home"] .task a.button {
-  background: #333;
   color: #d5d5d5;
 }
 .dark [data-component="home"] .task a.button:hover {
@@ -80,7 +96,7 @@
   color: #eee;
 }
 
-[data-component="home"] .grouped:before {
+.dark [data-component="home"] .grouped:before {
   border-bottom: solid 1px #ccc;
   border-left: solid 1px #ccc;
 }
@@ -95,7 +111,7 @@
   color: #ccc;
 }
 
-.task-id .edit {
+.dark .task-id .edit {
   color: #fff;
 }
 
@@ -103,18 +119,19 @@
   color: #fff;
 }
 
-.dark .task-id .edit .element {
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-  margin: 6px 0 6px 0;
+.dark .task-id .edit .element a {
+  background: #2a2a2a;
+  color: #ccc;
+}
+.dark .task-id .edit .element a:hover {
+  background: #323232;
+  color: #eee;
 }
 
 .dark .task-id .edit .element label {
   background: #444;
   border-right: solid 1px #555;
   border-bottom: 0;
-  height: 46px;
 }
 
 .dark .task-id .edit .element .field {
@@ -122,34 +139,6 @@
   border-bottom: 0;
 }
 
-.dark .task-id .edit .element .sub-left {
-  background: #333;
-  border-radius: 3px;
-  color: #eee;
-}
-
-.dark .task-id .edit .element .sub-left:hover {
-  background: #555;
-}
-
-.dark .task-id .edit .element .sub-independent {
-  background: #333;
-  border-radius: 3px;
-  color: #eee;
-}
-
-.dark .task-id .edit .element .sub-independent:hover {
-  background: #555;
-}
-
-.dark .task-id .edit .element .sub-right {
-  background: #333;
-  color: #eee;
-}
-
-.dark .task-id .edit .element .sub-right:hover {
-  background: #555;
-}
 
 .dark .task-id .edit .actions {
   border-bottom: 0;
@@ -160,6 +149,7 @@
   background: #181818;
   color: #ccc;
   margin-bottom: -1px;
+  border: 1px solid #444;
 }
 
 .dark .task-id .dashboard .log p {
@@ -235,14 +225,15 @@
 }
 
 .dark .task-id .dashboard .clear-log {
-  background: #3d3d3d;
+  background: #323232;
   padding: 4px 10px;
-  color: #ddd;
+  color: #a5a5a5;
   border-radius: 3px;
+  border: 1px solid #444;
 }
 
 .dark .task-id .dashboard .clear-log:hover {
-  background: #555;
+  background: #3d3d3d;
   color: #fff;
 }
 
@@ -257,7 +248,7 @@
   color: #fff;
   border: 0;
 }
-.dark .dialog .content .inner a
+.dark .dialog .content .inner a:hover,
 .dark .dialog .content .button:hover {
   background: #555;
 }
@@ -266,4 +257,23 @@
   background: #222;
   color: #ddd;
   border: solid 1px #555;
+}
+
+/* SCROLL */
+
+.dark ::-webkit-scrollbar {
+  background: #1c1c1c;
+  border: 1px solid #2a2a2a;
+  width: 14px;
+  border-right: 0;
+}
+
+.dark ::-webkit-scrollbar-button {
+  height: 0;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #262626;
+  border: 1px solid #3d3d3d;
+  border-right: 0;
 }

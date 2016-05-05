@@ -104,7 +104,6 @@ var Task = absurd.component('Task', {
 		}.bind(this));
 	},
 	openCwd: function (e) {
-	    console.log(this);
 	    this.chooseCWD(e);	
 	},
 	// *********************************************** dashboard mode
@@ -272,13 +271,13 @@ var Task = absurd.component('Task', {
 						self.populate();
 					}
 				});
-			} else if (input.toLowerCase() == 'ls' || input.toLowerCase() == 'dir') {
+			} else if (input.toLowerCase() == 'dir') {
 				var cwd = this.data.cwd;
 				Yez.send({
 					action: 'list',
 					id: this.getId(),
 					cwd: cwd,
-				}, function(data) { console.log(data);
+				}, function(data) {
 					if(data.err) {
 						self.log('<p class="log-error"><i class="fa fa-keyboard-o"></i> ' + data.err.msg + '</p>');
 					} else {						
@@ -339,12 +338,12 @@ var Task = absurd.component('Task', {
 		if(!value) {
 			this.gitStatusHolder.innerHTML = '';
 		} else {
-			var str = '<i class="fa fa-git"></i> ', changes = '';
+			var str = '', changes = '';
 			for(var i in value.status) {
 				changes += i + value.status[i] + ' ';
 			}
-			str += '<span class="' + (changes != '' ? 'git-changed' : 'git-unchanged') + '">' + value.branch + '</span>';
-			str += changes != '' ? ' / <small>' + changes : '</small>';
+			str += '<span class="' + (changes != '' ? 'git-changed' : 'git-unchanged') + '"><i class="fa fa-git"></i> ' + value.branch;
+			str += changes != '' ? '/' + changes : '</span>';
 			this.gitStatusHolder.innerHTML = str;
 		}
 		return this;

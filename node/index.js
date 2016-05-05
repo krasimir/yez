@@ -61,7 +61,7 @@ var reportingProcesses = function() {
         }
         if(active != lastActive) {
             lastActive = active;
-            console.log('Running processes: ' + active);
+            // console.log('Running processes: ' + active);
         }
     }
     setTimeout(reportingProcesses, 1600);
@@ -276,14 +276,14 @@ io.sockets.on('connection', function (socket) {
                 }
             break;
             /********************************************************************** tray */
-            case 'tray': console.log(data);
+            case 'tray':
                 data.id = 'update';
                 io.sockets.emit('tray', data);
                 argv.tray = Boolean(data.show)
                 if (argv.tray) startElectron();
             break;
             /********************************************************************** theme */
-            case 'theme': console.log(data);
+            case 'theme':
                 data.id = 'update';
                 io.sockets.emit('theme', data);                
                 argv.dark = (data.theme == 'dark');
@@ -291,9 +291,9 @@ io.sockets.on('connection', function (socket) {
             /********************************************************************** save */
             case 'saveTasks':
                 savedTasks = data.tasks;
-                io.sockets.emit('updateTasks', {
-                    tasks: savedTasks,
-                    running: getCurrentRunnersIds()
+                socket.broadcast.emit('updateTasks', {
+                 tasks: savedTasks,
+                 running: getCurrentRunnersIds()
                 });
                 fs.writeFile(path.resolve(__dirname+'/savedTasks.json'), savedTasks, 'utf8', function (err) {
                   if (err) throw err;

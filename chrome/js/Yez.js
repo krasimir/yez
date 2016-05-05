@@ -141,11 +141,11 @@ var Yez = absurd.component('Yez', {
 				self.beacons[data.id](data);
 			}
 		});
-		this.socket.on('tray', function(data) { console.log('socket tray ',data);			
+		this.socket.on('tray', function(data) {
 		    if (Yez.ipc) Yez.ipc.send('data', data);
 			self.toggleTray(data);
 		});		 
-		this.socket.on('theme', function(data) { console.log('socket theme ',data);
+		this.socket.on('theme', function(data) {
 		    if (Yez.ipc) Yez.ipc.send('data', data);
 			self.setTheme(data);
 		});

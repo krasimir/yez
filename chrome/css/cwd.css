@@ -30,6 +30,7 @@
   overflow-y: scroll;
   height: calc(100% - 120px);
   box-sizing: border-box;
+  line-height: 22px;
 }
 
 .dialog .content .inner a {
@@ -58,9 +59,9 @@
   padding: 4px 10px;
   background: #E7E7E7;
   border-bottom: solid 1px #919191;
-  border-radius: 8px;
   margin: 0 6px 0 0;
   color: #000;
+  border-radius: 3px;
 }
 
 .dialog .content .actions a:hover {

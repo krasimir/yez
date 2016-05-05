@@ -5,6 +5,9 @@
   left: 12px;
   color: #575757;
   cursor: pointer;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .task-id .git-status {
@@ -12,14 +15,20 @@
   font-size: 14px;
   bottom: 42px;
   right: 12px;
-  color: #575757;
+  color: #444;
+  max-width: calc(30% - 30px);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.task.id .git-changed {
-  color: #CC151A;
+.task-id .git-changed {
+  color: #ED6565;
 }
-.task.id .git-unchanged {
+.task-id .git-unchanged {
   color: #26A430;
+}
+.task-id .fa-git {
+  vertical-align: text-bottom;
 }
 
 .task-id .edit {
@@ -29,27 +38,28 @@
 }
 .task-id.edit .edit {
   display: block;
+  clear: both;
 }
 .task-id .edit .element {
-  position: relative;
-  width: 100%;
   box-sizing: border-box;
-  margin: 6px 0 6px 0;
+  margin: 5px 0px;
+  position: relative;
+  height: 26px;
 }
 
 .task-id .edit .element label {
   width: 30%;
-  padding: 10px;
+  padding: 5px 10px;
   box-sizing: border-box;
   background: #EDE9E0;
   float: left;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
   text-align: right;
-  border-right: solid 2px #DECAB6;
-  border-bottom: solid 1px #999;
-  height: 47px;
+  border-right: solid 1px #DECAB6;
+  border: solid 1px #ccc;
   overflow: hidden;
+  border-right: 0;
 }
 
 .task-id .edit .element .field {
@@ -57,35 +67,32 @@
   float: left;
   box-sizing: border-box;
   background: #F8F5EF;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-bottom: solid 1px #999;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border: 1px solid #ccc;
 }
 
 .task-id .edit .element .field input {
-  height: 46px;
   border: none;
   background: none;
   box-sizing: border-box;
   width: 100%;
-  padding: 10px;
+  padding: 5px 10px;
 }
 
-.task-id .edit .element:after {
-  display: table;
-  content: " ";
-  clear: both;
+.task-id .edit .element a {
+  padding: 4px 10px;
+  border-radius: 3px;
+  width: 32px;
+  text-align: center;
+  box-sizing: border-box;
+  color: #222;
 }
 
 .task-id .edit .element .sub-left {
-  display: block;
+  top: 2px;
+  left: 2px;
   position: absolute;
-  padding: 0 10px;
-  background: #F5F3EF;
-  border-radius: 3px;
-  color: #000;
-  top: 10px;
-  left: 10px;
 }
 
 .task-id .edit .element .sub-left:hover {
@@ -93,17 +100,9 @@
 }
 
 .task-id .edit .element .sub-independent {
-  display: block;
+  top: 2px;
+  left: 36px;
   position: absolute;
-  padding: 0 10px;
-  background: #F5F3EF;
-  border-radius: 3px;
-  color: #000;
-  top: 10px;
-  left: 53px;
-  text-align: center;
-  box-sizing: border-box;
-  width: 34px;
 }
 
 .task-id .edit .element .sub-independent:hover {
@@ -111,14 +110,9 @@
 }
 
 .task-id .edit .element .sub-right {
-  display: block;
   position: absolute;
-  padding: 0 10px;
-  background: #FBFAF7;
-  border-radius: 3px;
-  color: #000;
-  top: 10px;
-  right: 10px;
+  top: 2px;
+  right: 2px;
 }
 
 .task-id .edit .element .sub-right:hover {
@@ -133,17 +127,10 @@
 
 .task-id .edit .actions a {
   display: inline-block;
-  background: #E7E7E7;
-  border-bottom: solid 1px #919191;
   text-decoration: none;
   padding: 4px 10px;
   border-radius: 3px;
   margin: 0 6px 0 0;
-  color: #111;
-}
-
-.task-id .edit .actions a:hover {
-  background: #D5D5D5;
 }
 
 .task-id .edit .actions .cancel {
@@ -173,7 +160,7 @@
   box-sizing: border-box;
   position: absolute;
   padding: 10px;
-  background: #FAFAFA;
+  background: #eee;
   width: calc(100% - 18px);
   height: calc(100% - 181px);
   font-size: 12px;
@@ -183,6 +170,7 @@
   overflow-y: scroll;
   top: 107px;
   left: 10px;
+  border: 1px solid #bbb;
 }
 
 .task-id .dashboard .log p {
@@ -246,8 +234,6 @@
   padding: 4px 4px 4px 18px;
   border-radius: 3px;
   width: calc(100% - 17px);
-  border: solid 1px #C5C5C5;
-  font-family: 'Roboto', 'sans-serif';
   background: none;
   bottom: 8px;
   right: 8px;
@@ -269,14 +255,14 @@
 
 .task-id .dashboard .stdin-field-tooltip {
   position: absolute;
-  bottom: 10px;
+  bottom: 14px;
   left: 18px;
   color: #999;
 }
 
 .task-id .dashboard .clear-log {
   float: right;
-  color: #999;
+  color: #666;
 }
 
 .task-id .dashboard .clear-log:hover {
@@ -293,7 +279,7 @@
 }
 
 .task-id .dashboard .aliases:hover {
-  color: #F00;
+  color: #E83E3E;
 }
 
 .task-id .sub-nav {
@@ -303,17 +289,10 @@
 
 .task-id .sub-nav .operation {
   display: inline-block;
-  background: #E7E7E7;
-  border-bottom: solid 1px #919191;
   text-decoration: none;
   padding: 4px 10px;
   border-radius: 3px;
   margin: 0 6px 0 0;
-  color: #111;
-}
-
-.task-id .sub-nav .operation:hover {
-  background: #D5D5D5;
 }
 
 .task-id .sub-nav .hidden {

@@ -3,8 +3,8 @@ var Home = absurd.component('Home', {
 	theme: true,
 	html: {
 		'div[data-component="home"]': [
-			{ h1: '<% tasks.length > 0 ? "Your tasks:" : "" %>' },
-			{ 'input[class="filter" data-absurd-event="keyup:filter" autofocus]': ''},
+		    { 'input[class="filter" placeholder="&#128270;" data-absurd-event="keyup:filter" autofocus]': ''},
+			{ h1: '<% tasks.length > 0 ? "Your tasks:" : "" %>' },			
 			'<% for(var i=0; i<tasks.length; i++) { \
 				var started = tasks[i].started ? " started" : ""; \
 				var name = tasks[i].name; \
@@ -41,16 +41,20 @@ var Home = absurd.component('Home', {
 	},
 	showTask: function(e, id) {
 		if(id != -1) {
+			var current = document.querySelector('.current');
+			if (current) current.classList.remove('current');
+			current = document.querySelector('.'+id);
+			if (current) current.classList.add('current');
 			this.dispatch('show-task', id);
 		}
 	},
 	runTask: function(e, id) {
 		e.preventDefault();
-		this.dispatch(e.ctrlKey === false ? 'run-task' : 'run-task-silent', id);
+		this.dispatch('run-task-silent', id);
 	},
 	stopTask: function(e, id) {
 		e.preventDefault();
-		this.dispatch(e.ctrlKey === false ? 'stop-task' : 'stop-task-silent', id);
+		this.dispatch('stop-task-silent', id);
 	},
 	newTask: function(e) {
 		e.preventDefault();
@@ -70,11 +74,6 @@ var Home = absurd.component('Home', {
 			}
 		}
 	},
-	appended: function(dom) {		
- 		setTimeout(function() {		
- 			dom('.filter').el.focus();		
- 		}, 300);		
- 	},
 	orderTasks: function() {
 		this.tasks.sort(function(a, b) {
 			return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;

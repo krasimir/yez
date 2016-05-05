@@ -6,6 +6,7 @@ html, body {
   font-size: 12px;
   line-height: 16px;
   background: #fff;
+  min-width: 360px;
 }
 
 html, input, textarea {
@@ -14,6 +15,7 @@ html, input, textarea {
 
 a {
   text-decoration: none;
+  color: #222;
 }
 
 .left {
@@ -43,7 +45,7 @@ code {
 
 header {
   background: #F3EEE4;
-  border-bottom: solid 2px #DFD2B7;
+  border-bottom: solid 1px #DFD2B7;
 }
 
 header .logo {
@@ -70,11 +72,22 @@ hr {
 
 input, textarea {
   outline: 0;
-  padding: 1px 3px;
+  padding: 2px 3px;
   font-size: 12px;
   border-radius: 2px;
+  border: 1px solid #999;
 }
 
 [data-component="content"] {
   display: none;
+}
+
+.button {
+  background: #E7E7E7;
+  border: 1px solid #bbb;
+}
+
+.button:hover {
+
+  background: #eee;
 }
