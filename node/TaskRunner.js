@@ -84,13 +84,13 @@ module.exports = function() {
 						go(c);
 					} else {
 						api.ended = true;
-						endcb && endcb(false, out, code);
+						endcb && endcb(err.length > 0 ? err : false, out, code);
 					}
 				});
 				processing.on('disconnect', function (code) {
 					// console.log('disconnect code: ' + code);					
 					api.ended = true;
-					endcb && endcb(false, out, code);					
+					endcb && endcb(err.length > 0 ? err : false, out, code);					
 				});
 				processing.on('exit', function (code, signal) {
 					// console.log('exit code: ' + code + ' signal: ' + signal);
