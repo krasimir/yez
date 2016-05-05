@@ -302,7 +302,7 @@ io.sockets.on('connection', function (socket) {
             /********************************************************************** aliases */
             case 'aliases':
                 savedAliases = data.aliases;
-                io.sockets.emit('updateAliases', {
+                socket.broadcast.emit('updateAliases', {
                     aliases: savedAliases
                 });
                 fs.writeFile(path.resolve(__dirname+'/savedAliases.json'), savedAliases, 'utf8', function (err) {
