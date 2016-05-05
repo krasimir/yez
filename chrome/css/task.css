@@ -15,6 +15,13 @@
   color: #575757;
 }
 
+.task.id .git-changed {
+  color: #CC151A;
+}
+.task.id .git-unchanged {
+  color: #26A430;
+}
+
 .task-id .edit {
   box-sizing: border-box;
   padding: 10px;
@@ -75,7 +82,7 @@
   position: absolute;
   padding: 0 10px;
   background: #F5F3EF;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #000;
   top: 10px;
   left: 10px;
@@ -90,7 +97,7 @@
   position: absolute;
   padding: 0 10px;
   background: #F5F3EF;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #000;
   top: 10px;
   left: 53px;
@@ -108,7 +115,7 @@
   position: absolute;
   padding: 0 10px;
   background: #FBFAF7;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #000;
   top: 10px;
   right: 10px;
@@ -130,7 +137,7 @@
   border-bottom: solid 1px #919191;
   text-decoration: none;
   padding: 4px 10px;
-  border-radius: 8px;
+  border-radius: 3px;
   margin: 0 6px 0 0;
   color: #111;
 }
@@ -171,7 +178,7 @@
   height: calc(100% - 181px);
   font-size: 12px;
   line-height: 16px;
-  border-radius: 4px;
+  border-radius: 3px;
   overflow-x: hidden;
   overflow-y: scroll;
   top: 107px;
@@ -181,7 +188,7 @@
 .task-id .dashboard .log p {
   padding: 0 4px;
   margin: 0 0 1px 0;
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 .task-id .dashboard .log .log-command {
@@ -222,14 +229,14 @@
 .task-id .dashboard .log .log-info {
   background: #C6E7E8;
   border-bottom: solid 1px #66BFC1;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #2E7072;
 }
 
 .task-id .dashboard .log .log-stdin {
   background: #C6E7E8;
   border-bottom: solid 1px #66BFC1;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #2E7072;
 }
 
@@ -237,7 +244,7 @@
   box-sizing: border-box;
   position: absolute;
   padding: 4px 4px 4px 18px;
-  border-radius: 4px;
+  border-radius: 3px;
   width: calc(100% - 17px);
   border: solid 1px #C5C5C5;
   font-family: 'Roboto', 'sans-serif';
@@ -250,7 +257,7 @@
   box-sizing: border-box;
   position: absolute;
   padding: 4px 4px 4px 18px;
-  border-radius: 4px;
+  border-radius: 3px;
   width: calc(100% - 17px);
   font-size: 13px;
   overflow: hidden;
@@ -268,12 +275,8 @@
 }
 
 .task-id .dashboard .clear-log {
-  font-size: 12px;
-  position: absolute;
-  text-decoration: none;
+  float: right;
   color: #999;
-  top: 69px;
-  right: 12px;
 }
 
 .task-id .dashboard .clear-log:hover {
@@ -295,6 +298,7 @@
 
 .task-id .sub-nav {
   padding: 10px 0 0 10px;
+  float: left;
 }
 
 .task-id .sub-nav .operation {
@@ -303,7 +307,7 @@
   border-bottom: solid 1px #919191;
   text-decoration: none;
   padding: 4px 10px;
-  border-radius: 8px;
+  border-radius: 3px;
   margin: 0 6px 0 0;
   color: #111;
 }

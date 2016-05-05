@@ -1,5 +1,6 @@
 var Task = absurd.component('Task', {
 	html: TaskTemplate(),
+	mode: 'dashboard',
 	started: false,
 	logContent: '',
 	data: {
@@ -20,6 +21,7 @@ var Task = absurd.component('Task', {
 		return this.data && this.data.id && this.data.id != '' ? this.data.id : getId();
 	},
 	setMode: function(m) {
+		this.mode = m;
 		this.populate();
 		if (!this.el) this.el = this.qs('.task-'+this.getId());
 		if (m == 'edit') this.addClass(m, this.el);
@@ -270,6 +272,20 @@ var Task = absurd.component('Task', {
 						self.populate();
 					}
 				});
+			} else if (input.toLowerCase() == 'ls' || input.toLowerCase() == 'dir') {
+				var cwd = this.data.cwd;
+				Yez.send({
+					action: 'list',
+					id: this.getId(),
+					cwd: cwd,
+				}, function(data) { console.log(data);
+					if(data.err) {
+						self.log('<p class="log-error"><i class="fa fa-keyboard-o"></i> ' + data.err.msg + '</p>');
+					} else {						
+						var folders = data.files.join('</p><p class="log-response">');
+						self.log('<p class="log-response">'+cwd+'</p><p class="log-response">'+folders+'</p>');
+					}
+				});
 			} else {
 				Yez.send({
 					// action: this.data.terminal ? 'terminal' : 'stdin-input',
@@ -327,14 +343,14 @@ var Task = absurd.component('Task', {
 			for(var i in value.status) {
 				changes += i + value.status[i] + ' ';
 			}
-			str += '<span style="' + (changes != '' ? 'color: #CC151A' : 'color: #26A430') + '">' + value.branch + '</span>';
+			str += '<span class="' + (changes != '' ? 'git-changed' : 'git-unchanged') + '">' + value.branch + '</span>';
 			str += changes != '' ? ' / <small>' + changes : '</small>';
 			this.gitStatusHolder.innerHTML = str;
 		}
 		return this;
 	},
 	editAliases: function() {
-		Editor(Yez.aliases, Yez.aliases(), 'Edit your aliases. Type one per line in the format "[regex]:[replacement]".');
+		Editor(Yez.aliases.bind(Yez), Yez.aliases(), 'Edit your aliases. Type one per line in the format "[regex]:[replacement]".');
 	},
 	applyAliases: function(input) {
 		var aliases = Yez.aliases().split(/\n/g);

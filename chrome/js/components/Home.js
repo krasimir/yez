@@ -70,6 +70,11 @@ var Home = absurd.component('Home', {
 			}
 		}
 	},
+	appended: function(dom) {		
+ 		setTimeout(function() {		
+ 			dom('.filter').el.focus();		
+ 		}, 300);		
+ 	},
 	orderTasks: function() {
 		this.tasks.sort(function(a, b) {
 			return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;

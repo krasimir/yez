@@ -1,80 +1,88 @@
 /*YEZ DARK THEME*/
 
 .dark {
-  color: #eee;
+  color: #d5d5d5;
   background: #242424;
 }
 
+.dark input {
+  color: #cecece;
+  background: #242424;
+  border: 1px solid #5c5c5c;
+}
+
 .dark header {
-  background: #333;
+  background: #2a2a2a;
   border-bottom: solid 1px #444;
 }
 
 .dark header .logo {
-  background: url("../img/icon48w.png");
+  background: url("../img/icon19w.png");  
 }
-
-.dark input {
-  font-size: 13px;
-  outline: none;
-}
-
-/* Misc */
 
 .dark .content [data-component] .button {
-  color: #ddd;
-  background: #444;
+  color: #a5a5a5;
+  background: #3d3d3d;
   border-bottom: 0;
 }
 
 .dark .content [data-component] .button:hover {
-  background: #555;
+  color: #ccc;
+  background: #343434;
+}
+
+/* NAV */
+
+
+.dark .content [data-component="nav"] .button {
+  background: #2a2a2a;
 }
 
 /* HOME */
 
-.dark [data-component="home"] .task a {
+.dark [data-component="home"] .task a.button {
   background: #333;
+  color: #d5d5d5;
+}
+.dark [data-component="home"] .task a.button:hover {
+  background: #3d3d3d;
+  color: #fff;
 }
 
 .dark [data-component="home"] .task a.action {
   background: #3e9828;
+  color: #fff;
 }
 .dark [data-component="home"] .task a.action:hover {
   background: #84DC6D;
 }
 
-[data-component="home"] .task a.action.stop {
+.dark [data-component="home"] .task a.action.stop {
   background: #E83E3E;
 }
-[data-component="home"] .task a.action.stop:hover {
+.dark [data-component="home"] .task a.action.stop:hover {
   background: #ED6565;
 }
 
+.dark [data-component="home"] .task.group a.button {
+  background: #242424;
+}
+.dark [data-component="home"] .task.group a.button:hover {
+  background: #242424;
+  color: #fff;
+}
+
 .dark [data-component="home"] .newtask {
-  color: #ddd;
+  color: #cacaca;
 }
 
 .dark [data-component="home"] .newtask:hover {
-  color: #ccc;
-}
-
-.dark [data-component="home"] .filter {
-  border-radius: 3px;
-  background: #383838;
-  border: solid 1px #555;
-  color: #ddd;
+  color: #eee;
 }
 
 [data-component="home"] .grouped:before {
-  border-bottom: solid 2px #ccc;
-  border-left: solid 2px #ccc;
-}
-
-/* NAV */
-
-.dark [data-component="nav"] .add-task {
-  right: 255px;
+  border-bottom: solid 1px #ccc;
+  border-left: solid 1px #ccc;
 }
 
 /* TASKS */
@@ -112,10 +120,6 @@
 .dark .task-id .edit .element .field {
   background: #444;
   border-bottom: 0;
-}
-
-.dark .task-id .edit .element .field input {
-  color: #fff;
 }
 
 .dark .task-id .edit .element .sub-left {
@@ -231,15 +235,10 @@
 }
 
 .dark .task-id .dashboard .clear-log {
-  display: inline-block;
-  background: #444;
-  border-bottom: 0;
-  text-decoration: none;
+  background: #3d3d3d;
   padding: 4px 10px;
-  border-radius: 8px;
-  margin: 0 6px 0 0;
   color: #ddd;
-  top: 58px;
+  border-radius: 3px;
 }
 
 .dark .task-id .dashboard .clear-log:hover {

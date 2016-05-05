@@ -15,7 +15,7 @@ var Editor = absurd.component('Editor', {
 	},
 	result: function(e, res) {
 		e.preventDefault();
-		this.callback ? this.callback(res === 'ok' ? this.qs('textarea').value : this.initialContent) : null;
+		if (this.callback && res === 'ok') this.callback(this.qs('textarea').value);
 		document.querySelector('body').removeChild(this.populate().el);
 	},
 	constructor: function(cb, content, title) {

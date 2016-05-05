@@ -4,8 +4,12 @@
 }
 
 [data-component="home"] h1 {
-  padding: 0;
-  margin: 0 0 17px 0;
+  padding: 5px 0 5px;
+  margin-top: 0;
+  color: #7f8591;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: normal;
 }
 
 [data-component="home"] .task {
@@ -18,13 +22,20 @@
   border-bottom: solid 1px #919191;
   text-decoration: none;
   padding: 4px 10px;
-  border-radius: 8px;
-  margin: 0 0 6px 0;
+  border-radius: 3px;
+  margin: 8px 0 4px 0;
   color: #111;
 }
-
 [data-component="home"] .task a:hover {
   background: #D5D5D5;
+}
+
+[data-component="home"] .task.group a {
+  padding-left: 0;
+  margin: 0 0 4px 0;
+}
+[data-component="home"] .task.grouped a {
+  margin: 0 0 4px 0;
 }
 
 [data-component="home"] .task a.action {
@@ -34,6 +45,7 @@
   width: 60px;
   text-align: center;
   border-top-left-radius: 0;
+  margin: 0;
   border-bottom-left-radius: 0;
   top: 0;
   right: 0;
@@ -68,13 +80,13 @@
 [data-component="home"] .grouped:before {
   display: block;
   position: absolute;
-  border-bottom: solid 2px #000;
-  border-left: solid 2px #000;
+  border-bottom: solid 1px #000;
+  border-left: solid 1px #000;
   content: " ";
   width: 19px;
   height: 10px;
-  top: 8px;
-  left: -28px;
+  top: 4px;
+  left: -25px;
 }
 
 [data-component="home"] .group a.action {
@@ -82,7 +94,7 @@
 }
 
 [data-component="home"] .group a {
-  font-size: 20px;
+  font-size: 15px;
   padding: 4px 0;
   background: none;
   border-bottom: none;
@@ -103,6 +115,7 @@
   display: block;
   margin: 10px 0 0 10px;
   color: #000;
+  font-size: 14px;
 }
 
 [data-component="home"] .newtask:hover {
@@ -112,13 +125,9 @@
 
 [data-component="home"] .filter {
   position: absolute;
-  padding: 4px;
-  border-radius: 4px;
   width: 120px;
-  border: solid 1px #C5C5C5;
-  font-family: 'Roboto', 'sans-serif';
-  top: 62px;
-  right: 15px;
+  top: 36px;
+  right: 10px;
 }
 
 [data-component="home"] .options {

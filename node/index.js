@@ -211,7 +211,7 @@ io.sockets.on('connection', function (socket) {
                         });
                     }
                 });
-            break;
+            break;            
             /********************************************************************** git status */
             case 'git-status':
                 var runner = TaskRunner();

@@ -121,7 +121,7 @@ var Yez = absurd.component('Yez', {
 		});
 		this.socket.on('initial', function(data) {		
 			self.sep = data.sep;
-			self.savedAliases = data.aliases;
+			self.savedAliases = data.aliases || '';
 			self.defaultCWD = normalizePath(data.cwd);
 			self.setTasks(data);
 			if (data.tray) {
@@ -286,10 +286,10 @@ var Yez = absurd.component('Yez', {
 			this.socket.emit('data', {action: 'aliases', aliases: value, id: 'tasks'});
 		}
 		this.savedAliases = value;
-		return this.savedAliases;
+		return this.savedAliases || '';
 	},
 	'tasks-updated': function() {
-		this.home.setTasks(this.tasks);		
+		this.home.setTasks(this.tasks);
 		this.saveTasks();
 	}
 })();

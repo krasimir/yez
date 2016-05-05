@@ -3,7 +3,7 @@ var Nav = absurd.component('Nav', {
 		'nav[data-component="nav"]': [
 			{ 'a[href="#" data-absurd-event="click:addTask" class="button add add-task" title="New task"]': '<i class="fa fa-plus-circle"></i> Task' },
 			{ 'a[href="#" data-absurd-event="click:addTerminal" class="button add add-terminal" title="New terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
-			{ 'a[href="#" data-absurd-event="click:toHome" class="button task" title="Back to home"]': '<i class="fa fa-home"></i>' },
+			{ 'a[href="#" data-absurd-event="click:toHome" class="button task" title="Back to home"]': '<i class="fa fa-home"></i><div class="logo icon48"></div>' },
 			'<% for(var i=0; i<tasksRunning.length; i++) { \
 				var name = tasksRunning[i].name; \
 				var id = tasksRunning[i].id; \

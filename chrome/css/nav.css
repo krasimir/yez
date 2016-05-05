@@ -1,20 +1,16 @@
 [data-component="nav"] {
   float: left;
-  padding: 6px 0 0 10px;
+  padding: 0 0 0 10px;
   display: block;
+  width: calc(100% - 160px);
 }
 
 [data-component="nav"] a {
   display: inline-block;
-  background: #E7E7E7;
-  border-bottom: solid 1px #919191;
   text-decoration: none;
-  padding: 4px 10px;
-  border-radius: 8px;
-  margin: 0 6px 0 0;
+  padding: 5px 8px;
   color: #111;
   box-sizing: border-box;
-  height: 35px;
   overflow: hidden;
   text-align: center;
 }
@@ -24,38 +20,18 @@
 }
 
 [data-component="nav"] .task {
-  font-size: 12px;
-  background: #FFFFFF;
+  float: left;
+  padding: 3.5px 8px;
 }
 
-[data-component="nav"] .dark .task {
-  background: transparent;
-}
 
 [data-component="nav"] .add {
   background: none;
   border-bottom: none;
 }
 
-[data-component="nav"] .dark .add {
-  background: inherit;
-  border-bottom: none;
+[data-component="nav"] .add-task,
+[data-component="nav"] .add-terminal  {
+  float: right;
 }
 
-[data-component="nav"] .add-task {
-  position: absolute;
-  width: 85px;
-  right: 245px;
-  top: 7px;
-}
-
-[data-component="nav"] .dark .add-task {
-  right: 255px;
-}
-
-[data-component="nav"] .add-terminal {
-  position: absolute;
-  width: 108px;
-  right: 142px;
-  top: 7px;
-}

@@ -3,10 +3,17 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', 'sans-serif';
-  font-size: 16px;
-  line-height: 26px;
+  font-size: 12px;
+  line-height: 16px;
   background: #fff;
+}
+
+html, input, textarea {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+a {
+  text-decoration: none;
 }
 
 .left {
@@ -40,13 +47,13 @@ header {
 }
 
 header .logo {
-  display: block;
-  float: left;
-  margin: 0 4px 0 10px;
-  width: 48px;
-  height: 48px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 5px;
+  width: 19px;
+  height: 19px;
   opacity: 0.5;
-  background: url("../img/icon48.png");
+  background: url("../img/icon19.png");
 }
 
 header:after {
@@ -62,8 +69,10 @@ hr {
 }
 
 input, textarea {
-  font-family: 'Roboto', 'sans-serif';
   outline: 0;
+  padding: 1px 3px;
+  font-size: 12px;
+  border-radius: 2px;
 }
 
 [data-component="content"] {

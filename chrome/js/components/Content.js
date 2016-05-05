@@ -56,6 +56,6 @@ var Content = absurd.component('Content', {
 				}
 			});
 		}
-		setTimeout(self.getGitStatus.bind(self), 10000);
+		setTimeout(self.getGitStatus.bind(self), 1000);
 	}
 })
