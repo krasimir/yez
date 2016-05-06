@@ -8,7 +8,8 @@ var Task = absurd.component('Task', {
 		name: 'Task',
 		cwd: '',
 		commands: [''],
-		independent: []
+		independent: [],
+		autorun: false
 	},
 	constructor: function(data) {
 		this.data = data;
@@ -83,6 +84,9 @@ var Task = absurd.component('Task', {
 	},
 	changeCWD: function(e) {
 		this.data.cwd = e.target.value;
+	},
+	autorunClick: function(e) { console.log(e.target.checked);
+		this.data.autorun = e.target.checked;
 	},
 	saveCommand: function(e) {
 		e.preventDefault();
@@ -424,10 +428,15 @@ function TaskTemplate() {
 				},
 				'<% } %>',
 				{
+					'.element.autorun': [
+						{ 'span': 'Autorun<input type="checkbox" <% data.autorun ? "checked" : "" %> name="autorun" data-absurd-event="click:autorunClick">' }
+					]
+				},
+				{
 					'.actions': [
 						{ 'a[href="#" class="button operation" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' }
 					]
-				}
+				}				
 			],
 			'.dashboard': [
 				{ 'a[href="#" class="clear-log" data-absurd-event="click:clearLog"]': '<i class="fa fa-eraser"></i> Clear'},

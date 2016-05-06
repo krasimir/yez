@@ -67,16 +67,70 @@ var reportingProcesses = function() {
     setTimeout(reportingProcesses, 1600);
 };
 
+var runCommand = function (data, command, id) {
+    var runner = TaskRunner();
+    runner.id = id;
+    runner.run(command, data.cwd || defaultCWD)
+    .data(function(d) {
+        io.sockets.emit('response', {
+            action: 'data',
+            id: id,
+            data: d
+        });
+    })
+    .err(function(data) {
+        io.sockets.emit('response', {
+            action: 'err',
+            id: id,
+            msg: data
+        });
+    })
+    .end(function(err, d, code) {
+        io.sockets.emit('response', {
+            action: 'end',
+            id: id,
+            err: err,
+            data: d,
+            code: code
+        });
+        cleaningRunners();
+    })
+    .exit(function(code, signal) {
+        io.sockets.emit('response', {
+            action: 'exit',
+            id: id,
+            signal: signal,
+            code: code
+        });
+        cleaningRunners();
+    });
+    return runner;
+};
+
 var savedTasks;
 
-var readTasks = function () {
+var readTasks = function (cb) {
     fs.readFile(path.resolve(__dirname+'/savedTasks.json'), 'utf8', function (err, data) {
         if (err) throw err;
-        savedTasks = data;        
+        savedTasks = data;
+        cb();
     });
 };
 
-readTasks();
+readTasks(function () {
+    var tasks = JSON.parse(savedTasks);
+    for(var i=0;i<tasks.length;i++) {
+         var task = tasks[i];
+         runners[task.id] = [];                
+         if(task.autorun) {
+             for(var j=0;j<task.commands.length;j++) {
+                   var runner = runCommand(task, task.commands[j], task.id);
+                   console.log('task', task.commands[j], task.id);
+                   runners[task.id].push(runner);
+             }
+         } 
+    }
+});
 
 var savedAliases;
 
@@ -127,43 +181,9 @@ io.sockets.on('connection', function (socket) {
         switch(data.action) {
             /********************************************************************** run command */
             case 'run-command':
-                var runner = TaskRunner();
-                runner.run(data.command, data.cwd || defaultCWD)
-                .data(function(d) {
-                    io.sockets.emit('response', {
-                        action: 'data',
-                        id: id,
-                        data: d
-                    });
-                })
-                .err(function(data) {
-                    io.sockets.emit('response', {
-                        action: 'err',
-                        id: id,
-                        msg: data
-                    });
-                })
-                .end(function(err, d, code) {
-                    io.sockets.emit('response', {
-                        action: 'end',
-                        id: id,
-                        err: err,
-                        data: d,
-                        code: code
-                    });
-                    cleaningRunners();
-                })
-                .exit(function(code, signal) {
-                    io.sockets.emit('response', {
-                        action: 'exit',
-                        id: id,
-                        signal: signal,
-                        code: code
-                    });
-                    cleaningRunners();
-                });
+                var runner = runCommand(data, data.command, id);
                 if(!runners[id]) runners[id] = [];
-                runners[id].push(runner);
+                runners[id].push(runner); 
             break;
             /********************************************************************** stop command */
             case 'stop-command':

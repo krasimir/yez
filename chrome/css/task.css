@@ -47,6 +47,9 @@
   height: 26px;
 }
 
+.task-id .edit .element.autorun {
+  float: right;
+}
 .task-id .edit .element label {
   width: 30%;
   padding: 5px 10px;
@@ -60,6 +63,7 @@
   border: solid 1px #ccc;
   overflow: hidden;
   border-right: 0;
+  white-space: nowrap;
 }
 
 .task-id .edit .element .field {

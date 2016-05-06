@@ -242,7 +242,7 @@ var Yez = absurd.component('Yez', {
 					console.log('no it is not');
 				}
 			}
-		}
+		} console.log(this.tasks)
 		this.home.setTasks(this.tasks);	
 	},
 	saveTasks: function() {

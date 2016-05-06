@@ -30,7 +30,7 @@ var Home = absurd.component('Home', {
 			this.tasks = [];
 			for(var i in ts) {
 				if(!ts[i].data.terminal) {
-					this.tasks.push({ id: ts[i].getId(), name: ts[i].data.name, started: ts[i].started });
+					this.tasks.push({ id: ts[i].getId(), name: ts[i].data.name, started: ts[i].started, autorun: ts[i].data.autorun });
 				}
 			}
 			this.orderTasks();

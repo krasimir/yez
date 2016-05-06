@@ -130,6 +130,3 @@
   right: 10px;
   line-height: 20px;
 }
-[data-component="home"] .options input {
-  vertical-align: sub;
-}

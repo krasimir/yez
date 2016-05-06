@@ -133,23 +133,24 @@
 }
 
 .dark .task-id .edit .element a {
-  background: #2a2a2a;
+  background: #323232;
   color: #ccc;
+  border: 1px solid #5a5a5a;
 }
 .dark .task-id .edit .element a:hover {
-  background: #323232;
-  color: #eee;
+  background: #3d3d3d;
+  color: #fff;
 }
 
 .dark .task-id .edit .element label {
   background: #444;
-  border-right: solid 1px #555;
-  border-bottom: 0;
+  border: 2px solid #444;
+  border-right: solid 1px #666;
 }
 
 .dark .task-id .edit .element .field {
   background: #444;
-  border-bottom: 0;
+  border: 2px solid #444;
 }
 
 

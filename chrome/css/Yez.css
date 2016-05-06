@@ -76,6 +76,7 @@ input[type=checkbox],
 input[type=radio] {
   width: 16px;
   height: 16px;
+  vertical-align: sub;
 }
 
 [data-component="content"] {
