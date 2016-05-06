@@ -51,10 +51,23 @@
   border-bottom: 0;
 }
 
+/* STATUS */
+
 .dark [data-component="status"] .status {
   color: #999;
 }
 
+.dark [data-component="status"] .info {
+  color: #ccc;
+  background: #2c2c2c;
+}
+
+.dark [data-component="status"] code {
+  color: #fff;
+  font-family: monospace;
+  background: #444;
+  border: 1px solid #666;
+}
 /* HOME */
 
 .dark [data-component="home"] .task a.button {

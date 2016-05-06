@@ -1,9 +1,6 @@
 [data-component="nav"] {
-  float: left;
-  padding: 0;
-  display: block;
-  width: calc(100% - 160px);
-  min-width: 240px;
+  height: 26px;
+  overflow: hidden;
 }
 
 [data-component="nav"] a {
@@ -22,7 +19,6 @@
 }
 
 [data-component="nav"] .task {
-  float: left;
   box-sizing: border-box;
 }
 
@@ -33,7 +29,10 @@
 }
 
 [data-component="nav"] .toHome {
-  padding: 3.5px 8px;
+  padding: 4px 8px;
+  display: block;
+  width: 60px;
+  float: left;
 }
 
 [data-component="nav"] .add {

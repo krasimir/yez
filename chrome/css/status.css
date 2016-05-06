@@ -1,6 +1,5 @@
 [data-component="status"] {
-  position: relative;
-  padding: 4px 14px 0 0;
+  padding: 5px 14px;
   float: right;
   color: #666;
 }
@@ -23,9 +22,10 @@
   display: block;
   background: #FFF;
   padding: 10px;
-  box-shadow: 0px 0px 1px #888888;
+  border: solid 1px #DFD2B7;
   right: 14px;
-  top: 60px;
+  background: #fff6fa;
+  top: 40px;
 }
 
 [data-component="status"].online .info {

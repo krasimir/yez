@@ -6,7 +6,7 @@ html, body {
   font-size: 12px;
   line-height: 16px;
   background: #fff;
-  min-width: 360px;
+  min-width: 400px;
 }
 
 html, input, textarea {
@@ -52,16 +52,10 @@ header .logo {
   display: inline-block;
   vertical-align: top;
   margin: 0 5px;
-  width: 19px;
-  height: 19px;
-  opacity: 0.5;
+  width: 18px;
+  height: 18px;
+  opacity: 0.6;
   background: url("../img/icon19.png");
-}
-
-header:after {
-  display: table;
-  content: " ";
-  clear: both;
 }
 
 hr {
@@ -76,6 +70,12 @@ input, textarea {
   font-size: 12px;
   border-radius: 2px;
   border: 1px solid #999;
+}
+
+input[type=checkbox], 
+input[type=radio] {
+  width: 16px;
+  height: 16px;
 }
 
 [data-component="content"] {
