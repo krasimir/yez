@@ -16,7 +16,7 @@ var app = require('http').createServer(),
 
 app.listen(port);
 
-httpServer.createServer({root: path.normalize(__dirname+'/../chrome')}).listen(80);
+httpServer.createServer({root: path.normalize(__dirname+'/../chrome')}).listen(81);
 
 var getCurrentRunnersIds = function() {
     cleaningRunners();
@@ -148,7 +148,7 @@ var spawnElectron;
 var startElectron = function () {
     if (!spawnElectron) {
         spawnElectron = proc.spawn(electron, [
-            path.resolve(__dirname + '/../electron'),
+            path.resolve(__dirname + '/../electron/tray.js'),
             JSON.stringify({
                 pid: process.pid, 
                 tray: argv.tray, 

@@ -6,13 +6,19 @@ var electron = require('electron'),
     BrowserWindow = electron.BrowserWindow,
     mainWindow,
     open = require('open'),
-    argv = JSON.parse(process.argv[2]),
-    serverPID = argv.pid || false,
-    trayOn = argv.tray,
-    darkOn = argv.dark,
-    port = argv.port,
     mainWindow,
-    BrowserWindow = electron.BrowserWindow;
+    BrowserWindow = electron.BrowserWindow,
+    argv, 
+    serverPID = false, 
+    trayOn = true, 
+    darkOn = false;
+
+if (process.argv[2]) {
+  argv = JSON.parse(process.argv[2]);
+  serverPID = argv.pid;
+  trayOn = argv.tray;
+  darkOn = argv.dark;
+}
 
 var start = function () {
   buildWindow();
@@ -66,7 +72,7 @@ var menu = electron.Menu.buildFromTemplate([{
   click: function () { mainWindow.show(); }
 }, {
   label: 'Yez! in browser',
-  click: function () { open('http://localhost') }
+  click: function () { open('http://localhost:81') }
 }, {
   type: 'separator'
 }, {
