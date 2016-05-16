@@ -1,11 +1,11 @@
 # Yez!
 
-> Chrome extension that acts as terminal and task runner
+> NodeJs app that kills the terminal and act as a task runner
 
 ## Installation
 
-* [Yez! Chrome extension](https://chrome.google.com/webstore/detail/yez/acbhddemkmodoahhmnphpcfmcfgpjmap)
 * [Yez! Node.js module](https://github.com/krasimir/yez) `npm install -g yez`
+* [Yez! Chrome extension (optional)](https://chrome.google.com/webstore/detail/yez/acbhddemkmodoahhmnphpcfmcfgpjmap)
 
 ## Usage
 

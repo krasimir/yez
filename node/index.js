@@ -14,9 +14,11 @@ var app = require('http').createServer(),
     argv = require('yargs').argv,
     httpServer = require('http-server');
 
-app.listen(port);
+app.listen(port+1);
 
-httpServer.createServer({root: path.normalize(__dirname+'/../chrome')}).listen(81);
+httpServer.createServer({
+    root: path.normalize(__dirname+'/../chrome')
+}).listen(port);
 
 var getCurrentRunnersIds = function() {
     cleaningRunners();

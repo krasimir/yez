@@ -55,7 +55,7 @@ var buildWindow = function() {
       if (serverPID) process.kill(serverPID);
     });
   }
-}
+};
 
 var setLight = function(i) {
   darkOn = false;
