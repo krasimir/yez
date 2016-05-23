@@ -126,7 +126,7 @@ readTasks(function () {
          if(task.autorun) {
              for(var j=0;j<task.commands.length;j++) {
                    var runner = runCommand(task, task.commands[j], task.id);
-                   console.log('task', task.commands[j], task.id);
+                   //console.log('task', task.commands[j], task.id);
                    runners[task.id].push(runner);
              }
          } 
