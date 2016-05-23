@@ -16,7 +16,8 @@
     "electron-prebuilt": "0.37.6",
     "socket.io": "0.9.16",
     "ps-tree": "0.0.3",
-    "spawn-args": "0.0.2"
+    "spawn-args": "0.0.2",
+    "http-server": "0.9.0"
   },
   "devDependencies": {
     "expect.js": "0.3.1",
