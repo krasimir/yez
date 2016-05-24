@@ -11,13 +11,15 @@ var electron = require('electron'),
     argv, 
     serverPID = false, 
     trayOn = true, 
-    darkOn = false;
+    darkOn = false,
+    httpPort = 9173;
 
 if (process.argv[2]) {
   argv = JSON.parse(process.argv[2]);
   serverPID = argv.pid;
   trayOn = argv.tray;
   darkOn = argv.dark;
+  httpPort = argv.port;
 }
 
 var start = function () {
@@ -72,7 +74,7 @@ var menu = electron.Menu.buildFromTemplate([{
   click: function () { mainWindow.show(); }
 }, {
   label: 'Yez! in browser',
-  click: function () { open('http://localhost:81') }
+  click: function () { open('http://localhost:'+httpPort) }
 }, {
   type: 'separator'
 }, {
