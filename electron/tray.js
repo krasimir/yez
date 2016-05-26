@@ -49,7 +49,7 @@ var hideTray = function(i) {
 
 var buildWindow = function() {
   if (!mainWindow) {
-    mainWindow = new BrowserWindow({width: 1000, height: 600, show: false});
+    mainWindow = new BrowserWindow({width: 416, height: 507, show: false});
     var yezPath = path.normalize(__dirname + '/..').replace(/\\/g, '/');
     mainWindow.loadURL('file://'+yezPath+'/chrome/index.html');
     mainWindow.on('minimize',  mainWindow.hide);
