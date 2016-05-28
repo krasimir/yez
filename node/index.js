@@ -4,6 +4,7 @@ var app = require('http').createServer(),
     io = require('socket.io').listen(app),
     fs = require('fs'),
     port = 9172,
+    yezBackendPort = port + 1,
     TaskRunner = require('./TaskRunner'),
     path = require('path'),
     defaultCWD = path.normalize(process.cwd()),
@@ -14,7 +15,7 @@ var app = require('http').createServer(),
     argv = require('yargs').argv,
     httpServer = require('http-server');
 
-app.listen(port+1);
+app.listen(yezBackendPort);
 
 httpServer.createServer({
     root: path.normalize(__dirname+'/../chrome')
@@ -337,4 +338,4 @@ io.sockets.on('connection', function (socket) {
 
 reportingProcesses();
 
-console.log('Yez! back-end is running. Install the Chrome extension or open http://localhost');
+console.log('Yez! back-end is running. Install the Chrome extension or open http://localhost:' + yezBackendPort);

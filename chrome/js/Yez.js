@@ -1,6 +1,6 @@
 var Yez = absurd.component('Yez', {
 	host: 'localhost',
-	port: 9172,
+	port: 9173,
 	connected: false,
 	tasks: {},
 	beacons: {},

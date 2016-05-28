@@ -17,6 +17,8 @@
 
 4. Open Chrome's DevTools and find the Yez! tab
 
+(Have in mind that when you run the backend of Yez! the app is available at http://localhost:9172/)
+
 ## Chrome extension shortcuts
 
 To open Yez! just press `Ctrl+Shift+I` which openes the DevTools console. Just after that press `Ctrl+]` till you reach the needed tab.
