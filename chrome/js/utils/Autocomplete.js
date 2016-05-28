@@ -19,8 +19,8 @@ var Autocomplete = {
 			var lastVInterval = vIntervals.pop();
 			var vSlash = lastVInterval.split(/\//g);
 			value = vSlash.pop();
-			this.path = vSlash.join('/') + '/';
-			this.all = vIntervals.join(' ') + (vIntervals.length > 0 ? ' ' : '') + vSlash.join('/');
+			this.path = vSlash.join(Yez.sep) + Yez.sep;
+			this.all = vIntervals.join(' ') + (vIntervals.length > 0 ? ' ' : '') + vSlash.join(Yez.sep);
 		} else {
 			value = this.field.value;
 		}
@@ -34,20 +34,20 @@ var Autocomplete = {
 			if(matches.length > 0) {		
 				this.matchingWord = matches.shift();
 				var hintStr = '';
-				hintStr += (this.all != '' ? this.all + '/' : '') + this.matchingWord;
+				hintStr += (this.all != '' ? this.all + Yez.sep : '') + this.matchingWord;
 				if(matches.length > 0) {
 					hintStr += ', ' + matches.join(', ');
 				}
 				this.hint.innerHTML = hintStr;
 			}
 			if(cwd && typeof cwd == 'string') {
-				this.checkFileSystemDictionary(cwd + '/' + this.path);
+				this.checkFileSystemDictionary(cwd + Yez.sep + this.path);
 			}
 		}
 	},
 	applyMatch: function() {
 		if(this.matchingWord != '' && this.field) {
-			this.field.value = (this.all != '' ? this.all + '/' : '') + this.matchingWord;
+			this.field.value = (this.all != '' ? this.all + Yez.sep : '') + this.matchingWord;
 		}
 	},
 	checkFileSystemDictionary: function(cwd) {

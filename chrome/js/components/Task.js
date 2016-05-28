@@ -1,5 +1,4 @@
 var Task = absurd.component('Task', {
-	css: TaskCSS(),
 	html: TaskTemplate(),
 	mode: 'dashboard',
 	started: false,
@@ -9,7 +8,8 @@ var Task = absurd.component('Task', {
 		name: 'Task',
 		cwd: '',
 		commands: [''],
-		independent: []
+		independent: [],
+		autorun: false
 	},
 	constructor: function(data) {
 		this.data = data;
@@ -24,6 +24,9 @@ var Task = absurd.component('Task', {
 	setMode: function(m) {
 		this.mode = m;
 		this.populate();
+		if (!this.el) this.el = this.qs('.task-'+this.getId());
+		if (m == 'edit') this.addClass(m, this.el);
+		else this.removeClass(m, this.el);
 		return this;
 	},
 	gotoHome: function(e) {
@@ -82,6 +85,9 @@ var Task = absurd.component('Task', {
 	changeCWD: function(e) {
 		this.data.cwd = e.target.value;
 	},
+	autorunClick: function(e) { console.log(e.target.checked);
+		this.data.autorun = e.target.checked;
+	},
 	saveCommand: function(e) {
 		e.preventDefault();
 		this.setMode('dashboard');
@@ -100,6 +106,9 @@ var Task = absurd.component('Task', {
 				this.populate();
 			}
 		}.bind(this));
+	},
+	openCwd: function (e) {
+	    this.chooseCWD(e);	
 	},
 	// *********************************************** dashboard mode
 	startTasks: function(e) {
@@ -249,20 +258,35 @@ var Task = absurd.component('Task', {
 				return;
 			}
 			if(input.split(/ /g)[0].toLowerCase() == 'cd') {
-				var pathToAppend = input.split(/ /g), loc;
-				var appendOnlyIf = ['/'];
+				var pathToAppend = input.split(/ /g),
+				    loc,
+				    appendOnlyIf = [Yez.sep];
 				pathToAppend.shift();
 				loc = pathToAppend.join(' ');
 				Yez.send({
 					action: 'cd',
 					id: this.getId(),
-					dir: appendOnlyIf.indexOf(loc.charAt(0)) >= 0 ? loc : this.data.cwd + '/' + loc
+					dir: appendOnlyIf.indexOf(loc.charAt(0)) >= 0 ? loc : this.data.cwd + Yez.sep + loc
 				}, function(data) {
 					if(data.err) {
 						self.log('<p class="log-error"><i class="fa fa-keyboard-o"></i> ' + data.err.msg + '</p>');
 					} else if(data.dir) {
 						self.data.cwd = normalizePath(data.dir);
 						self.populate();
+					}
+				});
+			} else if (input.toLowerCase() == 'dir') {
+				var cwd = this.data.cwd;
+				Yez.send({
+					action: 'list',
+					id: this.getId(),
+					cwd: cwd,
+				}, function(data) {
+					if(data.err) {
+						self.log('<p class="log-error"><i class="fa fa-keyboard-o"></i> ' + data.err.msg + '</p>');
+					} else {						
+						var folders = data.files.join('</p><p class="log-response">');
+						self.log('<p class="log-response">'+cwd+'</p><p class="log-response">'+folders+'</p>');
 					}
 				});
 			} else {
@@ -306,9 +330,9 @@ var Task = absurd.component('Task', {
 	},
 	// *********************************************** terminal
 	terminalInit: function() {
-		this.html['div[class="task-<% getId() %>"]']['.sub-nav'] = [
-			{ 'a[href="#" class="operation" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop all processes'},
-			{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Close'}
+		this.html['div[class="task-id task-<% getId() %>"]']['.sub-nav'] = [
+			{ 'a[href="#" class="button operation" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop all processes'},
+			{ 'a[href="#" class="button operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Close'}
 		];	
 	},
 	gitStatus: function(value) {
@@ -318,18 +342,18 @@ var Task = absurd.component('Task', {
 		if(!value) {
 			this.gitStatusHolder.innerHTML = '';
 		} else {
-			var str = '<i class="fa fa-git"></i> ', changes = '';
+			var str = '', changes = '';
 			for(var i in value.status) {
 				changes += i + value.status[i] + ' ';
 			}
-			str += '<span style="' + (changes != '' ? 'color: red' : 'color: green') + '">' + value.branch + '</span>';
-			str += changes != '' ? ' / <small>' + changes : '</small>';
+			str += '<span class="' + (changes != '' ? 'git-changed' : 'git-unchanged') + '"><i class="fa fa-git"></i> ' + value.branch;
+			str += changes != '' ? '/' + changes : '</span>';
 			this.gitStatusHolder.innerHTML = str;
 		}
 		return this;
 	},
 	editAliases: function() {
-		Editor(Yez.aliases, Yez.aliases(), 'Edit your aliases. Type one per line in the format "[regex]:[replacement]".');
+		Editor(Yez.aliases.bind(Yez), Yez.aliases(), 'Edit your aliases. Type one per line in the format "[regex]:[replacement]".');
 	},
 	applyAliases: function(input) {
 		var aliases = Yez.aliases().split(/\n/g);
@@ -360,18 +384,18 @@ var Task = absurd.component('Task', {
 });
 function TaskTemplate() {
 	return {
-		'div[class="task-<% getId() %>"]': {
+		'div[class="task-id task-<% getId() %>"]': {
 			'.sub-nav': [
-				{ 'a[href="#" class="operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
-				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:restartTasks"]': '<i class="fa fa-repeat"></i> Restart'},
-				{ 'a[href="#" class="operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
-				{ 'a[href="#" class="operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
-				{ 'a[href="#" class="operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
+				{ 'a[href="#" class="button operation<% started ? " hidden" : "" %>" data-absurd-event="click:startTasks"]': '<i class="fa fa-refresh"></i> Start'},
+				{ 'a[href="#" class="button operation<% started ? "" : " hidden" %>" data-absurd-event="click:restartTasks"]': '<i class="fa fa-repeat"></i> Restart'},
+				{ 'a[href="#" class="button operation<% started ? "" : " hidden" %>" data-absurd-event="click:stopTasks"]': '<i class="fa fa-stop"></i> Stop'},
+				{ 'a[href="#" class="button operation" data-absurd-event="click:goToEditMode"]': '<i class="fa fa-edit"></i> Edit'},
+				{ 'a[href="#" class="button operation" data-absurd-event="click:deleteTask"]': '<i class="fa fa-times-circle-o"></i> Delete'}
 			],
 			'.edit': [
 				{
 					'.element': {
-						label: 'Name',
+						'label': 'Name',
 						'.field': {
 							'input[type="text" name="name" value="<% data.name %>" data-absurd-event="keyup:changeCommandName"]': ''
 						}
@@ -379,7 +403,7 @@ function TaskTemplate() {
 				},
 				{
 					'.element': {
-						label: 'Working directory',
+						'label': 'Working directory',
 						'.field': {
 							'input[type="text" name="cwd" value="<% data.cwd %>" data-absurd-event="change:changeCWD"]': ''
 						},
@@ -393,7 +417,7 @@ function TaskTemplate() {
 				%>',
 				{
 					'.element': {
-						label: '<i class="fa fa-wrench"></i> <% i+1 %>',
+						'label': '<i class="fa fa-wrench"></i> <% i+1 %>',
 						'.field': {
 							'input[type="text" value="<% c %>" data-absurd-event="keyup:changeCommand:<% i %>"]': ''
 						},
@@ -404,10 +428,15 @@ function TaskTemplate() {
 				},
 				'<% } %>',
 				{
-					'.actions': [
-						{ 'a[href="#" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' }
+					'.element.autorun': [
+						{ 'span': 'Autorun<input type="checkbox" <% data.autorun ? "checked" : "" %> name="autorun" data-absurd-event="click:autorunClick">' }
 					]
-				}
+				},
+				{
+					'.actions': [
+						{ 'a[href="#" class="button operation" data-absurd-event="click:saveCommand"]': '<i class="fa fa-check-circle-o"></i> Save' }
+					]
+				}				
 			],
 			'.dashboard': [
 				{ 'a[href="#" class="clear-log" data-absurd-event="click:clearLog"]': '<i class="fa fa-eraser"></i> Clear'},
@@ -415,257 +444,10 @@ function TaskTemplate() {
 				{ '.autocomplete': ''},
 				{ 'input[class="stdin-field" data-absurd-event="keyup:stdinKeyUp,keydown:stdinKeyDown,focus:stdinFocused,blur:stdinBlured"]': ''},
 				{ '.stdin-field-tooltip': '<i class="fa fa-angle-right"></i>'},
-				{ '.task-cwd': '<i class="fa fa-dot-circle-o"></i> <% data.cwd %>' },
+				{ '.task-cwd[data-absurd-event="click:openCwd"]': '<i class="fa fa-dot-circle-o"></i> <% data.cwd %>' },
 				{ '.git-status': '' },
 				{ 'a[href="#" class="aliases" data-absurd-event="click:editAliases"]': '<i class="fa fa-heart"></i>'}
 			]
 		}
-	}
-}
-function TaskCSS() {
-	return {
-		'.task-<% getId() %>': {
-			'.task-cwd': TaskCSSCWD(),
-			'.git-status': TaskCSSGitStatus(),
-			'.edit': TaskCSSEdit(),
-			'.dashboard': TaskCSSDashboard(),
-			'.sub-nav': TaskCSSSubNav()
-		}
-	}
-}
-function TaskCSSCWD() {
-	return {
-		pos: 'a',
-		bottom: '42px',
-		left: '12px',
-		color: '#575757',
-		fz: '14px'
-	}
-}
-function TaskCSSGitStatus() {
-	return {
-		pos: 'a',
-		bottom: '42px',
-		right: '12px',
-		color: '#575757',
-		fz: '14px'
-	}
-}
-function TaskCSSEdit() {
-	return {
-		bxz: 'bb',
-		pad: '10px',
-		display: '<% mode == "edit" ? "block" : "none" %>',
-		'.element': {
-			pos: 'r',
-			wid: '100%',
-			bxz: 'bb',
-			mar: '6px 0 6px 0',
-			label: {
-				wid: '30%',
-				pad: '0 20px 0 0',
-				bxz: 'bb',
-				bg: '#EDE9E0',
-				fl: 'l',
-				pad: '10px',
-				bdtlrs: '10px',
-				bdblrs: '10px',
-				ta: 'r',
-				bdr: 'solid 2px #DECAB6',
-				bdb: 'solid 1px #999',
-				hei: '47px',
-				ov: 'h'
-			},
-			'.field': {
-				wid: '70%',
-				fl: 'l',
-				bxz: 'bb',
-				bg: '#F8F5EF',
-				bdtrrs: '10px',
-				bdbrrs: '10px',
-				bdb: 'solid 1px #999',
-				input: {
-					hei: '46px',
-					bd: 'n',
-					bg: 'n',
-					bxz: 'bb',
-					wid: '100%',
-					pad: '10px'
-				}
-			},
-			'&:after': {
-				content: '" "',
-				d: 'tb',
-				clear: 'both'
-			},
-			'.sub-left, .sub-independent': {
-				color: '#000',
-				d: 'b',
-				pos: 'a',
-				top: '10px',
-				left: '10px',
-				pad: '0 10px',
-				bg: '#F5F3EF',
-				bdrsa: '4px',
-				'&:hover': { bg: '#D5CCBB' }
-			},
-			'.sub-right': {
-				color: '#000',
-				d: 'b',
-				pos: 'a',
-				top: '10px',
-				right: '10px',
-				pad: '0 10px',
-				bg: '#FBFAF7',
-				bdrsa: '4px',
-				'&:hover': { bg: '#E6DBC4' }
-			},
-			'.sub-independent': {
-				ta: 'c',
-				bxz: 'bb',
-				width: '34px',
-				top: '10px',
-				left: '53px'
-			}
-		},
-		'.actions': {
-			clear: 'both',
-			mar: '0 0 0 30%',
-			pad: '6px 0 0 0',
-			a: button(),
-			'.cancel': buttonTransparent()
-		}
-	};
-}
-function TaskCSSDashboard() {
-	return {
-		display: '<% mode == "dashboard" ? "block" : "none" %>',
-		bxz: 'bb',
-		pad: '10px',
-		h1: {
-			mar: '20px 0 20px 0',
-			pad: 0,
-			fz: '30px'
-		},
-		'.log': {
-			bxz: 'bb',
-			pos: 'a',
-			top: '107px',
-			left: '10px',
-			pad: '10px',
-			bg: '#FAFAFA',
-			wid: 'calc(100% - 18px)',
-			hei: 'calc(100% - 181px)',
-			fz: '12px',
-			lh: '16px',
-			bdrsa: '4px',
-			ovx: 'h',
-			ovy: 's',
-			p: {
-				pad: '0 4px',
-				mar: '0 0 1px 0',
-				bdrsa: '2px'
-			},
-			'.log-command': {
-				bg: '#C0DFE7',
-				bdb: 'solid 1px #E1E1E1'
-			},
-			'.log-error': {
-				bg: '#F39C9C',
-				bdb: 'solid 1px #E1E1E1'
-			},
-			'.log-warning': {
-				bg: '#F3E29C',
-				bdb: 'solid 1px #E1E1E1'
-			},
-			'.log-error-end': {
-				bg: '#F8C2C2',
-				bdb: 'solid 1px #E1E1E1'
-			},
-			'.log-end': {
-				ta: 'r',
-				pad: 0,
-				lh: '16px'
-			},
-			'.log-response': {
-				lh: '16px'
-			},
-			'.log-task-end': {
-				bg: '#87E789',
-				bdb: 'solid 1px #E1E1E1'
-			},
-			'.log-info': {
-				bg: '#C6E7E8',
-				color: '#2E7072',
-				bdb: 'solid 1px #66BFC1',
-				bdrsa: '4px'
-			},
-			'.log-stdin': {
-				bg: '#C6E7E8',
-				color: '#2E7072',
-				bdb: 'solid 1px #66BFC1',
-				bdrsa: '4px'
-			}
-		},
-		'.stdin-field': {
-			bxz: 'bb',
-			pos: 'a',
-			bottom: '8px',
-			right: '8px',
-			pad: '4px 4px 4px 18px',
-			bdrsa: '4px',
-			wid: 'calc(100% - 17px)',
-			bd: 'solid 1px #C5C5C5',
-			ff: "'Roboto', 'sans-serif'",
-			bg: 'n'
-		},
-		'.autocomplete': {
-			bxz: 'bb',
-			pos: 'a',
-			bottom: '1px',
-			right: '7px',
-			pad: '4px 4px 4px 18px',
-			bdrsa: '4px',
-			wid: 'calc(100% - 17px)',
-			fz: '13px',
-			color: '#B8B8B8',
-			ov: 'h',
-			hei: '38px'
-		},
-		'.stdin-field-tooltip': {
-			pos: 'a',
-			bottom: '10px',
-			left: '18px',
-			color: '#999'
-		},
-		'.clear-log': {
-			color: '#999',
-			fz: '12px',
-			pos: 'a',
-			top: '69px',
-			right: '12px',
-			ted: 'n',
-			'&:hover': {
-				color: '#000'
-			}
-		},
-		'.aliases': {
-			color: '#ACACAC',
-			fz: '18px',
-			pos: 'a',
-			bottom: '11px',
-			right: '15px',
-			ted: 'n',
-			'&:hover': {
-				color: '#F00'
-			}	
-		}
-	}
-}
-function TaskCSSSubNav() {
-	return {
-		pad: '10px 0 0 10px',
-		'.operation': button(),
-		'.hidden': { d: 'n' }
 	}
 }

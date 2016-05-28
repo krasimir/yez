@@ -1,0 +1,132 @@
+[data-component="home"] {
+  box-sizing: border-box;
+  padding: 14px;
+}
+
+[data-component="home"] h1 {
+  padding: 5px 0 5px;
+  margin-top: 0;
+  color: #7f8591;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: normal;
+}
+
+[data-component="home"] .task {
+  position: relative;
+}
+
+[data-component="home"] .task a {
+  display: block;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin: 8px 0 4px 0;
+}
+[data-component="home"] .task a:hover {
+}
+
+[data-component="home"] .task.group a {
+  padding-left: 0;
+  margin: 0 0 4px 0;
+  border: 0;
+}
+[data-component="home"] .task.grouped a {
+  margin: 0 0 4px 0;
+}
+
+[data-component="home"] .task a.action {
+  position: absolute;
+  background: #84DC6D;
+  border-bottom: none;
+  width: 60px;
+  text-align: center;
+  border-top-left-radius: 0;
+  margin: 0;
+  border-bottom-left-radius: 0;
+  top: 0;
+  right: 0;
+}
+
+[data-component="home"] .task a.action:hover {
+  background: #4EC730;
+}
+
+[data-component="home"] .task a.action.stop {
+  display: none;
+  background: #E83E3E;
+  color: #FFF;
+}
+
+[data-component="home"] .task a.action.stop:hover {
+  background: #ED6565;
+}
+
+[data-component="home"] .started a.action {
+  display: none;
+}
+
+[data-component="home"] .started a.action.stop {
+  display: block;
+}
+
+[data-component="home"] .grouped {
+  margin-left: 30px;
+}
+
+[data-component="home"] .grouped:before {
+  display: block;
+  position: absolute;
+  border-bottom: solid 1px #7f8591;
+  border-left: solid 1px #7f8591;
+  content: " ";
+  width: 19px;
+  height: 10px;
+  top: 4px;
+  left: -25px;
+}
+
+[data-component="home"] .group a.action {
+  display: none;
+}
+
+[data-component="home"] .group a {
+  font-size: 15px;
+  padding: 4px 0;
+  background: none;
+  color: #7f8591;
+  cursor: default;
+  padding-left: 10px;
+}
+
+[data-component="home"] .group a i {
+  display: none;
+}
+
+[data-component="home"] .group a:hover {
+  background: none;
+}
+
+[data-component="home"] .newtask {
+  display: block;
+  margin: 10px 0 0 10px;
+  color: #000;
+  font-size: 14px;
+}
+
+[data-component="home"] .newtask:hover {
+  color: #297317;
+}
+
+
+[data-component="home"] .filter {
+  width: 120px;
+  float: right;
+}
+
+[data-component="home"] .options {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  line-height: 20px;
+}

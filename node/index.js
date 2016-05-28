@@ -1,15 +1,23 @@
 #!/usr/bin/env node
 
-var app = require('http').createServer(function(){}),
+var app = require('http').createServer(),
     io = require('socket.io').listen(app),
     fs = require('fs'),
-    port = 9172,
+    yezBackendPort = 9172,
+    httpPort = 9173,
     TaskRunner = require('./TaskRunner'),
     path = require('path'),
     defaultCWD = path.normalize(process.cwd()),
-    runners = {}, lastActive = 0;
+    runners = {},
+    lastActive = 0,
+    electron = require('electron-prebuilt'),    
+    proc = require('child_process'),
+    argv = require('yargs').argv,
+    httpServer = require('http-server');
 
-app.listen(port);
+app.listen(yezBackendPort);
+
+httpServer.createServer({root: path.normalize(__dirname+'/../chrome')}).listen(httpPort);
 
 var getCurrentRunnersIds = function() {
     cleaningRunners();
@@ -20,7 +28,7 @@ var getCurrentRunnersIds = function() {
         }
     }
     return res;
-}
+};
 var cleaningRunners = function() {
     var res = {};
     if(runners) {        
@@ -37,7 +45,7 @@ var cleaningRunners = function() {
         }
         runners = res;
     }
-}
+};
 var reportingProcesses = function() {
     var active = 0;
     if(runners) {        
@@ -54,58 +62,129 @@ var reportingProcesses = function() {
         }
         if(active != lastActive) {
             lastActive = active;
-            console.log('Running processes: ' + active);
+            // console.log('Running processes: ' + active);
         }
     }
     setTimeout(reportingProcesses, 1600);
-}
+};
+
+var runCommand = function (data, command, id) {
+    var runner = TaskRunner();
+    runner.id = id;
+    runner.run(command, data.cwd || defaultCWD)
+    .data(function(d) {
+        io.sockets.emit('response', {
+            action: 'data',
+            id: id,
+            data: d
+        });
+    })
+    .err(function(data) {
+        io.sockets.emit('response', {
+            action: 'err',
+            id: id,
+            msg: data
+        });
+    })
+    .end(function(err, d, code) {
+        io.sockets.emit('response', {
+            action: 'end',
+            id: id,
+            err: err,
+            data: d,
+            code: code
+        });
+        cleaningRunners();
+    })
+    .exit(function(code, signal) {
+        io.sockets.emit('response', {
+            action: 'exit',
+            id: id,
+            signal: signal,
+            code: code
+        });
+        cleaningRunners();
+    });
+    return runner;
+};
+
+var savedTasks;
+
+var readTasks = function (cb) {
+    fs.readFile(path.resolve(__dirname+'/savedTasks.json'), 'utf8', function (err, data) {
+        if (err) throw err;
+        savedTasks = data;
+        cb();
+    });
+};
+
+readTasks(function () {
+    var tasks = JSON.parse(savedTasks);
+    for(var i=0;i<tasks.length;i++) {
+         var task = tasks[i];
+         runners[task.id] = [];                
+         if(task.autorun) {
+             for(var j=0;j<task.commands.length;j++) {
+                   var runner = runCommand(task, task.commands[j], task.id);
+                   //console.log('task', task.commands[j], task.id);
+                   runners[task.id].push(runner);
+             }
+         } 
+    }
+});
+
+var savedAliases;
+
+var readAliases = function () {
+    fs.readFile(path.resolve(__dirname+'/savedAliases.json'), 'utf8', function (err, data) {
+        if (err) throw err;
+        savedAliases = data;        
+    });
+};
+
+readAliases();
+
+var spawnElectron;
+
+var startElectron = function () {
+    if (!spawnElectron) {
+        spawnElectron = proc.spawn(electron, [
+            path.resolve(__dirname + '/../electron/tray.js'),
+            JSON.stringify({
+                pid: process.pid, 
+                tray: argv.tray, 
+                dark: argv.dark,
+                port: httpPort
+            })
+        ]);
+        spawnElectron.on('close', function () {
+             spawnElectron = null;
+        });
+    }
+};
+
+if (argv.tray) startElectron();
 
 io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
-    socket.emit('initial', { cwd: defaultCWD, running: getCurrentRunnersIds() });
+    socket.emit('initial', { 
+      cwd: defaultCWD,
+      tasks: savedTasks,
+      aliases: savedAliases,
+      running: getCurrentRunnersIds(),
+      sep: path.sep,
+      dark: argv.dark,
+      tray: argv.tray
+    });
     socket.on('data', function (data) {
         if(!data || !data.id) return;
         var id = data.id;
         switch(data.action) {
             /********************************************************************** run command */
             case 'run-command':
-                var runner = TaskRunner();
-                runner.run(data.command, data.cwd || defaultCWD)
-                .data(function(d) {
-                    io.sockets.emit('response', {
-                        action: 'data',
-                        id: id,
-                        data: d
-                    });
-                })
-                .err(function(data) {
-                    io.sockets.emit('response', {
-                        action: 'err',
-                        id: id,
-                        msg: data
-                    });
-                })
-                .end(function(err, d, code) {
-                    io.sockets.emit('response', {
-                        action: 'end',
-                        id: id,
-                        err: err,
-                        data: d,
-                        code: code
-                    });
-                    cleaningRunners();
-                })
-                .exit(function(code, signal) {
-                    io.sockets.emit('response', {
-                        action: 'exit',
-                        id: id,
-                        signal: signal,
-                        code: code
-                    });
-                    cleaningRunners();
-                });
+                var runner = runCommand(data, data.command, id);
                 if(!runners[id]) runners[id] = [];
-                runners[id].push(runner);
+                runners[id].push(runner); 
             break;
             /********************************************************************** stop command */
             case 'stop-command':
@@ -153,8 +232,7 @@ io.sockets.on('connection', function (socket) {
                         });
                     }
                 });
-                
-            break;
+            break;            
             /********************************************************************** git status */
             case 'git-status':
                 var runner = TaskRunner();
@@ -198,9 +276,9 @@ io.sockets.on('connection', function (socket) {
                                         });
                                     } else {
                                         var item = files.shift();
-                                        fs.stat(data.cwd + '/' + item, function(err, stats) {
+                                        fs.stat(data.cwd + path.sep + item, function(err, stats) {
                                             if(err) { 
-                                                error(err);                                                 
+                                                error(err);
                                             } else {
                                                 if(stats.isDirectory() || data.files) {
                                                     result.push(item);
@@ -213,10 +291,44 @@ io.sockets.on('connection', function (socket) {
                             }
                         });
                     }
-                    
+
                 } catch(err) {
                     error(err);
                 }
+            break;
+            /********************************************************************** tray */
+            case 'tray':
+                data.id = 'update';
+                io.sockets.emit('tray', data);
+                argv.tray = Boolean(data.show)
+                if (argv.tray) startElectron();
+            break;
+            /********************************************************************** theme */
+            case 'theme':
+                data.id = 'update';
+                io.sockets.emit('theme', data);                
+                argv.dark = (data.theme == 'dark');
+            break;
+            /********************************************************************** save */
+            case 'saveTasks':
+                savedTasks = data.tasks;
+                socket.broadcast.emit('updateTasks', {
+                 tasks: savedTasks,
+                 running: getCurrentRunnersIds()
+                });
+                fs.writeFile(path.resolve(__dirname+'/savedTasks.json'), savedTasks, 'utf8', function (err) {
+                  if (err) throw err;
+                });
+            break;
+            /********************************************************************** aliases */
+            case 'aliases':
+                savedAliases = data.aliases;
+                socket.broadcast.emit('updateAliases', {
+                    aliases: savedAliases
+                });
+                fs.writeFile(path.resolve(__dirname+'/savedAliases.json'), savedAliases, 'utf8', function (err) {
+                  if (err) throw err;
+                });
             break;
         }
     });
@@ -224,4 +336,4 @@ io.sockets.on('connection', function (socket) {
 
 reportingProcesses();
 
-console.log('Yez! is running.');
+console.log('Yez! back-end is running. Install the Chrome extension or open http://localhost:' + httpPort);

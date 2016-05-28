@@ -1,51 +1,14 @@
 var Nav = absurd.component('Nav', {
-	css: {
-		'[data-component="nav"]': {
-			fl: 'l',
-			pad: '6px 0 0 10px',
-			d: 'n',
-			a: [
-				button(),
-				{ 
-					bxz: 'bb', 
-					//wid: '40px', 
-					hei: '35px', 
-					ov: 'h', 
-					ta: 'c'
-				}
-			],
-			'.task': {
-				fz: '12px',
-				bg: '#FFFFFF'
-			},
-			'.add': {
-				bg: 'none',
-				bdb: 'none'
-			},
-			'.add-task': {
-				pos: 'a',
-				right: '245px',
-				top: '7px',
-				wid: '85px'
-			},
-			'.add-terminal': {
-				pos: 'a',
-				right: '142px',
-				top: '7px',
-				wid: '108px'
-			}
-		}
-	},
 	html: {
 		'nav[data-component="nav"]': [
-			{ 'a[href="#" data-absurd-event="click:addTask" class="add add-task" title="New task"]': '<i class="fa fa-plus-circle"></i> Task' },
-			{ 'a[href="#" data-absurd-event="click:addTerminal" class="add add-terminal" title="New terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
-			{ 'a[href="#" data-absurd-event="click:toHome" class="task" title="Back to home"]': '<i class="fa fa-home"></i>' },
+			{ 'a[href="#" data-absurd-event="click:addTask" class="button add add-task" title="New task"]': '<i class="fa fa-plus-circle"></i> Task' },
+			{ 'a[href="#" data-absurd-event="click:addTerminal" class="button add add-terminal" title="New terminal"]': '<i class="fa fa-keyboard-o"></i> Terminal' },
+			{ 'a[href="#" data-absurd-event="click:toHome" class="button toHome task" title="Back to home"]': '<i class="fa fa-home"></i><div class="logo icon48"></div>' },
 			'<% for(var i=0; i<tasksRunning.length; i++) { \
 				var name = tasksRunning[i].name; \
 				var id = tasksRunning[i].id; \
 			%>',
-			{ 'a[href="#" data-absurd-event="click:openTask:<% id %>" class="task" title="<% name %>"]': '<% tasksRunning[i].name %>'},
+			{ 'a[href="#" data-absurd-event="click:openTask:<% id %>" class="button task <% id %>" title="<% name %>"]': '<% tasksRunning[i].name %>'},
 			'<% } %>'
 		]
 	},
@@ -57,8 +20,7 @@ var Nav = absurd.component('Nav', {
 		this.startCheckingTasks();
 	},
 	visible: function(s) {
-		this.css['[data-component="nav"]'].d = s ? 'b' : 'n';
-		this.populate();
+		this.el.style.display = s ? 'block' : 'none';
 	},
 	startCheckingTasks: function() {
 		var tasks = Yez.tasks, running = 0, self = this;
@@ -79,11 +41,14 @@ var Nav = absurd.component('Nav', {
 		}, 300);
 	},
 	openTask: function(e, id) {
+		this.removeClass('current', this.qs('.current'));
+		this.addClass('current', e.target);
 		e.preventDefault();
 		this.dispatch('open-task', {id: id});
 	},
 	toHome: function(e) {
 		e.preventDefault();
+		this.removeClass('current', this.qs('.current'));
 		this.dispatch('to-home');
 	},
 	addTerminal: function(e) {

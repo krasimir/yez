@@ -1,0 +1,33 @@
+[data-component="status"] {
+  padding: 5px 14px;
+  float: right;
+  color: #666;
+}
+
+[data-component="status"] .fa-flash {
+  margin-right: 5px;
+  color: #CC151A;
+}
+
+[data-component="status"].online .fa-flash {
+  color: #26A430;
+}
+
+[data-component="status"] .info {
+  position: absolute;
+  font-size: 12px;
+  width: 300px;
+  line-height: 20px;
+  text-align: right;
+  display: block;
+  background: #FFF;
+  padding: 10px;
+  border: solid 1px #DFD2B7;
+  right: 14px;
+  background: #fff6fa;
+  top: 40px;
+}
+
+[data-component="status"].online .info {
+  display: none;
+}

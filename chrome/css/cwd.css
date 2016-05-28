@@ -1,0 +1,78 @@
+.dialog {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+}
+
+.dialog .content {
+  position: absolute;
+  width: 94%;
+  height: 94%;
+  padding: 10px;
+  background: #F0F0F0;
+  box-sizing: border-box;
+  left: 2%;
+  top: 2%;
+}
+
+.dialog .content .info {
+  box-sizing: border-box;
+  height: 60px;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.dialog .content .inner {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: calc(100% - 120px);
+  box-sizing: border-box;
+  line-height: 22px;
+}
+
+.dialog .content .inner a {
+  display: block;
+  text-decoration: none;
+  padding: 0 0 0 4px;
+  background: #D4D4D4;
+  border-radius: 4px;
+  font-size: 12px;
+  margin: 0 0 2px 0;
+  box-sizing: border-box;
+  color: #000;
+}
+
+.dialog .content .inner a:hover {
+  background: #C0C0C0;
+}
+
+.dialog .content .actions {
+  margin: 20px 0 0 0;
+}
+
+.dialog .content .actions a {
+  display: inline-block;
+  text-decoration: none;
+  padding: 4px 10px;
+  background: #E7E7E7;
+  border-bottom: solid 1px #919191;
+  margin: 0 6px 0 0;
+  color: #000;
+  border-radius: 3px;
+}
+
+.dialog .content .actions a:hover {
+  background: #D5D5D5;
+}
+
+.dialog .editor textarea {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  border-radius: 4px;  
+}
+

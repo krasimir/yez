@@ -1,0 +1,304 @@
+.task-id .task-cwd {
+  position: absolute;
+  font-size: 14px;
+  bottom: 42px;
+  left: 12px;
+  color: #575757;
+  cursor: pointer;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.task-id .git-status {
+  position: absolute;
+  font-size: 14px;
+  bottom: 42px;
+  right: 12px;
+  color: #444;
+  max-width: calc(30% - 30px);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.task-id .git-changed {
+  color: #ED6565;
+}
+.task-id .git-unchanged {
+  color: #26A430;
+}
+.task-id .fa-git {
+  vertical-align: text-bottom;
+}
+
+.task-id .edit {
+  box-sizing: border-box;
+  padding: 10px;
+  display: none;
+}
+.task-id.edit .edit {
+  display: block;
+  clear: both;
+}
+.task-id .edit .element {
+  box-sizing: border-box;
+  margin: 5px 0px;
+  position: relative;
+  height: 26px;
+}
+
+.task-id .edit .element.autorun {
+  float: right;
+}
+.task-id .edit .element label {
+  width: 30%;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  background: #EDE9E0;
+  float: left;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  text-align: right;
+  border-right: solid 1px #DECAB6;
+  border: solid 1px #ccc;
+  overflow: hidden;
+  border-right: 0;
+  white-space: nowrap;
+}
+
+.task-id .edit .element .field {
+  width: 70%;
+  float: left;
+  box-sizing: border-box;
+  background: #F8F5EF;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+.task-id .edit .element .field input {
+  border: none;
+  background: none;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.task-id .edit .element a {
+  padding: 4px 10px;
+  border-radius: 3px;
+  width: 32px;
+  text-align: center;
+  box-sizing: border-box;
+  color: #222;
+}
+
+.task-id .edit .element .sub-left {
+  top: 2px;
+  left: 2px;
+  position: absolute;
+}
+
+.task-id .edit .element .sub-left:hover {
+  background: #D5CCBB;
+}
+
+.task-id .edit .element .sub-independent {
+  top: 2px;
+  left: 36px;
+  position: absolute;
+}
+
+.task-id .edit .element .sub-independent:hover {
+  background: #D5CCBB;
+}
+
+.task-id .edit .element .sub-right {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.task-id .edit .element .sub-right:hover {
+  background: #E6DBC4;
+}
+
+.task-id .edit .actions {
+  margin: 0 0 0 30%;
+  padding: 6px 0 0 0;
+  clear: both;
+}
+
+.task-id .edit .actions a {
+  display: inline-block;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin: 0 6px 0 0;
+}
+
+.task-id .edit .actions .cancel {
+  opacity: 0.4;
+}
+
+.task-id .edit .actions .cancel:hover {
+  opacity: 1;
+}
+
+.task-id .dashboard {
+  box-sizing: border-box;
+  padding: 10px;
+  display: block;
+}
+.task-id.edit .dashboard {
+  display: none;
+}
+
+.task-id .dashboard h1 {
+  margin: 20px 0 20px 0;
+  padding: 0;
+  font-size: 30px;
+}
+
+.task-id .dashboard .log {
+  box-sizing: border-box;
+  position: absolute;
+  padding: 10px;
+  background: #eee;
+  width: calc(100% - 18px);
+  height: calc(100% - 181px);
+  font-size: 12px;
+  line-height: 16px;
+  border-radius: 3px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  top: 107px;
+  left: 10px;
+  border: 1px solid #bbb;
+}
+
+.task-id .dashboard .log p {
+  padding: 0 4px;
+  margin: 0 0 1px 0;
+  border-radius: 3px;
+}
+
+.task-id .dashboard .log .log-command {
+  background: #C0DFE7;
+  border-bottom: solid 1px #E1E1E1;
+}
+
+.task-id .dashboard .log .log-error {
+  background: #F39C9C;
+  border-bottom: solid 1px #E1E1E1;
+}
+
+.task-id .dashboard .log .log-warning {
+  background: #F3E29C;
+  border-bottom: solid 1px #E1E1E1;
+}
+
+.task-id .dashboard .log .log-error-end {
+  background: #F8C2C2;
+  border-bottom: solid 1px #E1E1E1;
+}
+
+.task-id .dashboard .log .log-end {
+  text-align: right;
+  padding: 0;
+  line-height: 16px;
+}
+
+.task-id .dashboard .log .log-response {
+  line-height: 16px;
+}
+
+.task-id .dashboard .log .log-task-end {
+  background: #87E789;
+  border-bottom: solid 1px #E1E1E1;
+}
+
+.task-id .dashboard .log .log-info {
+  background: #C6E7E8;
+  border-bottom: solid 1px #66BFC1;
+  border-radius: 3px;
+  color: #2E7072;
+}
+
+.task-id .dashboard .log .log-stdin {
+  background: #C6E7E8;
+  border-bottom: solid 1px #66BFC1;
+  border-radius: 3px;
+  color: #2E7072;
+}
+
+.task-id .dashboard .stdin-field {
+  box-sizing: border-box;
+  position: absolute;
+  padding: 4px 4px 4px 18px;
+  border-radius: 3px;
+  width: calc(100% - 17px);
+  background: none;
+  bottom: 8px;
+  right: 8px;
+}
+
+.task-id .dashboard .autocomplete {
+  box-sizing: border-box;
+  position: absolute;
+  padding: 4px 4px 4px 18px;
+  border-radius: 3px;
+  width: calc(100% - 17px);
+  font-size: 13px;
+  overflow: hidden;
+  height: 38px;
+  bottom: 1px;
+  right: 7px;
+  color: #B8B8B8;
+}
+
+.task-id .dashboard .stdin-field-tooltip {
+  position: absolute;
+  bottom: 14px;
+  left: 18px;
+  color: #999;
+}
+
+.task-id .dashboard .clear-log {
+  float: right;
+  color: #666;
+}
+
+.task-id .dashboard .clear-log:hover {
+  color: #000;
+}
+
+.task-id .dashboard .aliases {
+  font-size: 18px;
+  position: absolute;
+  text-decoration: none;
+  color: #ACACAC;
+  bottom: 11px;
+  right: 15px;
+}
+
+.task-id .dashboard .aliases:hover {
+  color: #E83E3E;
+}
+
+.task-id .sub-nav {
+  padding: 10px 0 0 10px;
+  float: left;
+}
+
+.task-id .sub-nav .operation {
+  display: inline-block;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin: 0 6px 0 0;
+}
+
+.task-id .sub-nav .hidden {
+  display: none;
+}

@@ -1,9 +1,10 @@
 var Home = absurd.component('Home', {
-	css: HomeCSS(),
+	trayChecked: false,
+	theme: true,
 	html: {
 		'div[data-component="home"]': [
-			{ h1: '<% tasks.length > 0 ? "Your tasks:" : "" %>' },
-			{ 'input[class="filter" data-absurd-event="keyup:filter" autofocus]': ''},
+		    { 'input[class="filter" placeholder="&#128270;" data-absurd-event="keyup:filter" autofocus]': ''},
+			{ h1: '<% tasks.length > 0 ? "Your tasks:" : "" %>' },			
 			'<% for(var i=0; i<tasks.length; i++) { \
 				var started = tasks[i].started ? " started" : ""; \
 				var name = tasks[i].name; \
@@ -13,13 +14,14 @@ var Home = absurd.component('Home', {
 			%>',
 			{ 
 				'div[class="task<% started %><% group %><% grouped %>"]': {
-					'a[href="#" data-absurd-event="click:showTask:<% id %>" data-name="<% name %>"]': '<i class="fa <% tasks[i].started ? "fa-refresh" : "fa-stop" %>"></i> <% tasks[i].name %>',
-					'a[href="#" data-absurd-event="click:runTask:<% id %>" class="action"]': '<i class="fa fa-refresh"></i> Run',
-					'a[href="#" data-absurd-event="click:stopTask:<% id %>" class="action stop"]': '<i class="fa fa-stop"></i> Stop'
+					'a[href="#" data-absurd-event="click:showTask:<% id %>" class="button" data-name="<% name %>"]': '<i class="fa <% tasks[i].started ? "fa-refresh" : "fa-stop" %>"></i> <% tasks[i].name %>',
+					'a[href="#" data-absurd-event="click:runTask:<% id %>" class="button action"]': '<i class="fa fa-refresh"></i> Run',
+					'a[href="#" data-absurd-event="click:stopTask:<% id %>" class="button action stop"]': '<i class="fa fa-stop"></i> Stop'
 				}
 			},
 			'<% } %>',
-			{ 'a[href="#" class="newtask" data-absurd-event="click:newTask"]': '<i class="fa fa-plus-circle"></i> New task'}
+			{ 'a[href="#" class="newtask" data-absurd-event="click:newTask"]': '<i class="fa fa-plus-circle"></i> New task'},
+			{ 'div[class="options"]':'Options: <input type="checkbox" <% trayChecked ? "checked" : "" %> name="tray" data-absurd-event="click:trayClick"/ >Tray icon<br>Theme: <input type="radio" name="theme" data-absurd-event="click:themeClick" <% theme ? "checked" : "" %> value="light"/>Light<input type="radio" name="theme" data-absurd-event="click:themeClick" <% !theme ? "checked" : "" %> value="dark"/>Dark'}
 		]
 	},
 	tasks: [],
@@ -28,7 +30,7 @@ var Home = absurd.component('Home', {
 			this.tasks = [];
 			for(var i in ts) {
 				if(!ts[i].data.terminal) {
-					this.tasks.push({ id: ts[i].getId(), name: ts[i].data.name, started: ts[i].started });
+					this.tasks.push({ id: ts[i].getId(), name: ts[i].data.name, started: ts[i].started, autorun: ts[i].data.autorun });
 				}
 			}
 			this.orderTasks();
@@ -39,16 +41,20 @@ var Home = absurd.component('Home', {
 	},
 	showTask: function(e, id) {
 		if(id != -1) {
+			var current = document.querySelector('.current');
+			if (current) current.classList.remove('current');
+			current = document.querySelector('.'+id);
+			if (current) current.classList.add('current');
 			this.dispatch('show-task', id);
 		}
 	},
 	runTask: function(e, id) {
 		e.preventDefault();
-		this.dispatch(e.ctrlKey === false ? 'run-task' : 'run-task-silent', id);
+		this.dispatch('run-task-silent', id);
 	},
 	stopTask: function(e, id) {
 		e.preventDefault();
-		this.dispatch(e.ctrlKey === false ? 'stop-task' : 'stop-task-silent', id);
+		this.dispatch('stop-task-silent', id);
 	},
 	newTask: function(e) {
 		e.preventDefault();
@@ -67,11 +73,6 @@ var Home = absurd.component('Home', {
 				task.style.display = 'none';
 			}
 		}
-	},
-	appended: function(dom) {
-		setTimeout(function() {
-			dom('.filter').el.focus();
-		}, 300);
 	},
 	orderTasks: function() {
 		this.tasks.sort(function(a, b) {
@@ -101,104 +102,11 @@ var Home = absurd.component('Home', {
 	},
 	'ctrl+i': function() {
 		this.qs('.filter').focus();
+	},	
+	trayClick: function (event) { 
+		Yez.socket.emit('data', {action: 'tray', show: event.target.checked, id: 'options'});
+	},
+	themeClick: function (event) { 
+		Yez.socket.emit('data', {action: 'theme', theme: event.target.value, id: 'options'});
 	}
 });
-function HomeCSS() {
-	return {
-		'[data-component="home"]': {
-			bxz: 'bb',
-			pad: '14px',
-			h1: {
-				pad: 0,
-				mar: '0 0 17px 0'
-			},
-			'.task': {
-				pos: 'r',
-				a: [
-					button(),
-					{
-						d: 'b',
-						mar: '0 0 6px 0'
-					}
-				],
-				'a.action': {
-					pos: 'a',
-					top: 0,
-					right: 0,
-					bg: '#84DC6D',
-					bdb: 'n',
-					wid: '60px',
-					ta: 'c',
-					bdtlrs: '0',
-					bdblrs: '0',
-					'&:hover': {
-						bg: '#4EC730'
-					}
-				},
-				'a.action.stop': {
-					d: 'n',
-					bg: '#E83E3E',
-					color: '#FFF',
-					'&:hover': {
-						bg: '#ED6565'
-					}
-				}
-			},
-			'.started': {
-				'a.action': {
-					d: 'n'
-				},
-				'a.action.stop': {
-					d: 'b'
-				}
-			},
-			'.grouped': {
-				ml: '30px',
-				'&:before': {
-					d: 'b',
-					pos: 'a',
-					content: '" "',
-					width: '19px',
-					height: '10px',
-					bdb: 'solid 2px #000',
-					bdl: 'solid 2px #000',
-					top: '8px',
-					left: '-28px'
-				}
-			},
-			'.group': {
-				'a.action': { d: 'n' },
-				'a': {
-					color: '#8E8E8E',
-					fz: '20px',
-					pad: '4px 0',
-					cursor: 'default',
-					bg: 'none',
-					bdb: 'none',
-					i: { d: 'n' },
-					'&:hover': {
-						bg: 'none'
-					}
-				}
-			},
-			'.newtask': {
-				d: 'b',
-				mar: '10px 0 0 10px',
-				color: '#000',
-				'&:hover': {
-					color: '#297317'
-				}
-			},
-			'.filter': {
-				pos: 'a',
-				top: '62px',
-				right: '15px',
-				pad: '4px',
-				bdrsa: '4px',
-				wid: '120px',
-				bd: 'solid 1px #C5C5C5',
-				ff: "'Roboto', 'sans-serif'"
-			}
-		}
-	}
-}

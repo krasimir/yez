@@ -1,0 +1,94 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 16px;
+  background: #fff;
+  min-width: 400px;
+}
+
+html, input, textarea {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: #222;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+code {
+  border: solid 1px #D8D8D8;
+  padding: 0 2px 0 2px;
+}
+
+.clear {
+  clear: both;
+}
+
+.clearfix {
+  clear: both;
+}
+
+.content {
+  display: block;
+}
+
+header {
+  background: #F3EEE4;
+  border-bottom: solid 1px #DFD2B7;
+}
+
+header .logo {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 5px;
+  width: 18px;
+  height: 18px;
+  opacity: 0.6;
+  background: url("../img/icon19.png");
+}
+
+hr {
+  border-top: none;
+  border-bottom: dotted 1px #999;
+  margin: 0 10px;
+}
+
+input, textarea {
+  outline: 0;
+  padding: 2px 3px;
+  font-size: 12px;
+  border-radius: 2px;
+  border: 1px solid #999;
+}
+
+input[type=checkbox], 
+input[type=radio] {
+  width: 16px;
+  height: 16px;
+  vertical-align: sub;
+}
+
+[data-component="content"] {
+  display: none;
+}
+
+.button {
+  background: #E7E7E7;
+  border: 1px solid #bbb;
+}
+
+.button:hover {
+
+  background: #eee;
+}

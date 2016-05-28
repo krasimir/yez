@@ -1,0 +1,293 @@
+/*YEZ DARK THEME*/
+
+.dark {
+  color: #d5d5d5;
+  background: #242424;
+}
+
+.dark input {
+  color: #cecece;
+  background: #242424;
+  border: 1px solid #5c5c5c;
+}
+
+.dark header {
+  background: #2a2a2a;
+  border-bottom: solid 1px #444;
+}
+
+.dark header .logo {
+  background: url("../img/icon19w.png");  
+}
+
+.dark [data-component] .button {
+  color: #a5a5a5;
+  background: #323232;
+  border: 1px solid #444;
+}
+
+.dark [data-component] .button:hover,
+.dark [data-component] .button.current:hover {
+  color: #fff;
+  background: #3d3d3d;
+}
+
+.dark [data-component] .button.current {
+  background: #222;
+}
+/* NAV */
+
+.dark [data-component="nav"] .button {
+  background: #2a2a2a;
+  border: 0;
+}
+
+.dark [data-component="nav"] .toHome {
+  color: #ddd;
+}
+
+.dark [data-component="nav"] .task.current {
+  border: 1px solid #444;
+  border-bottom: 0;
+}
+
+/* STATUS */
+
+.dark [data-component="status"] .status {
+  color: #999;
+}
+
+.dark [data-component="status"] .info {
+  color: #ccc;
+  background: #2c2c2c;
+}
+
+.dark [data-component="status"] code {
+  color: #fff;
+  font-family: monospace;
+  background: #444;
+  border: 1px solid #666;
+}
+/* HOME */
+
+.dark [data-component="home"] .task a.button {
+  color: #d5d5d5;
+}
+.dark [data-component="home"] .task a.button:hover {
+  background: #3d3d3d;
+  color: #fff;
+}
+
+.dark [data-component="home"] .task a.action {
+  background: #3e9828;
+  color: #fff;
+}
+.dark [data-component="home"] .task a.action:hover {
+  background: #84DC6D;
+}
+
+.dark [data-component="home"] .task a.action.stop {
+  background: #E83E3E;
+}
+.dark [data-component="home"] .task a.action.stop:hover {
+  background: #ED6565;
+}
+
+.dark [data-component="home"] .task.group a.button {
+  background: #242424;
+}
+.dark [data-component="home"] .task.group a.button:hover {
+  background: #242424;
+  color: #fff;
+}
+
+.dark [data-component="home"] .newtask {
+  color: #cacaca;
+}
+
+.dark [data-component="home"] .newtask:hover {
+  color: #eee;
+}
+
+.dark [data-component="home"] .grouped:before {
+  border-bottom: solid 1px #ccc;
+  border-left: solid 1px #ccc;
+}
+
+/* TASKS */
+
+.dark .task-id .task-cwd {
+  color: #eee;
+}
+
+.dark .task-id .git-status {
+  color: #ccc;
+}
+
+.dark .task-id .edit {
+  color: #fff;
+}
+
+.dark .task-id .edit {
+  color: #fff;
+}
+
+.dark .task-id .edit .element a {
+  background: #323232;
+  color: #ccc;
+  border: 1px solid #5a5a5a;
+}
+.dark .task-id .edit .element a:hover {
+  background: #3d3d3d;
+  color: #fff;
+}
+
+.dark .task-id .edit .element label {
+  background: #444;
+  border: 2px solid #444;
+  border-right: solid 1px #666;
+}
+
+.dark .task-id .edit .element .field {
+  background: #444;
+  border: 2px solid #444;
+}
+
+
+.dark .task-id .edit .actions {
+  border-bottom: 0;
+  color: #ddd;
+}
+
+.dark .task-id .dashboard .log {
+  background: #181818;
+  color: #ccc;
+  margin-bottom: -1px;
+  border: 1px solid #444;
+}
+
+.dark .task-id .dashboard .log p {
+  margin-bottom: -1px;
+  line-height: 20px;
+  border-radius: 0;
+}
+
+.dark .task-id .dashboard .log .log-command {
+  background: #332b00;
+  border-bottom: solid 1px #A29042;
+  border-top: solid 1px #A29042;
+  color: #ffdc9e;
+}
+
+.dark .task-id .dashboard .log .log-error {
+  background: #290000;
+  border-bottom: solid 1px #5b0000;
+  border-top: solid 1px #5b0000;
+  color: #ff8080;
+}
+
+.dark .task-id .dashboard .log .log-warning {
+  background: #332b00;
+  border-bottom: solid 1px #A29042;
+  border-top: solid 1px #A29042;
+  color: #ffdc9e;
+}
+
+.dark .task-id .dashboard .log .log-error-end {
+  background: #290000;
+  border-bottom: solid 1px #5b0000;
+  border-top: solid 1px #5b0000;
+  color: #ff8080;
+}
+
+.dark .task-id .dashboard .log .log-end {
+  background: #222;
+  color: #bbb;  
+}
+
+.dark .task-id .dashboard .log .log-response {
+  background: #222;
+  border-bottom: solid 1px #222;
+  border-top: solid 1px #222;
+  color: #ddd;
+}
+
+.dark .task-id .dashboard .log .log-task-end {
+  background: #193900;
+  border-bottom: solid 1px #5b8b00;
+  border-top: solid 1px #5b8b00;
+  color: #cfff80;
+}
+
+.dark .task-id .dashboard .log .log-info {
+  background: #C6E7E8;
+  border-bottom: solid 1px #66BFC1;
+  color: #2E7072;
+}
+
+.dark .task-id .dashboard .log .log-stdin {
+  background: #333;
+  border-bottom: solid 1px #777;
+  border-top: solid 1px #777;
+  color: #fff;
+}
+
+.dark .task-id .dashboard .stdin-field {
+  background: #383838;
+  border: solid 1px #555;
+  color: #eee;
+}
+
+.dark .task-id .dashboard .clear-log {
+  background: #323232;
+  padding: 4px 10px;
+  color: #a5a5a5;
+  border-radius: 3px;
+  border: 1px solid #444;
+}
+
+.dark .task-id .dashboard .clear-log:hover {
+  background: #3d3d3d;
+  color: #fff;
+}
+
+.dark .dialog .content {
+  background: #333;
+  color: #eee;
+}
+
+.dark .dialog .content .inner a,
+.dark .dialog .content .button {
+  background: #444;
+  color: #fff;
+  border: 0;
+}
+.dark .dialog .content .inner a:hover,
+.dark .dialog .content .button:hover {
+  background: #555;
+}
+
+.dark .dialog .editor textarea {
+  background: #222;
+  color: #ddd;
+  border: solid 1px #555;
+}
+
+/* SCROLL */
+
+.dark ::-webkit-scrollbar {
+  background: #1c1c1c;
+  border: 1px solid #2a2a2a;
+  width: 14px;
+  border-right: 0;
+}
+
+.dark ::-webkit-scrollbar-button {
+  height: 0;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #262626;
+  border: 1px solid #3d3d3d;
+  border-right: 0;
+}

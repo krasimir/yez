@@ -1,5 +1,4 @@
 var CWD = absurd.component('CWD', {
-	css: DialogStyles(),
 	html: {
 		'.dialog': {
 			'.content': {
@@ -10,8 +9,8 @@ var CWD = absurd.component('CWD', {
 					'<% } %>'
 				],
 				'.actions': [
-					{ 'a[href="#" data-absurd-event="click:result:ok"]': '<i class="fa fa-check-circle-o"></i> OK'},
-					{ 'a[href="#" data-absurd-event="click:result:cancel"]': '<i class="fa  fa-times-circle-o"></i> Cancel'}
+					{ 'a[href="#" class="button" data-absurd-event="click:result:ok"]': '<i class="fa fa-check-circle-o"></i> OK'},
+					{ 'a[href="#" class="button" data-absurd-event="click:result:cancel"]': '<i class="fa  fa-times-circle-o"></i> Cancel'}
 				]
 			}
 		}
@@ -37,13 +36,13 @@ var CWD = absurd.component('CWD', {
 		e && e.preventDefault();
 		index = parseInt(index);
 		if(index == 0) {
-			var pathParts = normalizePath(this.cwd).split('/');
+			var pathParts = normalizePath(this.cwd).split(Yez.sep);
 			pathParts.pop();
-			var path = pathParts.join('/');
-			if(path.charAt(path.length-1) == ':') path = path + '/';
+			var path = pathParts.join(Yez.sep);
+			if(path.charAt(path.length-1) == ':') path = path + Yez.sep;
 			this.list(path);
 		} else {
-			this.list(this.cwd + '/' + this.links[index]);
+			this.list(this.cwd + Yez.sep + this.links[index]);
 		}
 	},
 	result: function(e, res) {
@@ -59,51 +58,3 @@ var CWD = absurd.component('CWD', {
 		this.list(cwd);
 	}
 });
-function DialogStyles() {
-	return {
-		'.dialog': {
-			wid: '100%',
-			hei: '100%',
-			pos: 'a', top: 0, left: 0,
-			bg: 'rgba(0, 0, 0, 0.5)',
-			'.content': {
-				pos: 'a', left: '2%', top: '2%',
-				wid: '94%', hei: '94%',
-				pad: '10px',
-				bg: '#F0F0F0',
-				bxz: 'bb',
-				'.info': {
-					bxz: 'bb',
-					hei: '60px',
-					fz: '12px',
-					lh: '16px'
-				},
-				'.inner': {
-					ovx: 'h', ovy: 's',
-					hei: 'calc(100% - 120px)',
-					bxz: 'bb',
-					a: {
-						d: 'b',
-						color: '#000',
-						ted: 'n',
-						pad: '0 0 0 4px',
-						bg: '#D4D4D4',
-						bdrsa: '4px',
-						fz: '12px',
-						mar: '0 0 2px 0',
-						bxz: 'bb',
-						'&:hover': {
-							bg: '#C0C0C0'
-						}
-					}
-				},
-				'.actions': {
-					mar: '20px 0 0 0',
-					a: [
-						button()
-					]
-				}
-			}
-		}
-	}
-}

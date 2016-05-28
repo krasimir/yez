@@ -1,5 +1,4 @@
 var Content = absurd.component('Content', {
-	css: { '[data-component="content"]': { d: 'n' } },
 	html: '[data-component="content"]',
 	current: null,
 	constructor: function() {
