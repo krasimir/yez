@@ -11,13 +11,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "open": "0.0.5",
-    "yargs": "4.6.0",
     "electron-prebuilt": "0.37.6",
-    "socket.io": "0.9.16",
+    "http-server": "0.9.0",
+    "open": "0.0.5",
     "ps-tree": "0.0.3",
+    "socket.io": "0.9.16",
     "spawn-args": "0.0.2",
-    "http-server": "0.9.0"
+    "yargs": "4.6.0"
   },
   "devDependencies": {
     "expect.js": "0.3.1",

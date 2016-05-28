@@ -3,19 +3,19 @@
 var app = require('http').createServer(),
     io = require('socket.io').listen(app),
     fs = require('fs'),
-    socketPort = 9172,
+    yezBackendPort = 9172,
     httpPort = 9173,
     TaskRunner = require('./TaskRunner'),
     path = require('path'),
     defaultCWD = path.normalize(process.cwd()),
-    runners = {}, 
+    runners = {},
     lastActive = 0,
     electron = require('electron-prebuilt'),    
     proc = require('child_process'),
     argv = require('yargs').argv,
     httpServer = require('http-server');
 
-app.listen(socketPort);
+app.listen(yezBackendPort);
 
 httpServer.createServer({root: path.normalize(__dirname+'/../chrome')}).listen(httpPort);
 
@@ -336,4 +336,4 @@ io.sockets.on('connection', function (socket) {
 
 reportingProcesses();
 
-console.log('Yez! back-end is running. Install the Chrome extension or open http://localhost:'+(httpPort));
+console.log('Yez! back-end is running. Install the Chrome extension or open http://localhost:' + httpPort);
