@@ -13,7 +13,7 @@
   "dependencies": {
     "electron-prebuilt": "0.37.6",
     "http-server": "0.9.0",
-    "open": "0.0.5",
+    "open": "7.0.0",
     "ps-tree": "0.0.3",
     "socket.io": "0.9.16",
     "spawn-args": "0.0.2",
